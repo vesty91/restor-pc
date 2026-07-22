@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Restor-PC — Site vitrine premium
 
-## Getting Started
+Site web professionnel pour Restor-PC, atelier de dépannage informatique.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router) + **TypeScript**
+- **Tailwind CSS 4**
+- **lucide-react** (icônes)
+- Moteur de **configurateur PC** maison (usage, budget, préférences, compatibilité, scores)
+
+## Démarrage
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` — développement
+- `npm run build` — build production
+- `npm run start` — serveur production
+- `npm run lint` — ESLint
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/                  # Pages (accueil, services, configurateur, tarifs, contact…)
+  components/           # UI, layout, home, configurateur, contact
+  lib/
+    data/               # Services, tarifs, FAQ, moteur configurateur
+    site.ts             # Coordonnées & navigation (à personnaliser)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Personnalisation rapide
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Éditez `src/lib/site.ts` : téléphone, email, zone, horaires, URL.
 
-## Deploy on Vercel
+Les pages légales contiennent des placeholders `[à compléter]` pour SIRET, adresse, hébergeur.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Le formulaire de contact est prêt côté UI (validation + préremplissage depuis le configurateur). Branchez ensuite une API (Resend, Formspree, route `/api/contact`, etc.).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Design system
+
+- Encre `#0A1628` · Surface froide `#F3F5F8` · Accent teal `#0C9A88`
+- Display **Syne** · Corps **DM Sans** · Mono **JetBrains Mono**

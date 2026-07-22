@@ -1,26 +1,251 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #0a1628;
+  --ink-soft: #1c2d45;
+  --ink-muted: #5a6b82;
+  --surface: #f3f5f8;
+  --surface-2: #e9eef3;
+  --paper: #ffffff;
+  --line: #d5dde8;
+  --line-strong: #b8c4d4;
+  --teal: #0060cb;
+  --teal-deep: #004ea3;
+  --teal-soft: #e5f1fc;
+  --amber: #d97706;
+  --amber-soft: #fff7ed;
+  --success: #15803d;
+  --danger: #b91c1c;
+  --panel: #0a1628;
+  --panel-fg: #ffffff;
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow-soft: 0 1px 2px rgb(10 22 40 / 4%), 0 12px 32px rgb(10 22 40 / 6%);
+  --shadow-lift: 0 4px 8px rgb(10 22 40 / 4%), 0 24px 48px rgb(10 22 40 / 10%);
+  --header-h: 90px;
+  --noise-top: #f7f9fb;
+}
+
+.dark {
+  --ink: #eef3f8;
+  --ink-soft: #c5d0de;
+  --ink-muted: #8b9bb0;
+  --surface: #0b1220;
+  --surface-2: #141e2e;
+  --paper: #121a28;
+  --line: #243044;
+  --line-strong: #334560;
+  --teal: #4ba3ff;
+  --teal-deep: #2b8af0;
+  --teal-soft: #0a2748;
+  --amber: #fbbf24;
+  --amber-soft: #2a2110;
+  --success: #4ade80;
+  --danger: #f87171;
+  --panel: #060d18;
+  --panel-fg: #f4f7fb;
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 35%), 0 12px 32px rgb(0 0 0 / 35%);
+  --shadow-lift: 0 4px 8px rgb(0 0 0 / 35%), 0 24px 48px rgb(0 0 0 / 45%);
+  --noise-top: #0b1220;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-paper: var(--paper);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-teal-soft: var(--teal-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-panel: var(--panel);
+  --color-panel-fg: var(--panel-fg);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--teal) 35%, transparent);
+  color: var(--ink);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  /* DM Sans : jambages (g, p, q, y) lisibles — Syne les coupait trop souvent */
+  font-family: var(--font-body), system-ui, sans-serif;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.35 !important;
+  overflow: visible !important;
+  padding-bottom: 0.12em;
+}
+
+h1.font-display,
+h2.font-display,
+h3.font-display,
+h4.font-display,
+.font-display {
+  font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
+  letter-spacing: -0.03em;
+  line-height: 1.4 !important;
+  overflow: visible !important;
+  padding-bottom: 0.15em;
+}
+
+h1.font-sans,
+h2.font-sans,
+h3.font-sans,
+h4.font-sans {
+  font-family: var(--font-body), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
+}
+
+.container-site {
+  width: min(1120px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.container-wide {
+  width: min(1280px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.noise-bg {
+  background-color: var(--surface);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 10% -10%, color-mix(in oklab, var(--teal) 14%, transparent), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, color-mix(in oklab, var(--ink) 6%, transparent), transparent 50%),
+    linear-gradient(180deg, var(--noise-top) 0%, var(--surface) 100%);
+}
+
+.dark .noise-bg {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 10% -10%, color-mix(in oklab, var(--teal) 12%, transparent), transparent 55%),
+    radial-gradient(ellipse 55% 40% at 100% 0%, color-mix(in oklab, #2dd4bf 8%, transparent), transparent 50%),
+    linear-gradient(180deg, #0b1220 0%, var(--surface) 100%);
+}
+
+.grid-overlay {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--ink) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--ink) 4%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, black, transparent 85%);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.btn-press {
+  transition: transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
+}
+
+.btn-press:active {
+  transform: translateY(1px);
+}
+
+.reveal {
+  animation: reveal-fade 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 1px solid var(--teal);
+  animation: pulse-ring 2.2s ease-out infinite;
+}
+
+.safe-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .float-slow,
+  .pulse-dot::after {
+    animation: none !important;
+  }
+  body {
+    transition: none;
+  }
 }

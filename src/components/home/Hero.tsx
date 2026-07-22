@@ -1,0 +1,168 @@
+import { Button } from "@/components/ui/Button";
+import { siteConfig } from "@/lib/site";
+import { ArrowRight, MapPin, MessageCircle, Phone, ShieldCheck } from "lucide-react";
+
+export function Hero() {
+  return (
+    <section className="relative isolate min-h-[calc(100svh-74px)] md:min-h-[calc(100svh-90px)] flex items-stretch">
+      {/* Full-bleed atmospheric plane */}
+      <div
+        className="absolute inset-0 bg-[linear-gradient(160deg,#05080f_0%,#0a1628_42%,#003a7a_100%)]"
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0 opacity-[0.35] mix-blend-overlay"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        }}
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgb(255 255 255 / 4%) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / 4%) 1px, transparent 1px)",
+          backgroundSize: "56px 56px",
+          maskImage: "linear-gradient(90deg, black 0%, transparent 70%)",
+        }}
+        aria-hidden
+      />
+      <div
+        className="absolute -right-24 top-1/4 h-[420px] w-[420px] rounded-full bg-teal/30 blur-[100px]"
+        aria-hidden
+      />
+
+      <div className="container-wide relative grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-10 items-center py-16 md:py-22 lg:py-14">
+        <div className="max-w-xl text-white">
+          <h1 className="text-2xl sm:text-3xl md:text-[2.05rem] font-sans font-semibold leading-[1.5] tracking-tight text-white/85 text-balance">
+            {siteConfig.tagline}
+          </h1>
+          <p className="mt-5 text-base md:text-lg text-white/60 leading-relaxed max-w-md">
+            Atelier à Yerres (91) pour dépanner, sécuriser et assembler votre
+            ordinateur — avec clarté, méthode et résultats durables.
+          </p>
+          <p className="mt-3 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white/45">
+            <MapPin className="h-3.5 w-3.5 text-[#4ba3ff] shrink-0" aria-hidden />
+            <span>{siteConfig.addressShort}</span>
+            <span className="text-white/25">·</span>
+            <span>{siteConfig.intervention}</span>
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <Button href="/contact" size="lg">
+              Demander un devis
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+            <Button
+              href={siteConfig.phoneHref}
+              variant="secondary"
+              size="lg"
+              className="border-white/20 bg-white/10 text-white hover:bg-white/15 hover:border-white/30"
+            >
+              <Phone className="h-4 w-4" />
+              {siteConfig.phone}
+            </Button>
+          </div>
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/55">
+            <span className="relative inline-flex items-center gap-2">
+              <span className="pulse-dot relative inline-block h-2 w-2 rounded-full bg-[#4ba3ff]" />
+              {siteConfig.responseTime}
+            </span>
+            <span className="hidden sm:inline text-white/25">|</span>
+            <a
+              href={siteConfig.googleBusinessUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-white transition-colors"
+            >
+              <span className="text-[#4ba3ff] font-semibold">
+                {siteConfig.googleRating.toFixed(1).replace(".", ",")}
+              </span>
+              <span>/5 Google · {siteConfig.googleReviewCount} avis</span>
+            </a>
+            <span className="hidden sm:inline text-white/25">|</span>
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheck className="h-3.5 w-3.5 text-[#4ba3ff]" aria-hidden />
+              {siteConfig.guarantee}
+            </span>
+          </div>
+          <p className="mt-3 font-mono text-xs text-white/40">
+            Appel direct · {siteConfig.phone}
+          </p>
+          <a
+            href={siteConfig.whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#4ba3ff] hover:text-white transition-colors"
+          >
+            <MessageCircle className="h-4 w-4" aria-hidden />
+            Ou écrivez-nous sur WhatsApp
+          </a>
+        </div>
+
+        <div className="relative" style={{ animationDelay: "120ms" }}>
+          <div className="relative rounded-[28px] border border-white/10 bg-black/20 backdrop-blur-sm shadow-[0_30px_80px_rgb(0_0_0/35%)]">
+            <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
+              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
+              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
+              <span className="ml-3 font-mono text-[11px] tracking-wider text-white/40">
+                DIAGNOSTIC · TEMPS RÉEL
+              </span>
+              <span className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-teal/20 px-2 py-0.5 text-[11px] font-semibold text-[#4ba3ff]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#4ba3ff]" />
+                Prêt
+              </span>
+            </div>
+
+            <div className="p-5 md:p-6 text-white">
+              <p className="text-2xl md:text-[1.75rem] font-semibold leading-[1.55] tracking-tight text-balance">
+                Précision technique,
+                <br />
+                langage clair.
+              </p>
+              <p className="mt-2 text-sm text-white/50">
+                Lecture machine en temps réel — ce que voit le technicien.
+              </p>
+
+              <div className="mt-6 space-y-3">
+                {[
+                  { label: "Santé SSD", value: 92, color: "#4ba3ff" },
+                  { label: "Température CPU", value: 68, color: "#5ec8ff" },
+                  { label: "Charge mémoire", value: 41, color: "#a8b4c4" },
+                  { label: "Score sécurité", value: 96, color: "#4ba3ff" },
+                ].map((row) => (
+                  <div key={row.label}>
+                    <div className="mb-1.5 flex justify-between text-xs">
+                      <span className="text-white/55">{row.label}</span>
+                      <span className="font-mono text-white/80">{row.value}%</span>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+                      <div
+                        className="h-full rounded-full transition-all duration-1000"
+                        style={{ width: `${row.value}%`, background: row.color }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 gap-2 border-t border-white/10 pt-5">
+                {[
+                  ["PANNE", "Identifiée"],
+                  ["DEVIS", "Validé"],
+                  ["DÉLAI", "J+0"],
+                ].map(([k, v]) => (
+                  <div key={k} className="rounded-xl bg-white/5 px-3 py-2.5 text-center">
+                    <p className="font-mono text-[10px] tracking-wider text-white/40">{k}</p>
+                    <p className="mt-0.5 text-sm font-semibold text-white/90">{v}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
