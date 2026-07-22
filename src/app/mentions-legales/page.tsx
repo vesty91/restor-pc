@@ -8,10 +8,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/mentions-legales" },
 };
 
-function orPending(value: string | null | undefined) {
-  return value?.trim() || "À compléter";
-}
-
 export default function MentionsLegalesPage() {
   const { legal } = siteConfig;
 
@@ -28,7 +24,7 @@ export default function MentionsLegalesPage() {
         <p className="mt-3 text-ink-muted leading-relaxed">
           {siteConfig.legalName}
           <br />
-          Forme juridique : {orPending(legal.legalForm)}
+          Forme juridique : {legal.legalForm}
           {legal.capital ? (
             <>
               <br />
@@ -38,14 +34,21 @@ export default function MentionsLegalesPage() {
           <br />
           Siège social : {siteConfig.address}
           <br />
-          SIRET : {orPending(legal.siret)}
+          SIRET : {legal.siret}
+          {legal.rcs ? (
+            <>
+              <br />
+              RCS : {legal.rcs}
+            </>
+          ) : null}
+          {legal.vat ? (
+            <>
+              <br />
+              TVA intracommunautaire : {legal.vat}
+            </>
+          ) : null}
           <br />
-          RCS : {orPending(legal.rcs)}
-          <br />
-          TVA intracommunautaire : {orPending(legal.vat)}
-          <br />
-          Directeur de la publication :{" "}
-          {orPending(legal.publicationDirector)}
+          Directeur de la publication : {legal.publicationDirector}
           <br />
           Contact : {siteConfig.email} · {siteConfig.phone}
         </p>
@@ -65,6 +68,43 @@ export default function MentionsLegalesPage() {
           >
             {legal.host.url}
           </a>
+        </p>
+
+        <h2 className="mt-10 text-xl">Médiation de la consommation</h2>
+        <p className="mt-3 text-ink-muted leading-relaxed">
+          Conformément aux articles L.611-1 et suivants du Code de la
+          consommation, en cas de litige, vous pouvez recourir gratuitement à un
+          médiateur de la consommation.
+          {legal.mediator ? (
+            <>
+              <br />
+              <br />
+              Médiateur : {legal.mediator.name}
+              <br />
+              Site :{" "}
+              <a
+                href={legal.mediator.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-teal underline"
+              >
+                {legal.mediator.url}
+              </a>
+              {legal.mediator.address ? (
+                <>
+                  <br />
+                  Adresse : {legal.mediator.address}
+                </>
+              ) : null}
+            </>
+          ) : (
+            <>
+              {" "}
+              L’adhésion à un dispositif de médiation est en cours ; les
+              coordonnées du médiateur seront publiées ici dès confirmation.
+              En attendant, contactez-nous à {siteConfig.email}.
+            </>
+          )}
         </p>
 
         <h2 className="mt-10 text-xl">Propriété intellectuelle</h2>

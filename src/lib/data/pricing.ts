@@ -1,3 +1,6 @@
+/** Forfait montage PC (main d’œuvre, hors composants). */
+export const ASSEMBLY_FEE = 120;
+
 /** Minimum facturé à domicile — première heure d’intervention. */
 export const DOMICILE_MIN = 75;
 
@@ -124,7 +127,7 @@ export const priceList = [
   },
   {
     service: "Montage PC (main d’œuvre)",
-    from: 120,
+    from: ASSEMBLY_FEE,
     note: "forfait · hors composants",
   },
   {

@@ -1,3 +1,5 @@
+import { ASSEMBLY_FEE } from "@/lib/data/pricing";
+
 export type Service = {
   slug: string;
   title: string;
@@ -284,7 +286,7 @@ export const services: Service[] = [
     description:
       "Gaming, création, bureautique ou station pro : nous concevons et assemblons un PC adapté à votre usage et votre budget. Compatibilité vérifiée, montage propre, BIOS réglé, benchmarks inclus.",
     icon: "Monitor",
-    priceFrom: 120,
+    priceFrom: ASSEMBLY_FEE,
     duration: "3 – 7 jours",
     features: [
       "Conseil d’architecture selon usage",

@@ -1,3 +1,5 @@
+import { ASSEMBLY_FEE } from "@/lib/data/pricing";
+
 export type UsageId =
   | "office"
   | "gaming"
@@ -303,7 +305,7 @@ export function generateBuild(
 ): BuildResult {
   const budget = budgets.find((b) => b.id === budgetId)!;
   const mid = (budget.min + budget.max) / 2;
-  let remaining = budget.max - 99; // leave room for assembly
+  let remaining = budget.max - ASSEMBLY_FEE; // leave room for assembly
 
   // CPU first to determine platform
   let cpu =
@@ -381,7 +383,7 @@ export function generateBuild(
   };
 
   const total = categories.reduce((sum, cat) => sum + components[cat].price, 0);
-  const assembly = 99;
+  const assembly = ASSEMBLY_FEE;
   const grandTotal = total + assembly;
 
   // Balance: GPU vs CPU scores shouldn't diverge too much for gaming

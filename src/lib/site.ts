@@ -57,7 +57,7 @@ export const siteConfig = {
   transport: "Proche gare RER D Yerres · Accès voiture facile",
   guarantee: "Garantie intervention 90 jours",
   dataPolicy: "Confidentialité totale des données",
-  /** Identité légale — à compléter avec vos infos réelles. */
+  /** Identité légale */
   legal: {
     legalForm: "Entrepreneur individuel",
     capital: null as string | null,
@@ -65,6 +65,12 @@ export const siteConfig = {
     rcs: null as string | null,
     vat: null as string | null,
     publicationDirector: "M. Martins",
+    /** Renseigner après adhésion (CM2C, FEVAD, etc.) */
+    mediator: null as null | {
+      name: string;
+      url: string;
+      address?: string;
+    },
     host: {
       name: "Vercel Inc.",
       address: "440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
@@ -87,7 +93,7 @@ export const siteConfig = {
 
 export const navLinks = [
   { href: "/services", label: "Services" },
-  { href: "/configurateur", label: "Configurateur PC" },
+  { href: "/configurateur", label: "Configurateur (bêta)" },
   { href: "/tarifs", label: "Tarifs" },
   { href: "/a-propos", label: "À propos" },
   { href: "/contact", label: "Contact" },

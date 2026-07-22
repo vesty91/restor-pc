@@ -58,6 +58,7 @@ export function ContactForm() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [mailtoFallback, setMailtoFallback] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(empty);
   const [configAttached, setConfigAttached] = useState(false);
 
@@ -173,6 +174,7 @@ export function ContactForm() {
     if (!validate()) return;
     setLoading(true);
     setErrors({});
+    setMailtoFallback(null);
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -180,17 +182,23 @@ export function ContactForm() {
         body: JSON.stringify(form),
       });
       const data = (await res.json()) as {
+        ok?: boolean;
         error?: string;
         mailto?: string;
         delivered?: boolean;
       };
-      if (!res.ok) {
-        setErrors({ form: data.error ?? "Une erreur est survenue. Réessayez." });
+
+      // Succès uniquement si l’API confirme l’envoi réel
+      if (!res.ok || !data.ok || !data.delivered) {
+        setErrors({
+          form:
+            data.error ??
+            "L’envoi a échoué. Appelez-nous, WhatsApp, ou réessayez.",
+        });
+        if (data.mailto) setMailtoFallback(data.mailto);
         return;
       }
-      if (!data.delivered && data.mailto) {
-        window.location.href = data.mailto;
-      }
+
       try {
         sessionStorage.removeItem(CONFIG_STORAGE_KEY);
       } catch {
@@ -433,9 +441,35 @@ export function ContactForm() {
         </p>
       ) : null}
       {errors.form ? (
-        <p className="text-sm text-[var(--danger)]" role="alert">
-          {errors.form}
-        </p>
+        <div
+          className="rounded-xl border border-[var(--danger)]/30 bg-[var(--danger)]/5 px-4 py-3 text-sm text-[var(--danger)]"
+          role="alert"
+        >
+          <p>{errors.form}</p>
+          {mailtoFallback ? (
+            <p className="mt-2">
+              <a
+                href={mailtoFallback}
+                className="font-semibold underline underline-offset-2"
+              >
+                Ouvrir votre messagerie
+              </a>
+              {" · "}
+              <a href={siteConfig.phoneHref} className="font-semibold underline underline-offset-2">
+                Appeler
+              </a>
+              {" · "}
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline underline-offset-2"
+              >
+                WhatsApp
+              </a>
+            </p>
+          ) : null}
+        </div>
       ) : null}
 
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center">

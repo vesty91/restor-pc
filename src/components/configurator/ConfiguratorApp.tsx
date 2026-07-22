@@ -386,8 +386,9 @@ export function ConfiguratorApp() {
         </dl>
 
         <p className="mt-4 text-xs leading-relaxed text-white/45">
-          Estimation indicative. Prix pièces variables selon stock et marché.
-          Devis ferme après validation.
+          Bêta — estimation indicative. Prix pièces variables selon stock et
+          marché. Compatibilité et total final confirmés en atelier avant devis
+          ferme.
         </p>
 
         <div className="mt-6 flex flex-col gap-2">
