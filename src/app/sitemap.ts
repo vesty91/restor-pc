@@ -1,3 +1,4 @@
+import { getAllProducts } from "@/lib/data/outils";
 import { siteConfig } from "@/lib/site";
 import { services } from "@/lib/data/services";
 import { articles } from "@/lib/data/articles";
@@ -8,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     "",
     "/services",
+    "/boutique",
     "/configurateur",
     "/tarifs",
     "/a-propos",
@@ -24,7 +26,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${base}${path}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
-      priority: path === "" ? 1 : path === "/configurateur" ? 0.9 : 0.7,
+      priority:
+        path === ""
+          ? 1
+          : path === "/boutique" || path === "/configurateur"
+            ? 0.9
+            : 0.7,
+    })),
+    ...getAllProducts().map((p) => ({
+      url: `${base}/boutique/${p.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
     })),
     ...services.map((s) => ({
       url: `${base}/services/${s.slug}`,

@@ -93,6 +93,7 @@ export const siteConfig = {
 
 export const navLinks = [
   { href: "/services", label: "Services" },
+  { href: "/boutique", label: "Boutique" },
   { href: "/configurateur", label: "Configurateur (bêta)" },
   { href: "/tarifs", label: "Tarifs" },
   { href: "/a-propos", label: "À propos" },

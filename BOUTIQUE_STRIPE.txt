@@ -1,0 +1,46 @@
+Boutique Stripe + livraison auto
+================================
+
+Flux
+----
+1. Client sur /boutique/[slug] → Checkout Stripe (email + Price ID).
+2. Webhook POST /api/stripe/webhook (checkout.session.completed).
+3. fulfillToolOrder : licence Supabase (max_machines=1) + share NAS 1 DL + email Resend.
+4. Page /boutique/succes.
+
+Espace atelier
+--------------
+URL : /atelier (robots noindex)
+Secret : ATELIER_SECRET
+Livraison manuelle sans paiement : POST /api/atelier/fulfill
+
+Stripe checklist
+----------------
+1. Produits + Prices EUR (one-time) pour chaque outil + pack.
+2. Copier les price_… dans .env.local (voir stripePriceEnv dans src/lib/data/outils.ts).
+3. Webhook vers https://VOTRE_DOMAINE/api/stripe/webhook
+   Event : checkout.session.completed
+4. STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET
+
+Supabase
+--------
+- SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
+- Tables : script_licenses, tool_orders
+- Edge validate-license déjà utilisée par les EXE
+
+NAS
+---
+- NAS_DSM_URL joignable depuis Vercel (compte sans 2FA recommandé pour l’API)
+- NAS_USER / NAS_PASS
+- NAS_PUBLIC_BASE=https://nas.restor-pc.fr
+- Fichiers : /vesty/RestorPC/01-PAR-OUTIL/<Folder>.zip et 00-PACK-COMPLET/...
+
+Resend
+------
+- RESEND_API_KEY + CONTACT_FROM_EMAIL (domaine vérifié)
+
+Test local
+----------
+npm run dev
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+Remplir .env.local puis tester un checkout test mode.
