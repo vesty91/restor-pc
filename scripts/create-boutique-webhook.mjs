@@ -39,12 +39,14 @@ if (!ep) {
 }
 
 let raw = raw0;
-const espace =
-  env.STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT ||
-  env.STRIPE_WEBHOOK_SECRET ||
-  "whsec_3ho0I4xoCriHXzoFvjWWJ88X2wRvA6Uk";
+const espace = env.STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT || env.STRIPE_WEBHOOK_SECRET;
+if (!espace) {
+  console.warn(
+    "STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT absent dans .env.local — le secret espace-client ne sera pas archive ici."
+  );
+}
 
-if (!/^STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT=/m.test(raw)) {
+if (espace && !/^STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT=/m.test(raw)) {
   raw = raw.replace(
     /^STRIPE_WEBHOOK_SECRET=.*$/m,
     `STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT=${espace}\nSTRIPE_WEBHOOK_SECRET=`
