@@ -147,6 +147,6 @@ export const featuredTestimonials = testimonials.slice(0, 6);
 export const trustStats = [
   { value: "4,6/5", label: "Note Google · 22 avis" },
   { value: "Atelier", label: "Basé à Yerres (91)" },
-  { value: "3 modes", label: "Domicile · Atelier · Distance" },
+  { value: "2 modes", label: "Domicile · Atelier" },
   { value: "90 j", label: "Garantie intervention" },
 ];

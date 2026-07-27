@@ -215,13 +215,13 @@ export function ContactForm() {
   if (sent) {
     return (
       <div
-        className="rounded-[24px] border border-teal/30 bg-teal-soft/50 p-8 text-center"
+        className="success-pop rounded-[24px] border border-teal/30 bg-teal-soft/50 p-8 text-center"
         role="status"
         aria-live="polite"
         tabIndex={-1}
         ref={(node) => node?.focus()}
       >
-        <CheckCircle2 className="mx-auto h-10 w-10 text-teal" aria-hidden />
+        <CheckCircle2 className="mx-auto h-10 w-10 text-teal success-pop" aria-hidden />
         <h3 className="mt-4 text-2xl">Message envoyé</h3>
         <p className="mt-2 text-ink-muted leading-relaxed">
           Merci {form.name.split(" ")[0]} ! Nous vous répondons généralement{" "}

@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <>
-      <Section className="noise-bg pt-20 md:pt-28 pb-8">
+    <div className="soft-grid-bg">
+      <Section className="pt-20 md:pt-28 pb-8">
         <Breadcrumbs items={[{ label: "Services" }]} />
         <SectionHeader
           eyebrow="Services"
@@ -27,6 +27,6 @@ export default function ServicesPage() {
         <ServicesExplorer />
       </Section>
       <CtaBand title="Vous ne savez pas quel service choisir ?" />
-    </>
+    </div>
   );
 }

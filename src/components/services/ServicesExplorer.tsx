@@ -86,7 +86,7 @@ export function ServicesExplorer() {
           <Link
             key={service.slug}
             href={`/services/${service.slug}`}
-            className="group flex gap-5 rounded-[22px] border border-line bg-paper p-6 transition-all hover:border-teal/35 hover:shadow-[var(--shadow-soft)]"
+            className="group card-lift flex gap-5 rounded-[22px] border border-line bg-paper p-6"
           >
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-teal-soft text-teal">
               <ServiceIcon name={service.icon} className="h-5 w-5" />

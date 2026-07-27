@@ -7,6 +7,7 @@ const legal = [
   { href: "/conseils", label: "Conseils" },
   { href: "/faq", label: "FAQ" },
   { href: "/zone-intervention", label: "Zone d’intervention" },
+  { href: "/conditions-vente", label: "CGV boutique" },
   { href: "/mentions-legales", label: "Mentions légales" },
   { href: "/politique-confidentialite", label: "Confidentialité" },
 ];
@@ -20,6 +21,7 @@ const googleLinks = [
 export function Footer() {
   return (
     <footer className="border-t border-white/10 bg-panel text-panel-fg">
+      <div className="footer-accent" aria-hidden />
       <div className="container-wide py-14 md:py-16">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">

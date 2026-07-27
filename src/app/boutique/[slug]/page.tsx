@@ -39,7 +39,9 @@ export default async function BoutiqueProductPage({ params }: Props) {
   const details = getOutilDetails(product.slug);
 
   return (
-    <Section className="noise-bg pt-20 md:pt-28 pb-16">
+    <div className="boutique-grid-scene">
+      <div className="boutique-grid-bg" aria-hidden />
+      <Section className="pt-20 md:pt-28 pb-16">
       <Breadcrumbs
         items={[
           { label: "Boutique", href: "/boutique" },
@@ -133,6 +135,10 @@ export default async function BoutiqueProductPage({ params }: Props) {
               {formatOutilPrice(product.priceCents)}
             </p>
             <ul className="mt-4 space-y-2 text-sm text-ink-muted">
+              <li>
+                <strong className="text-ink">Compte obligatoire</strong> pour acheter et
+                retrouver licence + téléchargement.
+              </li>
               <li>Licence liée à <strong className="text-ink">1 PC</strong> (1re activation).</li>
               <li>Lien de téléchargement <strong className="text-ink">1 fois</strong> + mot de passe.</li>
               <li>Email immédiat après paiement (clé + lien).</li>
@@ -143,6 +149,13 @@ export default async function BoutiqueProductPage({ params }: Props) {
                 label={`Payer ${formatOutilPrice(product.priceCents)}`}
               />
             </div>
+            <p className="mt-3 text-center text-xs text-ink-muted">
+              <a href="/conditions-vente" className="text-teal underline underline-offset-2">
+                Conditions générales de vente
+              </a>
+              <span className="mx-1">·</span>
+              Usage des scripts sous votre responsabilité exclusive.
+            </p>
             <Button href="/boutique" variant="ghost" className="mt-4 w-full" size="sm">
               Retour à la boutique
             </Button>
@@ -150,5 +163,6 @@ export default async function BoutiqueProductPage({ params }: Props) {
         </div>
       </div>
     </Section>
+    </div>
   );
 }

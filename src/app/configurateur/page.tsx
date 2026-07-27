@@ -4,25 +4,20 @@ import { Section } from "@/components/ui/Section";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Configurateur PC (bêta) — Yerres",
+  title: "Configurateur PC — Yerres",
   description:
-    "Configurateur PC Restor-PC (bêta) : estimation indicative selon usage et budget. Devis atelier à confirmer à Yerres.",
+    "Configurateur PC Restor-PC : estimation indicative selon usage et budget. Devis atelier à confirmer à Yerres.",
   alternates: { canonical: "/configurateur" },
 };
 
 export default function ConfigurateurPage() {
   return (
-    <>
-      <Section className="noise-bg pt-20 md:pt-28 pb-8">
-        <Breadcrumbs items={[{ label: "Configurateur PC (bêta)" }]} />
-        <div className="flex flex-wrap items-center gap-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal">
-            Configurateur PC
-          </p>
-          <span className="rounded-md border border-amber/40 bg-amber-soft px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
-            Bêta
-          </span>
-        </div>
+    <div className="soft-grid-bg">
+      <Section className="pt-20 md:pt-28 pb-8">
+        <Breadcrumbs items={[{ label: "Configurateur PC" }]} />
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal">
+          Configurateur PC
+        </p>
         <h1 className="mt-3 max-w-3xl text-3xl md:text-5xl leading-tight text-balance">
           Construisez une config intelligente, pas juste une liste de pièces
         </h1>
@@ -32,14 +27,13 @@ export default function ConfigurateurPage() {
           définitif.
         </p>
         <p className="mt-4 max-w-2xl rounded-[16px] border border-line bg-paper px-4 py-3 text-sm text-ink-muted leading-relaxed">
-          Version bêta — les configurations proposées sont des bases de travail.
-          Stock, compatibilité fine et total final sont confirmés avant
-          commande.
+          Les configurations proposées sont des bases de travail. Stock,
+          compatibilité fine et total final sont confirmés avant commande.
         </p>
       </Section>
       <Section className="pt-0 pb-20">
         <ConfiguratorApp />
       </Section>
-    </>
+    </div>
   );
 }

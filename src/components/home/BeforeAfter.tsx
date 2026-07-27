@@ -37,7 +37,7 @@ export function BeforeAfter() {
       <div className="grid gap-4 lg:grid-cols-3">
         {cases.map((item, i) => (
           <Reveal key={item.title} delay={i * 70}>
-            <article className="flex h-full flex-col rounded-[22px] border border-line bg-surface p-5 md:p-6">
+            <article className="card-lift flex h-full flex-col rounded-[22px] border border-line bg-surface p-5 md:p-6">
               <div className="flex items-center justify-between gap-3">
                 <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-teal">
                   Cas {String(i + 1).padStart(2, "0")}

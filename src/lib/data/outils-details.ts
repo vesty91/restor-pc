@@ -329,9 +329,8 @@ export const outilsDetails: Record<string, OutilDetails> = {
       "Appliquer, puis redemarrer si desactivation."
     ],
     "tips": [
-      "Ce n'est PAS un debloat : aucune app n'est désinstallée.",
-      "Pour enlever des apps : Debloat-Windows ou Debloat-Force.",
-      "Un redemarrage est recommandé après desactivation."
+      "Ce n'est PAS un debloat : aucune application n'est désinstallée.",
+      "Un redémarrage est recommandé après désactivation.",
     ],
     "exe": "Telemetrie-Windows-GUI.exe",
     "preview": "system"

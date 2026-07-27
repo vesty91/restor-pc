@@ -35,6 +35,22 @@ export const faqs = [
     q: "Quels moyens de paiement acceptez-vous ?",
     a: "Carte bancaire, virement et espèces. Facture fournie pour les professionnels.",
   },
+  {
+    q: "Pourquoi un compte est obligatoire pour acheter un outil ?",
+    a: "Votre licence, le lien de téléchargement et l’historique de commandes sont liés à votre email. Le compte (Google, GitHub ou email) permet de tout retrouver dans « Mon compte » sans dépendre uniquement du mail.",
+  },
+  {
+    q: "Comment fonctionne la licence 1 PC ?",
+    a: "Chaque achat active une clé sur une seule machine (empreinte matérielle). La première exécution de l’outil lie la licence au PC. Pour changer de machine, contactez l’atelier ou utilisez « Reset PC » côté admin si vous êtes le client.",
+  },
+  {
+    q: "Où télécharger l’outil après l’achat ?",
+    a: "Vous recevez un email avec la clé et un lien sécurisé (souvent 1 téléchargement + mot de passe). Le même lien est disponible dans « Mon compte ». Le ZIP contient l’exécutable et les guides HTML/PDF.",
+  },
+  {
+    q: "Restor-PC est responsable si un script cause un problème ?",
+    a: "Non. Les outils sont fournis en l’état ; leur exécution est sous votre responsabilité exclusive (sauvegarde recommandée). Restor-PC n’est pas responsable des pertes de données, dysfonctionnements ou dommages liés à l’usage des scripts. Voir les conditions générales de vente.",
+  },
 ];
 
 export const processSteps = [

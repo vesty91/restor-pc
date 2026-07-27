@@ -1,0 +1,42 @@
+# Emails boutique Restor-PC — DMARC / Outlook
+#
+# Diagnostic (26/07/2026) :
+#   Resend accepte le mail (HTTP 200) puis Outlook renvoie :
+#   550 5.7.509 — domain restor-pc.fr does not pass DMARC (policy reject)
+#
+# DNS actuel problematique :
+#   _dmarc.restor-pc.fr =
+#     v=DMARC1; p=reject; ... adkim=s; aspf=s
+#   → alignement STRICT : Resend (return-path send.restor-pc.fr) echoue SPF aligne
+#   resend._domainkey a DEUX valeurs TXT differentes (DKIM casse)
+#   DKIM sans prefixe "v=DKIM1; k=rsa;"
+#
+# === A FAIRE CHEZ INFOMANIAK (DNS restor-pc.fr) ===
+#
+# 1) DKIM — supprimer les DOUBLONS, garder UNE seule TXT :
+#    Nom  : resend._domainkey
+#    Type : TXT
+#    Valeur (une seule ligne, exactement) :
+#    v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCtwE1S0E2NImDn5a9TalKlHTE1aHcwb32reMUyRZHkBYbxzPIX0btQz2rMcEoO9rCrNasojovVnTp1jgtpX8AQ5YXIKQ/5BxKbsHlX/C03aHdzFXhSfF/+3tKtiDPJQvLRot6EH15o4gzT/aL1cIqSd8ks1aOTICDSQxxxiF3LpQIDAQAB
+#
+#    (verifier aussi dans Resend Dashboard > Domains > restor-pc.fr)
+#
+# 2) DMARC — passer en relaxed le temps que tout passe (puis renforcer) :
+#    Nom  : _dmarc
+#    Type : TXT
+#    Valeur :
+#    v=DMARC1; p=none; rua=mailto:contact@restor-pc.fr; adkim=r; aspf=r
+#
+#    Plus tard (quand les tests Outlook OK) :
+#    v=DMARC1; p=quarantine; rua=mailto:contact@restor-pc.fr; adkim=r; aspf=r
+#
+# 3) Garder les records Resend deja OK :
+#    send  TXT  v=spf1 include:amazonses.com ~all
+#    send  MX   10 feedback-smtp.eu-west-1.amazonses.com
+#
+# 4) Attendre 5–30 min, puis renvoyer un mail depuis /compte (bouton Renvoyer).
+#
+# Note SPF racine (Infomaniak) :
+#   restor-pc.fr TXT "v=spf1 include:spf.infomaniak.ch -all"
+#   OK pour la messagerie Infomaniak. Ne pas y coller amazonses si tu veux
+#   garder -all strict : Resend utilise le sous-domaine send.

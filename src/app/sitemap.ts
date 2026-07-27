@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/zone-intervention",
     "/mentions-legales",
     "/politique-confidentialite",
+    "/conditions-vente",
   ];
 
   return [

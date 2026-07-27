@@ -116,10 +116,21 @@ export default function MentionsLegalesPage() {
 
         <h2 className="mt-10 text-xl">Responsabilité</h2>
         <p className="mt-3 text-ink-muted leading-relaxed">
-          Les informations publiées sont indicatives. Restor-PC s’efforce d’en
-          assurer l’exactitude mais ne saurait être tenu responsable d’éventuelles
-          omissions ou erreurs. Les devis et interventions font l’objet
-          d’accords spécifiques.
+          Les informations publiées sur ce site sont indicatives. {siteConfig.name}{" "}
+          s’efforce d’en assurer l’exactitude mais ne saurait être tenu responsable
+          d’éventuelles omissions ou erreurs. Les devis et interventions en atelier
+          ou à domicile font l’objet d’accords spécifiques.
+        </p>
+        <p className="mt-3 text-ink-muted leading-relaxed">
+          <strong className="text-ink">Outils logiciels (boutique) :</strong>{ " "}
+          l’exécution des scripts et outils téléchargés est sous la responsabilité
+          entière de l’utilisateur. {siteConfig.name} n’est responsable d’aucun
+          dommage résultant de leur utilisation (données, système, matériel,
+          réseau, activité). Voir les{" "}
+          <a href="/conditions-vente" className="text-teal underline">
+            conditions générales de vente
+          </a>
+          .
         </p>
       </div>
     </Section>

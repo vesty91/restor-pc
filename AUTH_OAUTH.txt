@@ -1,0 +1,27 @@
+# Auth OAuth Restor-PC (Google + GitHub)
+# Projet: rjymdpstakbrbqtfpomj
+#
+# 1) Supabase Dashboard > Authentication > URL Configuration
+#    Site URL (prod): https://www.restor-pc.fr
+#    Redirect URLs (ajouter) :
+#      http://localhost:3000/auth/callback
+#      https://www.restor-pc.fr/auth/callback
+#
+# 2) Google Cloud Console > APIs & Services > Credentials > OAuth client ID
+#    Type: Application Web
+#    URI de redirection autorises :
+#      https://rjymdpstakbrbqtfpomj.supabase.co/auth/v1/callback
+#    Copier Client ID + Client Secret dans :
+#      Supabase > Authentication > Providers > Google > Enable
+#
+# 3) GitHub > Settings > Developer settings > OAuth Apps > New
+#    Homepage URL: https://www.restor-pc.fr
+#    Authorization callback URL:
+#      https://rjymdpstakbrbqtfpomj.supabase.co/auth/v1/callback
+#    Copier Client ID + Client Secret dans :
+#      Supabase > Authentication > Providers > GitHub > Enable
+#
+# 4) (Optionnel) Authentication > Providers > Email : laisser actif
+#    pour le fallback email/mot de passe.
+#
+# App route: /auth/callback (echange code PKCE → session cookies)

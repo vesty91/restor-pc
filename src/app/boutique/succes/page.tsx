@@ -26,14 +26,17 @@ export default async function BoutiqueSuccesPage({
         <SectionHeader
           eyebrow="Commande"
           title="Paiement bien reçu"
-          description="Vérifiez votre boîte mail (et les spams) : clé de licence + lien de téléchargement (1 fois) + mot de passe."
+          description="Vérifiez votre boîte mail (et les spams). Si rien n’arrive, ouvrez Mon compte : licence + lien + mot de passe y sont déjà."
         />
       </div>
       {sp.session_id ? (
         <p className="mt-4 text-xs text-ink-muted">Réf. session : {sp.session_id}</p>
       ) : null}
       <div className="mt-8 flex flex-wrap gap-3">
-        <Button href="/boutique" variant="primary">
+        <Button href="/compte" variant="primary">
+          Voir mon compte
+        </Button>
+        <Button href="/boutique" variant="secondary">
           Retour boutique
         </Button>
         <Button href="/contact" variant="secondary">

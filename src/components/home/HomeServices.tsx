@@ -21,7 +21,7 @@ export function HomeServices() {
           <Reveal key={service.slug} delay={i * 60}>
             <Link
               href={`/services/${service.slug}`}
-              className="group flex h-full flex-col rounded-[20px] border border-line bg-paper p-6 transition-[border-color,box-shadow,transform] duration-300 hover:border-teal/40 hover:shadow-[var(--shadow-soft)] hover:-translate-y-0.5"
+              className="group card-lift flex h-full flex-col rounded-[20px] border border-line bg-paper p-6"
             >
               <div className="flex items-start justify-between gap-3">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-soft text-teal">

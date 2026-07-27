@@ -1,50 +1,64 @@
-# Restor-PC — Site vitrine premium
+# Restor-PC — Site atelier + boutique outils
 
-Site web professionnel pour Restor-PC, atelier de dépannage informatique.
+Site Next.js pour Restor-PC (dépannage Yerres) : vitrine, configurateur PC, boutique outils (Stripe test), espace client, admin licences.
 
 ## Stack
 
-- **Next.js 16** (App Router) + **TypeScript**
-- **Tailwind CSS 4**
-- **lucide-react** (icônes)
-- Moteur de **configurateur PC** maison (usage, budget, préférences, compatibilité, scores)
+- **Next.js** (App Router) + **TypeScript** + **Tailwind CSS**
+- **Supabase** — auth client (email, Google, GitHub), commandes, licences
+- **Stripe** — checkout boutique (mode test pour l’instant)
+- **Resend** — emails contact + achats
+- **Synology NAS** — ZIP outils + liens File Station
 
 ## Démarrage
 
 ```bash
+cd restor-pc
 npm install
 npm run dev
 ```
 
 Ouvrir [http://localhost:3000](http://localhost:3000).
 
-## Scripts
+Variables : copier `.env.example` → `.env.local` (Stripe, Supabase, Resend, NAS, `ATELIER_SECRET`).
+
+## Scripts npm
 
 - `npm run dev` — développement
-- `npm run build` — build production
-- `npm run start` — serveur production
+- `npm run build` / `npm run start` — production
 - `npm run lint` — ESLint
 
-## Structure
+## Outils / NAS (dossier parent)
 
+```powershell
+# Build EXE + pack ZIP + upload Synology
+$env:RESTORPC_SUPABASE_ANON_KEY = "eyJ..."
+$env:NAS_SSH_PASS = "..."
+.\scripte originale\DEPLOY_NAS.ps1
+
+# Ou étapes séparées :
+.\scripte originale\BUILD_LIVRAISON_EXE.ps1
+.\scripte originale\PACK_NAS_ZIP.ps1
+.\scripte originale\UPLOAD_NAS_ZIP.ps1
 ```
-src/
-  app/                  # Pages (accueil, services, configurateur, tarifs, contact…)
-  components/           # UI, layout, home, configurateur, contact
-  lib/
-    data/               # Services, tarifs, FAQ, moteur configurateur
-    site.ts             # Coordonnées & navigation (à personnaliser)
-```
 
-## Personnalisation rapide
+Catalogue boutique = outils dans `mes-script-TEST-OK` (17 outils). **Debloat-Windows / Debloat-Force** : hors catalogue (non vendus).
 
-Éditez `src/lib/site.ts` : téléphone, email, zone, horaires, URL.
+## Pages utiles
 
-Les pages légales contiennent des placeholders `[à compléter]` pour SIRET, adresse, hébergeur.
+| Route | Rôle |
+|--------|------|
+| `/boutique` | Catalogue + FAQ boutique |
+| `/compte` | Auth + commandes / licences |
+| `/contact` | Formulaire → Resend |
+| `/conditions-vente` | CGV (responsabilité scripts) |
+| `/admin` | Atelier (mot de passe `ATELIER_SECRET`) |
 
-Le formulaire de contact est prêt côté UI (validation + préremplissage depuis le configurateur). Branchez ensuite une API (Resend, Formspree, route `/api/contact`, etc.).
+## Docs locales
 
-## Design system
+- `AUTH_OAUTH.txt` — Google / GitHub
+- `DNS_EMAIL_DMARC.txt` — emails Outlook / live.fr
 
-- Encre `#0A1628` · Surface froide `#F3F5F8` · Accent teal `#0C9A88`
-- Display **Syne** · Corps **DM Sans** · Mono **JetBrains Mono**
+## Design
+
+Encre `#0A1628` · Surface `#F3F5F8` · Accent teal · polices Syne / DM Sans / JetBrains Mono

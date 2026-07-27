@@ -1,4 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { BoutiqueFaq } from "@/components/boutique/BoutiqueFaq";
+import { BoutiqueGridBg } from "@/components/boutique/BoutiqueGridBg";
 import { ToolGuiPreview } from "@/components/boutique/ToolGuiPreview";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeader } from "@/components/ui/Section";
@@ -39,8 +41,9 @@ async function BoutiqueInner({
   const packDetails = getOutilDetails(packComplet.slug);
 
   return (
-    <>
-      <Section className="noise-bg pt-20 md:pt-28 pb-8">
+    <div className="boutique-grid-scene">
+      <BoutiqueGridBg />
+      <Section className="pt-20 md:pt-28 pb-16 md:pb-20">
         <Breadcrumbs items={[{ label: "Boutique" }]} />
         <SectionHeader
           eyebrow="Boutique"
@@ -52,7 +55,7 @@ async function BoutiqueInner({
             Paiement annulé. Vous pouvez réessayer quand vous voulez.
           </p>
         ) : null}
-        <ul className="mt-8 flex flex-wrap gap-4 text-sm text-ink-muted">
+        <ul className="mt-5 flex flex-wrap gap-4 text-sm text-ink-muted">
           <li className="inline-flex items-center gap-2">
             <Shield className="size-4 text-teal" aria-hidden /> 1 licence = 1 PC
           </li>
@@ -63,10 +66,8 @@ async function BoutiqueInner({
             <Wifi className="size-4 text-teal" aria-hidden /> Guides HTML/PDF inclus
           </li>
         </ul>
-      </Section>
 
-      <Section className="pt-0">
-        <article className="grid gap-6 overflow-hidden rounded-[24px] border border-teal/40 bg-panel p-6 text-panel-fg md:grid-cols-[1.1fr_0.9fr] md:p-8">
+        <article className="mt-6 grid gap-6 overflow-hidden rounded-[24px] border border-teal/40 bg-panel p-6 text-panel-fg md:grid-cols-[1.1fr_0.9fr] md:p-8">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal">Pack</p>
             <h2 className="mt-2 font-display text-3xl tracking-tight">{packComplet.title}</h2>
@@ -95,8 +96,7 @@ async function BoutiqueInner({
                 key={tool.slug}
                 href={`/boutique/${tool.slug}`}
                 className={cn(
-                  "group flex flex-col overflow-hidden rounded-[20px] border border-line bg-paper transition",
-                  "hover:border-line-strong hover:shadow-[var(--shadow-lift)]"
+                  "group card-lift flex flex-col overflow-hidden rounded-[20px] border border-line bg-paper"
                 )}
               >
                 <ToolGuiPreview
@@ -126,9 +126,31 @@ async function BoutiqueInner({
           })}
         </div>
         <p className="mt-8 text-center text-sm text-ink-muted">
-          {products.length} produits · paiement sécurisé Stripe
+          {products.length} produits · paiement sécurisé Stripe ·{" "}
+          <a href="/conditions-vente" className="text-teal underline underline-offset-2">
+            CGV
+          </a>
         </p>
       </Section>
-    </>
+
+      <Section className="pt-6 md:pt-8 pb-16 md:pb-20">
+        <SectionHeader
+          eyebrow="Boutique"
+          title="Questions fréquentes"
+          description="Licence, téléchargement, compte client et responsabilité d’usage."
+        />
+        <BoutiqueFaq />
+        <p className="mt-6 text-center text-sm text-ink-muted">
+          Plus de questions ?{" "}
+          <a href="/faq" className="font-semibold text-teal underline underline-offset-2">
+            FAQ complète
+          </a>
+          {" · "}
+          <a href="/contact" className="font-semibold text-teal underline underline-offset-2">
+            Contact
+          </a>
+        </p>
+      </Section>
+    </div>
   );
 }

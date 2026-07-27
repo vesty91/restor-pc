@@ -1,3 +1,4 @@
+import { AnimatedStat } from "@/components/AnimatedStat";
 import { Reveal } from "@/components/Reveal";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { commitments, trustStats } from "@/lib/data/testimonials";
@@ -15,7 +16,7 @@ export function TrustSection() {
             <Reveal key={stat.label} delay={i * 50}>
               <div className="text-center md:text-left">
                 <p className="font-display text-3xl md:text-4xl text-ink tracking-tight">
-                  {stat.value}
+                  <AnimatedStat value={stat.value} />
                 </p>
                 <p className="mt-1 text-sm text-ink-muted">{stat.label}</p>
               </div>

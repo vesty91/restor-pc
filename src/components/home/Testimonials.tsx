@@ -1,3 +1,4 @@
+import { AnimatedStat } from "@/components/AnimatedStat";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeader } from "@/components/ui/Section";
@@ -17,9 +18,9 @@ export function Testimonials() {
 
       <div className="mb-8 flex flex-wrap items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.04] px-5 py-4">
         <div className="flex items-center gap-2">
-          <p className="font-display text-3xl tracking-tight text-white">
-            {googleReviewsMeta.label}
-          </p>
+            <p className="font-display text-3xl tracking-tight text-white">
+              <AnimatedStat value="4,6/5" />
+            </p>
           <div className="flex gap-0.5 text-teal" aria-hidden>
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
@@ -30,7 +31,8 @@ export function Testimonials() {
           </div>
         </div>
         <p className="text-sm text-white/55">
-          {googleReviewsMeta.count} avis Google · Atelier {siteConfig.city}
+          <AnimatedStat value={String(googleReviewsMeta.count)} /> avis Google · Atelier{" "}
+          {siteConfig.city}
         </p>
       </div>
 

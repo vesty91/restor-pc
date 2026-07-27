@@ -46,12 +46,6 @@ export function AtelierPanel({ authed }: { authed: boolean }) {
     }
   }
 
-  async function logout() {
-    await fetch("/api/atelier/auth", { method: "DELETE" });
-    setResult(null);
-    router.refresh();
-  }
-
   async function fulfill() {
     setError(null);
     setResult(null);
@@ -101,13 +95,19 @@ export function AtelierPanel({ authed }: { authed: boolean }) {
   }
 
   return (
-    <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_1fr]">
+    <div className="mt-8 space-y-4">
+      <div className="flex flex-wrap gap-3">
+        <Button href="/admin/licences" variant="secondary" size="sm">
+          Gérer les licences
+        </Button>
+        <Button href="/admin" variant="ghost" size="sm">
+          Tableau de bord
+        </Button>
+      </div>
+      <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
       <div className="rounded-[24px] border border-line bg-paper p-6">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-display text-xl tracking-tight">Livrer un outil</h2>
-          <Button type="button" variant="ghost" size="sm" onClick={logout}>
-            Quitter
-          </Button>
         </div>
         <p className="mt-2 text-sm text-ink-muted">
           Crée licence (1 PC) + lien NAS 1 téléchargement + email optionnel.
@@ -178,6 +178,7 @@ export function AtelierPanel({ authed }: { authed: boolean }) {
             </div>
           </dl>
         )}
+      </div>
       </div>
     </div>
   );

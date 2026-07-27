@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const quickLinks = [
   { href: "/services", label: "Services", icon: Wrench },
-  { href: "/configurateur", label: "Configurateur PC (bêta)", icon: Cpu },
+  { href: "/configurateur", label: "Configurateur PC", icon: Cpu },
   { href: "/contact", label: "Contact / devis", icon: MessageSquare },
   { href: "/faq", label: "FAQ", icon: HelpCircle },
 ];

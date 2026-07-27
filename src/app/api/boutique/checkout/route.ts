@@ -1,17 +1,23 @@
 import { getProductBySlug, getStripePriceId } from "@/lib/data/outils";
 import { getStripe } from "@/lib/stripe";
+import { getCompteUser } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as { slug?: string; email?: string };
+    const user = await getCompteUser();
+    const email = user?.email?.trim().toLowerCase();
+    if (!email) {
+      return NextResponse.json(
+        { error: "Compte requis. Créez un compte ou connectez-vous pour acheter." },
+        { status: 401 }
+      );
+    }
+
+    const body = (await request.json()) as { slug?: string };
     const slug = body.slug?.trim();
-    const email = body.email?.trim().toLowerCase();
     if (!slug) {
       return NextResponse.json({ error: "slug manquant" }, { status: 400 });
-    }
-    if (!email || !email.includes("@")) {
-      return NextResponse.json({ error: "email invalide" }, { status: 400 });
     }
 
     const product = getProductBySlug(slug);
@@ -40,6 +46,7 @@ export async function POST(request: Request) {
       metadata: {
         tool_slug: product.slug,
         script_id: product.scriptId,
+        user_id: user.id,
       },
     });
 

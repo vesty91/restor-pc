@@ -1,8 +1,10 @@
 "use client";
 
+import { createClient, signOutClient } from "@/lib/supabase/client";
 import { siteConfig, navLinks } from "@/lib/site";
+import { getUserFirstName } from "@/lib/user-display";
 import { cn } from "@/lib/utils";
-import { Menu, Phone, X } from "lucide-react";
+import { LogOut, Menu, Phone, UserRound, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
@@ -14,10 +16,13 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [compteLabel, setCompteLabel] = useState("Mon compte");
+  const [loggedIn, setLoggedIn] = useState(false);
   const menuId = useId();
   const menuBtnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const wasOpen = useRef(false);
+  const compteActive = pathname === "/compte" || pathname.startsWith("/compte/");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -25,6 +30,36 @@ export function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const supabase = createClient();
+
+    const syncUser = async () => {
+      try {
+        const { data } = await supabase.auth.getUser();
+        if (cancelled) return;
+        const first = getUserFirstName(data.user);
+        setLoggedIn(Boolean(data.user));
+        setCompteLabel(first || "Mon compte");
+      } catch {
+        if (!cancelled) {
+          setLoggedIn(false);
+          setCompteLabel("Mon compte");
+        }
+      }
+    };
+
+    void syncUser();
+    const { data: authListener } = supabase.auth.onAuthStateChange(() => {
+      void syncUser();
+    });
+
+    return () => {
+      cancelled = true;
+      authListener.subscription.unsubscribe();
+    };
+  }, [pathname]);
 
   useEffect(() => {
     setOpen(false);
@@ -76,6 +111,24 @@ export function Header() {
   const isHome = pathname === "/";
   const lightNav = isHome && !scrolled && !open;
 
+  const compteClass = cn(
+    "inline-flex h-10 items-center gap-2 rounded-[12px] border px-3 text-sm font-semibold transition-colors",
+    lightNav
+      ? compteActive
+        ? "border-white/35 bg-white/15 text-white"
+        : "border-white/20 bg-transparent text-white/85 hover:bg-white/10 hover:text-white"
+      : compteActive
+        ? "border-teal/40 bg-teal-soft text-teal"
+        : "border-line bg-paper text-ink-soft hover:border-line-strong hover:text-ink"
+  );
+
+  const logoutClass = cn(
+    "inline-flex h-10 items-center gap-2 rounded-[12px] border px-3 text-sm font-semibold transition-colors",
+    lightNav
+      ? "border-white/20 bg-transparent text-white/85 hover:bg-white/10 hover:text-white"
+      : "border-line bg-paper text-ink-soft hover:border-line-strong hover:text-ink"
+  );
+
   return (
     <header
       className={cn(
@@ -85,10 +138,13 @@ export function Header() {
           : "border-transparent bg-transparent"
       )}
     >
-      <div className="container-wide flex h-[74px] items-center justify-between gap-4 sm:h-[82px] md:h-[90px]">
+      <div className="container-wide flex h-[74px] items-center gap-3 sm:h-[82px] md:h-[90px]">
         <BrandLogo priority />
 
-        <nav className="hidden lg:flex items-center gap-1" aria-label="Navigation principale">
+        <nav
+          className="hidden lg:flex flex-1 items-center justify-center gap-0.5 px-2"
+          aria-label="Navigation principale"
+        >
           {navLinks.map((link) => {
             const active =
               pathname === link.href || pathname.startsWith(`${link.href}/`);
@@ -96,15 +152,16 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
+                data-active={active ? "true" : "false"}
                 className={cn(
-                  "rounded-lg px-3.5 py-2 text-sm font-medium transition-colors",
+                  "nav-link rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   active
                     ? lightNav
-                      ? "bg-white/15 text-[#4ba3ff]"
-                      : "text-teal bg-teal-soft"
+                      ? "text-[#4ba3ff]"
+                      : "text-teal"
                     : lightNav
-                      ? "text-white/75 hover:text-white hover:bg-white/10"
-                      : "text-ink-soft hover:text-ink hover:bg-surface-2"
+                      ? "text-white/75 hover:text-white"
+                      : "text-ink-soft hover:text-ink"
                 )}
               >
                 {link.label}
@@ -113,30 +170,42 @@ export function Header() {
           })}
         </nav>
 
-        <div className="hidden md:flex items-center gap-2.5">
-          <ThemeToggle lightOnDark={lightNav} />
+        <div className="ml-auto flex items-center gap-2 shrink-0">
+          <div className="hidden sm:block">
+            <ThemeToggle lightOnDark={lightNav} />
+          </div>
           <a
             href={siteConfig.phoneHref}
-            className={cn(
-              "hidden xl:inline-flex items-center gap-2 text-sm font-semibold",
-              lightNav ? "text-white/80 hover:text-white" : "text-ink-soft hover:text-ink"
-            )}
+            className="phone-fr hidden xl:inline-flex items-center gap-2 text-sm font-semibold"
           >
-            <Phone className={cn("h-4 w-4", lightNav ? "text-[#4ba3ff]" : "text-teal")} aria-hidden />
-            {siteConfig.phone}
+            <Phone className="phone-fr-icon h-4 w-4 shrink-0" aria-hidden />
+            <span className="phone-fr-text">{siteConfig.phone}</span>
           </a>
-          <Button href="/contact" size="sm">
-            Demander un devis
-          </Button>
-        </div>
+          <Link
+            href="/compte"
+            className={cn(compteClass, "inline-flex max-w-[10rem]")}
+            aria-label={compteLabel === "Mon compte" ? "Mon compte" : `Compte de ${compteLabel}`}
+          >
+            <UserRound className="size-4 shrink-0" aria-hidden />
+            <span className="hidden truncate sm:inline">{compteLabel}</span>
+          </Link>
+          {loggedIn ? (
+            <button
+              type="button"
+              className={logoutClass}
+              aria-label="Déconnexion"
+              onClick={() => void signOutClient()}
+            >
+              <LogOut className="size-4 shrink-0" aria-hidden />
+              <span className="hidden sm:inline">Déconnexion</span>
+            </button>
+          ) : null}
 
-        <div className="flex items-center gap-2 lg:hidden">
-          <ThemeToggle lightOnDark={lightNav} />
           <button
             ref={menuBtnRef}
             type="button"
             className={cn(
-              "grid h-11 w-11 place-items-center rounded-xl border",
+              "grid h-11 w-11 place-items-center rounded-xl border lg:hidden",
               lightNav
                 ? "border-white/20 bg-white/10 text-white"
                 : "border-line bg-paper text-ink"
@@ -171,12 +240,24 @@ export function Header() {
               </Link>
             ))}
             <div className="mt-3 flex flex-col gap-2 border-t border-line pt-4">
-              <Button href="/contact" className="w-full">
-                Demander un devis
+              <Button href="/compte" variant="secondary" className="w-full">
+                <UserRound className="h-4 w-4" />
+                {compteLabel}
               </Button>
-              <Button href={siteConfig.phoneHref} variant="secondary" className="w-full">
-                <Phone className="h-4 w-4" />
-                {siteConfig.phone}
+              {loggedIn ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full"
+                  onClick={() => void signOutClient()}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Déconnexion
+                </Button>
+              ) : null}
+              <Button href={siteConfig.phoneHref} variant="secondary" className="phone-fr w-full">
+                <Phone className="phone-fr-icon h-4 w-4" />
+                <span className="phone-fr-text">{siteConfig.phone}</span>
               </Button>
             </div>
           </nav>

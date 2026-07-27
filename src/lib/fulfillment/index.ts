@@ -16,6 +16,8 @@ export type FulfillInput = {
   orderRef: string;
   source: "stripe" | "atelier";
   sendEmail?: boolean;
+  /** Force un nouvel envoi meme si deja envoye */
+  forceEmail?: boolean;
 };
 
 export type FulfillResult = {
@@ -26,7 +28,54 @@ export type FulfillResult = {
   toolTitle: string;
   scriptId: string;
   orderId: string;
+  emailId?: string | null;
+  emailError?: string | null;
 };
+
+async function trySendAndRecord(opts: {
+  orderId: string;
+  email: string;
+  toolTitle: string;
+  licenseKey: string;
+  downloadUrl: string;
+  downloadPassword: string;
+  expireTimes: number;
+  force?: boolean;
+  alreadySentAt?: string | null;
+}): Promise<{ emailId: string | null; emailError: string | null }> {
+  if (!opts.force && opts.alreadySentAt) {
+    return { emailId: null, emailError: null };
+  }
+
+  const sb = getSupabaseAdmin();
+  try {
+    const { id } = await sendPurchaseEmail({
+      to: opts.email,
+      toolTitle: opts.toolTitle,
+      licenseKey: opts.licenseKey,
+      downloadUrl: opts.downloadUrl,
+      downloadPassword: opts.downloadPassword,
+      expireTimes: opts.expireTimes,
+    });
+    await sb
+      .from("tool_orders")
+      .update({
+        email_sent_at: new Date().toISOString(),
+        email_id: id,
+        email_error: null,
+      })
+      .eq("id", opts.orderId);
+    return { emailId: id, emailError: null };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "email_failed";
+    console.error("purchase email failed", opts.orderId, msg);
+    await sb
+      .from("tool_orders")
+      .update({ email_error: msg.slice(0, 500) })
+      .eq("id", opts.orderId);
+    return { emailId: null, emailError: msg };
+  }
+}
 
 export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResult> {
   const product = getProductBySlug(input.toolSlug);
@@ -37,23 +86,31 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
 
   const sb = getSupabaseAdmin();
 
-  // Idempotence Stripe / atelier
   const { data: existing } = await sb
     .from("tool_orders")
-    .select("id, license_key, share_url, share_password, expire_times, tool_title, script_id")
+    .select(
+      "id, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error"
+    )
     .eq("order_ref", input.orderRef)
     .maybeSingle();
 
   if (existing?.license_key && existing.share_url && existing.share_password) {
+    let emailId = existing.email_id as string | null;
+    let emailError = existing.email_error as string | null;
     if (input.sendEmail !== false) {
-      await sendPurchaseEmail({
-        to: email,
+      const sent = await trySendAndRecord({
+        orderId: existing.id,
+        email,
         toolTitle: existing.tool_title || product.title,
         licenseKey: existing.license_key,
         downloadUrl: existing.share_url,
         downloadPassword: existing.share_password,
         expireTimes: existing.expire_times ?? 1,
+        force: input.forceEmail === true,
+        alreadySentAt: existing.email_sent_at,
       });
+      emailId = sent.emailId ?? emailId;
+      emailError = sent.emailError;
     }
     return {
       licenseKey: existing.license_key,
@@ -63,15 +120,16 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
       toolTitle: existing.tool_title || product.title,
       scriptId: existing.script_id || product.scriptId,
       orderId: existing.id,
+      emailId,
+      emailError,
     };
   }
 
   const licenseKey = generateLicenseKey();
   const sharePassword = generateSharePassword();
   const expireTimes = 1;
-  const filePath = getNasFilePath(product);
   const scriptId = product.scriptId;
-  const maxMachines = scriptId === "*" ? 1 : 1; // pack aussi 1 PC
+  const maxMachines = 1;
 
   const { error: licErr } = await sb.from("script_licenses").insert({
     license_key: licenseKey,
@@ -83,7 +141,7 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
   if (licErr) throw new Error(`Licence insert: ${licErr.message}`);
 
   const share = await createNasOneTimeShare({
-    filePath,
+    filePath: getNasFilePath(product),
     password: sharePassword,
     expireTimes,
   });
@@ -109,15 +167,21 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
 
   if (ordErr) throw new Error(`Order insert: ${ordErr.message}`);
 
+  let emailId: string | null = null;
+  let emailError: string | null = null;
   if (input.sendEmail !== false) {
-    await sendPurchaseEmail({
-      to: email,
+    const sent = await trySendAndRecord({
+      orderId: orderRow.id,
+      email,
       toolTitle: product.title,
       licenseKey,
       downloadUrl: share.url,
       downloadPassword: share.password,
       expireTimes,
+      force: true,
     });
+    emailId = sent.emailId;
+    emailError = sent.emailError;
   }
 
   return {
@@ -128,6 +192,8 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
     toolTitle: product.title,
     scriptId,
     orderId: orderRow.id,
+    emailId,
+    emailError,
   };
 }
 

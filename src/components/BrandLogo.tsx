@@ -43,7 +43,7 @@ export function BrandLogo({
     <Link
       href="/"
       className={cn(
-        "inline-flex h-[64px] items-center shrink-0 bg-transparent sm:h-[72px] md:h-[80px]",
+        "inline-flex h-[48px] items-center shrink-0 bg-transparent sm:h-[54px] md:h-[60px]",
         className
       )}
       aria-label={`${siteConfig.name} — accueil`}
@@ -54,7 +54,7 @@ export function BrandLogo({
         width={LOGO_W}
         height={LOGO_H}
         unoptimized
-        className="h-full w-auto max-w-[min(90vw,240px)] bg-transparent object-contain object-left drop-shadow-sm sm:max-w-[300px] md:max-w-[360px]"
+        className="h-full w-auto max-w-[min(90vw,180px)] bg-transparent object-contain object-left drop-shadow-sm sm:max-w-[220px] md:max-w-[260px]"
         priority={priority}
       />
       <span className="sr-only">{siteConfig.name}</span>

@@ -10,6 +10,9 @@ export function Hero() {
         className="absolute inset-0 bg-[linear-gradient(160deg,#05080f_0%,#0a1628_42%,#003a7a_100%)]"
         aria-hidden
       />
+      <div className="hero-orb hero-orb-a" aria-hidden />
+      <div className="hero-orb hero-orb-b" aria-hidden />
+      <div className="hero-scanline" aria-hidden />
       <div
         className="absolute inset-0 opacity-[0.35] mix-blend-overlay"
         style={{
@@ -26,10 +29,6 @@ export function Hero() {
           backgroundSize: "56px 56px",
           maskImage: "linear-gradient(90deg, black 0%, transparent 70%)",
         }}
-        aria-hidden
-      />
-      <div
-        className="absolute -right-24 top-1/4 h-[420px] w-[420px] rounded-full bg-teal/30 blur-[100px]"
         aria-hidden
       />
 
@@ -100,8 +99,8 @@ export function Hero() {
           </a>
         </div>
 
-        <div className="relative" style={{ animationDelay: "120ms" }}>
-          <div className="relative rounded-[28px] border border-white/10 bg-black/20 backdrop-blur-sm shadow-[0_30px_80px_rgb(0_0_0/35%)]">
+        <div className="relative reveal" style={{ animationDelay: "120ms" }}>
+          <div className="relative rounded-[28px] border border-white/10 bg-black/20 backdrop-blur-sm shadow-[0_30px_80px_rgb(0_0_0/35%)] float-slow">
             <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
               <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
@@ -131,7 +130,7 @@ export function Hero() {
                   { label: "Température CPU", value: 68, color: "#5ec8ff" },
                   { label: "Charge mémoire", value: 41, color: "#a8b4c4" },
                   { label: "Score sécurité", value: 96, color: "#4ba3ff" },
-                ].map((row) => (
+                ].map((row, i) => (
                   <div key={row.label}>
                     <div className="mb-1.5 flex justify-between text-xs">
                       <span className="text-white/55">{row.label}</span>
@@ -139,8 +138,12 @@ export function Hero() {
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
                       <div
-                        className="h-full rounded-full transition-all duration-1000"
-                        style={{ width: `${row.value}%`, background: row.color }}
+                        className="hero-meter h-full rounded-full"
+                        style={{
+                          width: `${row.value}%`,
+                          background: row.color,
+                          animationDelay: `${180 + i * 140}ms`,
+                        }}
                       />
                     </div>
                   </div>

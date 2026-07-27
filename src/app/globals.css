@@ -162,6 +162,130 @@ a {
     linear-gradient(180deg, #0b1220 0%, var(--surface) 100%);
 }
 
+/* Boutique — grille technique animée */
+.boutique-grid-scene {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background-color: var(--surface);
+}
+
+.boutique-grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.boutique-grid-bg::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  width: 180%;
+  height: 180%;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--teal) 42%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--teal) 42%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 44px 44px;
+  opacity: 0.85;
+  will-change: transform;
+  animation: boutique-grid-drift 28s linear infinite;
+  mask-image: linear-gradient(
+    180deg,
+    black 0%,
+    black 55%,
+    transparent 100%
+  );
+}
+
+.boutique-grid-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 60% 45% at 15% 5%,
+      color-mix(in oklab, var(--teal) 28%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 90% 10%,
+      color-mix(in oklab, var(--ink) 10%, transparent),
+      transparent 60%
+    );
+  opacity: 0.9;
+  animation: boutique-grid-pulse 8s ease-in-out infinite;
+}
+
+.dark .boutique-grid-bg::before {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--teal) 55%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--teal) 55%, transparent) 1px,
+      transparent 1px
+    );
+  opacity: 0.7;
+}
+
+.dark .boutique-grid-bg::after {
+  background:
+    radial-gradient(
+      ellipse 60% 45% at 15% 5%,
+      color-mix(in oklab, var(--teal) 22%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 90% 10%,
+      color-mix(in oklab, #2dd4bf 10%, transparent),
+      transparent 60%
+    );
+}
+
+.boutique-grid-scene > :not(.boutique-grid-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes boutique-grid-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(44px, 44px, 0);
+  }
+}
+
+@keyframes boutique-grid-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boutique-grid-bg::before,
+  .boutique-grid-bg::after {
+    animation: none;
+  }
+}
+
 .grid-overlay {
   background-image:
     linear-gradient(to right, color-mix(in oklab, var(--ink) 4%, transparent) 1px, transparent 1px),
@@ -175,11 +299,224 @@ a {
 }
 
 .btn-press {
-  transition: transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    box-shadow 200ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.btn-press:hover {
+  transform: translateY(-1px);
 }
 
 .btn-press:active {
   transform: translateY(1px);
+}
+
+.btn-glow-primary:hover {
+  box-shadow: 0 12px 28px color-mix(in oklab, var(--teal) 32%, transparent);
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.35rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0.85;
+}
+
+.nav-link[data-active="true"]::after,
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+.card-lift {
+  transition:
+    border-color 280ms ease,
+    box-shadow 280ms ease,
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-lift:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--teal) 45%, var(--line));
+  box-shadow: var(--shadow-lift);
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(90px);
+  pointer-events: none;
+  animation: hero-orb-float 14s ease-in-out infinite;
+}
+
+.hero-orb-a {
+  right: -6rem;
+  top: 18%;
+  width: 26rem;
+  height: 26rem;
+  background: color-mix(in oklab, var(--teal) 35%, transparent);
+}
+
+.hero-orb-b {
+  left: -4rem;
+  bottom: 8%;
+  width: 18rem;
+  height: 18rem;
+  background: color-mix(in oklab, #4ba3ff 22%, transparent);
+  animation-delay: -5s;
+  animation-duration: 18s;
+}
+
+.hero-scanline {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in oklab, #4ba3ff 10%, transparent) 48%,
+    transparent 52%
+  );
+  background-size: 100% 220%;
+  animation: hero-scan 7s linear infinite;
+  opacity: 0.45;
+  mix-blend-mode: soft-light;
+}
+
+@keyframes hero-orb-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12px, -18px, 0) scale(1.06);
+  }
+}
+
+@keyframes hero-scan {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+.success-pop {
+  animation: success-pop 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes success-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero-meter {
+  transform-origin: left center;
+  animation: hero-meter-fill 1.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-meter-fill {
+  from {
+    transform: scaleX(0);
+    opacity: 0.4;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.footer-accent {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--teal) 70%, transparent),
+    #ffffff55,
+    color-mix(in oklab, #ed2939 55%, transparent),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: footer-accent-shine 8s linear infinite;
+}
+
+@keyframes footer-accent-shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.soft-grid-bg {
+  position: relative;
+  isolation: isolate;
+}
+
+.soft-grid-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--teal) 12%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--teal) 12%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 48px 48px;
+  opacity: 0.35;
+  mask-image: linear-gradient(180deg, black 0%, black 40%, transparent 90%);
+  animation: boutique-grid-drift 60s linear infinite;
+}
+
+.soft-grid-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb,
+  .hero-scanline,
+  .hero-meter,
+  .footer-accent,
+  .soft-grid-bg::before,
+  .success-pop {
+    animation: none !important;
+  }
+  .btn-press:hover,
+  .card-lift:hover {
+    transform: none;
+  }
 }
 
 .reveal {
@@ -232,6 +569,94 @@ a {
   animation: pulse-ring 2.2s ease-out infinite;
 }
 
+/* Numéro téléphone — dégradé drapeau FR animé */
+.phone-fr-text {
+  background-image: linear-gradient(
+    90deg,
+    #002395 0%,
+    #ffffff 25%,
+    #ed2939 50%,
+    #002395 75%,
+    #ffffff 100%
+  );
+  background-size: 220% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: phone-fr-shine 3.5s linear infinite;
+}
+
+/* Sur fond clair : blanc un peu teinté pour rester lisible */
+:root:not(.dark) .phone-fr-text {
+  background-image: linear-gradient(
+    90deg,
+    #002395 0%,
+    #e8eef8 25%,
+    #ed2939 50%,
+    #002395 75%,
+    #e8eef8 100%
+  );
+}
+
+.phone-fr-icon {
+  animation: phone-fr-icon 3.5s ease-in-out infinite;
+}
+
+@keyframes phone-fr-shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes phone-fr-icon {
+  0%,
+  100% {
+    color: #002395;
+  }
+  33% {
+    color: #d0d7e8;
+  }
+  66% {
+    color: #ed2939;
+  }
+}
+
+.dark .phone-fr-icon {
+  animation-name: phone-fr-icon-dark;
+}
+
+@keyframes phone-fr-icon-dark {
+  0%,
+  100% {
+    color: #5b8def;
+  }
+  33% {
+    color: #ffffff;
+  }
+  66% {
+    color: #ff5a6a;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone-fr-text,
+  .phone-fr-icon {
+    animation: none;
+  }
+  .phone-fr-text {
+    background: none;
+    color: var(--ink);
+    -webkit-text-fill-color: unset;
+  }
+  .phone-fr-icon {
+    color: var(--teal);
+  }
+}
+
 .safe-bottom {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
@@ -242,7 +667,11 @@ a {
   }
   .reveal,
   .float-slow,
-  .pulse-dot::after {
+  .pulse-dot::after,
+  .phone-fr-text,
+  .phone-fr-icon,
+  .boutique-grid-bg::before,
+  .boutique-grid-bg::after {
     animation: none !important;
   }
   body {

@@ -12,6 +12,7 @@
     "fulfill:session": "npx tsx scripts/fulfill-session.mjs"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.8",
     "clsx": "^2.1.1",
     "lucide-react": "^1.25.0",
