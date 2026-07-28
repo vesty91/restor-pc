@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/restor-pc/status-badge";
 import { siteConfig, CONFIG_STORAGE_KEY } from "@/lib/site";
 import { services } from "@/lib/data/services";
+import { notify } from "@/lib/toast";
 import { buildContactWhatsApp } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, MessageCircle, Phone, Send } from "lucide-react";
@@ -192,11 +193,11 @@ export function ContactForm() {
 
       // Succès uniquement si l’API confirme l’envoi réel
       if (!res.ok || !data.ok || !data.delivered) {
-        setErrors({
-          form:
-            data.error ??
-            "L’envoi a échoué. Appelez-nous, WhatsApp, ou réessayez.",
-        });
+        const msg =
+          data.error ??
+          "L’envoi a échoué. Appelez-nous, WhatsApp, ou réessayez.";
+        setErrors({ form: msg });
+        notify.error(msg);
         if (data.mailto) setMailtoFallback(data.mailto);
         return;
       }
@@ -207,8 +208,10 @@ export function ContactForm() {
         /* ignore */
       }
       setSent(true);
+      notify.success("Demande envoyée. Nous vous recontactons rapidement.");
     } catch {
       setErrors({ form: "Réseau indisponible. Appelez-nous ou réessayez." });
+      notify.error("Réseau indisponible. Appelez-nous ou réessayez.");
     } finally {
       setLoading(false);
     }

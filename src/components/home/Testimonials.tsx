@@ -41,7 +41,11 @@ export function Testimonials() {
           <Reveal key={`${t.name}-${i}`} delay={i * 60}>
             <figure className="h-full rounded-[22px] border border-white/10 bg-white/[0.04] p-6 md:p-7">
               <div className="flex items-center justify-between gap-3">
-                <div className="flex gap-1 text-teal" aria-label={`${t.rating} sur 5`}>
+                <div
+                  className="flex gap-1 text-teal"
+                  role="img"
+                  aria-label={`${t.rating} sur 5`}
+                >
                   {Array.from({ length: t.rating }).map((_, idx) => (
                     <Star key={idx} className="h-4 w-4 fill-current" />
                   ))}

@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { MobileCtaBar } from "@/components/MobileCtaBar";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { Toaster } from "@/components/ui/sonner";
 import { siteConfig, THEME_STORAGE_KEY } from "@/lib/site";
 import "./globals.css";
 
@@ -101,6 +102,7 @@ export default function RootLayout({
           <Footer />
           <MobileCtaBar />
           <ScrollToTop />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

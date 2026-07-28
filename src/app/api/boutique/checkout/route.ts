@@ -4,6 +4,7 @@ import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { getStripe } from "@/lib/stripe";
 import { getCompteUser } from "@/lib/supabase/server";
+import { checkoutSchema, publicZodMessage } from "@/lib/validation";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -35,24 +36,24 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = (await request.json()) as {
-      slug?: string;
-      withdrawalConsent?: boolean;
-    };
-    const slug = body.slug?.trim();
-    if (!slug) {
-      return jsonError("MISSING_SLUG", "Produit manquant.", 400, requestId);
+    let json: unknown;
+    try {
+      json = await request.json();
+    } catch {
+      return jsonError("INVALID_BODY", "Requete invalide.", 400, requestId);
     }
 
-    if (body.withdrawalConsent !== true) {
+    const parsed = checkoutSchema.safeParse(json);
+    if (!parsed.success) {
       return jsonError(
-        "CONSENT_REQUIRED",
-        "Le consentement au téléchargement immédiat est obligatoire.",
+        "INVALID_BODY",
+        publicZodMessage(parsed.error, "Donnees invalides."),
         400,
         requestId
       );
     }
 
+    const { slug } = parsed.data;
     const product = getProductBySlug(slug);
     if (!product) {
       return jsonError("UNKNOWN_PRODUCT", "Produit inconnu.", 404, requestId);

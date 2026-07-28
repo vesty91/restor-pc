@@ -1,31 +1,21 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/lib/site";
 import { enforceRateLimit } from "@/lib/security/rate-limit";
+import { contactSchema, publicZodMessage } from "@/lib/validation";
 
 type ContactPayload = {
-  name?: string;
-  email?: string;
-  phone?: string;
-  city?: string;
-  type?: string;
-  service?: string;
-  mode?: string;
-  urgency?: string;
-  message?: string;
-  consent?: boolean;
-  company?: string;
+  name: string;
+  email: string;
+  phone: string;
+  city: string;
+  type: string;
+  service: string;
+  mode: string;
+  urgency: string;
+  message: string;
+  consent: true;
+  company: string;
 };
-
-const MAX_NAME = 120;
-const MAX_EMAIL = 160;
-const MAX_PHONE = 40;
-const MAX_CITY = 80;
-const MAX_MESSAGE = 4000;
-const MIN_MESSAGE = 10;
-
-function sanitizePhone(phone: string): string {
-  return phone.replace(/[^\d+()\s.-]/g, "").trim();
-}
 
 function escapeHtml(value: string): string {
   return value
@@ -175,9 +165,9 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: ContactPayload;
+  let raw: unknown;
   try {
-    body = await request.json();
+    raw = await request.json();
   } catch {
     return NextResponse.json(
       { ok: false, error: "Requête invalide." },
@@ -186,68 +176,35 @@ export async function POST(request: Request) {
   }
 
   // Honeypot : réponse neutre sans envoi
-  if (body.company && body.company.trim().length > 0) {
+  if (
+    raw &&
+    typeof raw === "object" &&
+    "company" in raw &&
+    typeof (raw as { company?: unknown }).company === "string" &&
+    (raw as { company: string }).company.trim().length > 0
+  ) {
     return NextResponse.json({ ok: true, delivered: true });
   }
 
-  const name = (body.name?.trim() ?? "").slice(0, MAX_NAME);
-  const email = (body.email?.trim() ?? "").slice(0, MAX_EMAIL).toLowerCase();
-  const phone = sanitizePhone(body.phone ?? "").slice(0, MAX_PHONE);
-  const city = (body.city?.trim() ?? "").slice(0, MAX_CITY);
-  const message = (body.message?.trim() ?? "").slice(0, MAX_MESSAGE);
-
-  if (!name || !email || !phone || !message) {
+  const parsed = contactSchema.safeParse(raw);
+  if (!parsed.success) {
     return NextResponse.json(
-      { ok: false, error: "Champs obligatoires manquants." },
+      {
+        ok: false,
+        error: publicZodMessage(parsed.error, "Champs invalides."),
+      },
       { status: 400 }
     );
   }
 
-  if (message.length < MIN_MESSAGE) {
-    return NextResponse.json(
-      { ok: false, error: "Message trop court." },
-      { status: 400 }
-    );
-  }
+  const body = parsed.data;
+  const name = body.name;
+  const email = body.email;
+  const phone = body.phone;
+  const city = body.city;
+  const message = body.message;
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json(
-      { ok: false, error: "Email invalide." },
-      { status: 400 }
-    );
-  }
-
-  const digits = phone.replace(/\D/g, "");
-  if (digits.length < 10 || digits.length > 15) {
-    return NextResponse.json(
-      { ok: false, error: "Téléphone invalide." },
-      { status: 400 }
-    );
-  }
-
-  if (!body.consent) {
-    return NextResponse.json(
-      { ok: false, error: "Consentement requis." },
-      { status: 400 }
-    );
-  }
-
-  const allowedTypes = new Set([
-    "devis",
-    "urgence",
-    "config",
-    "serenite",
-    "maintenance",
-    "autre",
-  ]);
-  if (body.type && !allowedTypes.has(body.type)) {
-    return NextResponse.json(
-      { ok: false, error: "Type de demande invalide." },
-      { status: 400 }
-    );
-  }
-
-  const payload: ContactPayload = { ...body, city };
+  const payload: ContactPayload = { ...body };
   const { subject, text, html } = buildMailParts(
     payload,
     name,
@@ -258,7 +215,7 @@ export async function POST(request: Request) {
 
   // Logs sans données personnelles
   console.info("[Restor-PC] Contact request", {
-    type: body.type ?? "devis",
+    type: body.type,
     service: body.service || null,
     mode: body.mode || null,
     urgency: body.urgency || null,

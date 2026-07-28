@@ -3,6 +3,7 @@ import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
 import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { createClient } from "@/lib/supabase/server";
+import { publicZodMessage, resendOrderEmailSchema } from "@/lib/validation";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -34,18 +35,24 @@ export async function POST(request: Request) {
     return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 
-  let body: { orderId?: string };
+  let json: unknown;
   try {
-    body = (await request.json()) as { orderId?: string };
+    json = await request.json();
   } catch {
     return jsonError("INVALID_BODY", "Requete invalide.", 400, requestId);
   }
 
-  const orderId = body.orderId?.trim();
-  if (!orderId) {
-    return jsonError("MISSING_ORDER_ID", "Commande manquante.", 400, requestId);
+  const parsed = resendOrderEmailSchema.safeParse(json);
+  if (!parsed.success) {
+    return jsonError(
+      "INVALID_BODY",
+      publicZodMessage(parsed.error, "Commande manquante."),
+      400,
+      requestId
+    );
   }
 
+  const orderId = parsed.data.orderId;
   const email = user.email.trim().toLowerCase();
   const sb = getSupabaseAdmin();
   const { data: order, error } = await sb

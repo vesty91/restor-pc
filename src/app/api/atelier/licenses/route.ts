@@ -2,6 +2,13 @@ import { isAtelierAuthed } from "@/lib/atelier-auth";
 import { generateLicenseKey } from "@/lib/fulfillment/keys";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
 import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
+import {
+  createLicenseSchema,
+  deleteLicenseSchema,
+  licensesListQuerySchema,
+  patchLicenseSchema,
+  publicZodMessage,
+} from "@/lib/validation";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -10,6 +17,9 @@ function sanitizeIlike(raw: string): string {
   return raw.replace(/[%_,.()\\]/g, "").slice(0, 64);
 }
 
+const LICENSE_SELECT =
+  "id, license_key, script_id, status, note, created_at, expires_at, machine_id, machine_name, bios_serial, machine_bound_at, max_machines";
+
 export async function GET(request: Request) {
   const requestId = createRequestId();
   if (!(await isAtelierAuthed())) {
@@ -17,17 +27,32 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const q = sanitizeIlike(searchParams.get("q")?.trim() || "");
-  const status = searchParams.get("status")?.trim() || "";
+  const parsed = licensesListQuerySchema.safeParse({
+    q: searchParams.get("q") ?? "",
+    status: searchParams.get("status") ?? "",
+    page: searchParams.get("page") ?? "1",
+    pageSize: searchParams.get("pageSize") ?? "25",
+  });
+  if (!parsed.success) {
+    return jsonError(
+      "INVALID_QUERY",
+      publicZodMessage(parsed.error, "Parametres invalides."),
+      400,
+      requestId
+    );
+  }
+
+  const { q: rawQ, status, page, pageSize } = parsed.data;
+  const q = sanitizeIlike(rawQ);
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
 
   const sb = getSupabaseAdmin();
   let query = sb
     .from("script_licenses")
-    .select(
-      "id, license_key, script_id, status, note, created_at, expires_at, machine_id, machine_name, bios_serial, machine_bound_at, max_machines"
-    )
+    .select(LICENSE_SELECT, { count: "exact" })
     .order("created_at", { ascending: false })
-    .limit(200);
+    .range(from, to);
 
   if (status) query = query.eq("status", status);
   if (q) {
@@ -36,11 +61,20 @@ export async function GET(request: Request) {
     );
   }
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
   if (error) {
     return publicErrorResponse(error, "LICENSES_FETCH_FAILED", requestId);
   }
-  return NextResponse.json({ licenses: data ?? [], requestId });
+
+  const total = count ?? 0;
+  return NextResponse.json({
+    licenses: data ?? [],
+    total,
+    page,
+    pageSize,
+    pageCount: Math.max(1, Math.ceil(total / pageSize)),
+    requestId,
+  });
 }
 
 export async function POST(request: Request) {
@@ -50,37 +84,31 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = (await request.json()) as {
-      script_id?: string;
-      note?: string;
-      max_machines?: number;
-      status?: string;
-      license_key?: string;
-    };
-
-    const scriptId = (body.script_id || "").trim();
-    if (!scriptId) {
-      return jsonError("MISSING_SCRIPT_ID", "script_id requis.", 400, requestId);
+    const json = await request.json();
+    const parsed = createLicenseSchema.safeParse(json);
+    if (!parsed.success) {
+      return jsonError(
+        "INVALID_BODY",
+        publicZodMessage(parsed.error, "Donnees invalides."),
+        400,
+        requestId
+      );
     }
 
+    const body = parsed.data;
     const licenseKey = (body.license_key || generateLicenseKey()).trim().toUpperCase();
-    const maxMachines =
-      typeof body.max_machines === "number" ? body.max_machines : 1;
-    const status = body.status?.trim() || "active";
 
     const sb = getSupabaseAdmin();
     const { data, error } = await sb
       .from("script_licenses")
       .insert({
         license_key: licenseKey,
-        script_id: scriptId,
-        status,
-        note: body.note?.trim() || null,
-        max_machines: maxMachines,
+        script_id: body.script_id,
+        status: body.status,
+        note: body.note || null,
+        max_machines: body.max_machines,
       })
-      .select(
-        "id, license_key, script_id, status, note, created_at, expires_at, machine_id, machine_name, bios_serial, machine_bound_at, max_machines"
-      )
+      .select(LICENSE_SELECT)
       .single();
 
     if (error) {
@@ -99,26 +127,23 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    const body = (await request.json()) as {
-      id?: string;
-      status?: string;
-      note?: string;
-      max_machines?: number;
-      script_id?: string;
-      resetMachine?: boolean;
-    };
-
-    if (!body.id) {
-      return jsonError("MISSING_ID", "id requis.", 400, requestId);
+    const json = await request.json();
+    const parsed = patchLicenseSchema.safeParse(json);
+    if (!parsed.success) {
+      return jsonError(
+        "INVALID_BODY",
+        publicZodMessage(parsed.error, "Donnees invalides."),
+        400,
+        requestId
+      );
     }
 
+    const body = parsed.data;
     const patch: Record<string, unknown> = {};
-    if (typeof body.status === "string") patch.status = body.status.trim();
-    if (typeof body.note === "string") patch.note = body.note.trim() || null;
-    if (typeof body.max_machines === "number") patch.max_machines = body.max_machines;
-    if (typeof body.script_id === "string" && body.script_id.trim()) {
-      patch.script_id = body.script_id.trim();
-    }
+    if (body.status !== undefined) patch.status = body.status;
+    if (body.note !== undefined) patch.note = body.note || null;
+    if (body.max_machines !== undefined) patch.max_machines = body.max_machines;
+    if (body.script_id !== undefined) patch.script_id = body.script_id;
     if (body.resetMachine) {
       patch.machine_id = null;
       patch.machine_name = null;
@@ -126,18 +151,12 @@ export async function PATCH(request: Request) {
       patch.machine_bound_at = null;
     }
 
-    if (Object.keys(patch).length === 0) {
-      return jsonError("NO_CHANGES", "Rien a modifier.", 400, requestId);
-    }
-
     const sb = getSupabaseAdmin();
     const { data, error } = await sb
       .from("script_licenses")
       .update(patch)
       .eq("id", body.id)
-      .select(
-        "id, license_key, script_id, status, note, created_at, expires_at, machine_id, machine_name, bios_serial, machine_bound_at, max_machines"
-      )
+      .select(LICENSE_SELECT)
       .single();
 
     if (error) {
@@ -156,16 +175,23 @@ export async function DELETE(request: Request) {
   }
 
   try {
-    const body = (await request.json()) as { id?: string };
-    if (!body.id) {
-      return jsonError("MISSING_ID", "id requis.", 400, requestId);
+    const json = await request.json();
+    const parsed = deleteLicenseSchema.safeParse(json);
+    if (!parsed.success) {
+      return jsonError(
+        "INVALID_BODY",
+        publicZodMessage(parsed.error, "Donnees invalides."),
+        400,
+        requestId
+      );
     }
 
+    const { id } = parsed.data;
     const sb = getSupabaseAdmin();
     const { data: existing, error: getErr } = await sb
       .from("script_licenses")
       .select("id, status")
-      .eq("id", body.id)
+      .eq("id", id)
       .maybeSingle();
 
     if (getErr) {
@@ -183,11 +209,11 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const { error } = await sb.from("script_licenses").delete().eq("id", body.id);
+    const { error } = await sb.from("script_licenses").delete().eq("id", id);
     if (error) {
       return publicErrorResponse(error, "LICENSE_DELETE_FAILED", requestId);
     }
-    return NextResponse.json({ ok: true, id: body.id, requestId });
+    return NextResponse.json({ ok: true, id, requestId });
   } catch (err) {
     return publicErrorResponse(err, "LICENSE_DELETE_FAILED", requestId);
   }
