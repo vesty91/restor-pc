@@ -68,7 +68,15 @@ async function fulfillFromSession(
 
   if (!slug || !email) {
     logEvent("error", "stripe.webhook.missing_meta", { stripeEventId: eventId });
-    await markEvent(eventId, "skipped_missing_meta", "MISSING_META");
+    await markEvent(eventId, "failed", "MISSING_META");
+    return;
+  }
+
+  const uuidRe =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  if (!userId || !uuidRe.test(userId)) {
+    logEvent("error", "stripe.webhook.missing_user", { stripeEventId: eventId });
+    await markEvent(eventId, "failed", "MISSING_USER_ID");
     return;
   }
 

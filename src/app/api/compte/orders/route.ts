@@ -5,6 +5,10 @@ import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
+/**
+ * Liste les commandes du client connecté.
+ * Autorisation uniquement par user_id (jamais par email seul).
+ */
 export async function GET() {
   const requestId = createRequestId();
   const supabase = await createClient();
@@ -12,14 +16,13 @@ export async function GET() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user?.email) {
+  if (!user?.id) {
     return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 
-  const email = user.email.trim().toLowerCase();
   const sb = getSupabaseAdmin();
 
-  const byUser = await sb
+  const { data: orders, error } = await sb
     .from("tool_orders")
     .select(
       "id, order_ref, source, email, user_id, tool_slug, tool_title, script_id, license_key, status, created_at, share_url, share_password, expire_times, email_sent_at, email_error, terms_version, withdrawal_consent_at"
@@ -28,30 +31,13 @@ export async function GET() {
     .order("created_at", { ascending: false })
     .limit(100);
 
-  let orders = byUser.data;
-  const error = byUser.error;
-
   if (error) {
     return publicErrorResponse(error, "ORDERS_FETCH_FAILED", requestId);
   }
 
-  if (!orders?.length) {
-    const legacy = await sb
-      .from("tool_orders")
-      .select(
-        "id, order_ref, source, email, user_id, tool_slug, tool_title, script_id, license_key, status, created_at, share_url, share_password, expire_times, email_sent_at, email_error, terms_version, withdrawal_consent_at"
-      )
-      .is("user_id", null)
-      .eq("email", email)
-      .order("created_at", { ascending: false })
-      .limit(100);
-    if (legacy.error) {
-      return publicErrorResponse(legacy.error, "ORDERS_FETCH_FAILED", requestId);
-    }
-    orders = legacy.data ?? [];
-  }
-
-  const keys = [...new Set((orders ?? []).map((o) => o.license_key).filter(Boolean))];
+  const keys = [
+    ...new Set((orders ?? []).map((o) => o.license_key).filter(Boolean)),
+  ];
   let licenses: Array<{
     license_key: string;
     script_id: string;
@@ -74,7 +60,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    email,
+    email: user.email ?? null,
     userId: user.id,
     orders: orders ?? [],
     licenses,

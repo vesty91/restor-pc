@@ -127,11 +127,12 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
         total?: number;
         pageCount?: number;
         error?: string;
+        requestId?: string;
       };
       if (!res.ok) {
         const msg = data.error || "Chargement impossible";
         setError(msg);
-        notify.error(msg);
+        notify.apiError({ error: msg, requestId: data.requestId });
         return;
       }
       setRows(data.licenses || []);
@@ -158,11 +159,11 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, ...body }),
       });
-      const data = (await res.json()) as { license?: LicenseRow; error?: string };
+      const data = (await res.json()) as { license?: LicenseRow; error?: string; requestId?: string };
       if (!res.ok) {
         const msg = data.error || "Modification échouée";
         setError(msg);
-        notify.error(msg);
+        notify.apiError({ error: msg, requestId: data.requestId });
         return;
       }
       if (data.license) {
@@ -189,11 +190,11 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
       });
-      const data = (await res.json()) as { error?: string };
+      const data = (await res.json()) as { error?: string; requestId?: string };
       if (!res.ok) {
         const msg = data.error || "Suppression échouée";
         setError(msg);
-        notify.error(msg);
+        notify.apiError({ error: msg, requestId: data.requestId });
         return;
       }
       setRows((prev) => prev.filter((r) => r.id !== id));

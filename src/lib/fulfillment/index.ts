@@ -1,7 +1,3 @@
-/**
- * Fulfillment Stripe / atelier — réservation atomique + états.
- * Un même order_ref / event.id ne crée jamais de doublon licence / NAS.
- */
 import {
   getNasFilePath,
   getProductBySlug,
@@ -11,19 +7,17 @@ import {
 import { sendPurchaseEmail } from "@/lib/fulfillment/email";
 import { generateLicenseKey, generateSharePassword } from "@/lib/fulfillment/keys";
 import { createNasOneTimeShare } from "@/lib/fulfillment/nas";
+import {
+  FULFILLABLE_STATUSES,
+  type OrderStatus,
+} from "@/lib/fulfillment/order-status";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
 import { getTermsVersion } from "@/lib/env";
 import { logEvent } from "@/lib/logging/logger";
 import { AppError } from "@/lib/errors";
 
-export type OrderStatus =
-  | "pending"
-  | "processing"
-  | "fulfilled"
-  | "failed"
-  | "refunded"
-  | "disputed"
-  | "cancelled";
+export type { OrderStatus } from "@/lib/fulfillment/order-status";
+export { ORDER_STATUSES, isOrderStatus } from "@/lib/fulfillment/order-status";
 
 export type FulfillInput = {
   email: string;
@@ -130,6 +124,7 @@ async function markFailed(orderId: string, code: string): Promise<void> {
     .update({
       status: "failed",
       error_code: code.slice(0, 120),
+      failed_at: new Date().toISOString(),
     })
     .eq("id", orderId);
   logEvent("error", "order.processing.failed", { orderId, errorCode: code });
@@ -180,6 +175,8 @@ async function reserveOrder(input: FulfillInput): Promise<OrderRow> {
       stripe_event_id: input.stripeEventId ?? null,
       stripe_payment_intent_id: input.stripePaymentIntentId ?? null,
       stripe_price_id: input.stripePriceId ?? null,
+      stripe_checkout_session_id:
+        input.source === "stripe" ? input.orderRef : null,
       amount_total: input.amountTotal ?? null,
       currency: input.currency ?? null,
       terms_version: input.termsVersion ?? getTermsVersion(),
@@ -296,15 +293,107 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
     });
   }
 
-  // Claim processing
-  await sb
-    .from("tool_orders")
-    .update({
-      status: "processing",
-      user_id: input.userId ?? order.user_id,
-    })
-    .eq("id", order.id)
-    .in("status", ["pending", "failed", "processing"]);
+  // Claim processing atomique (pending|failed → processing). Jamais depuis processing concurrent.
+  const { data: claimed, error: claimErr } = await sb.rpc("claim_tool_order", {
+    p_order_id: order.id,
+  });
+
+  if (claimErr) {
+    // Fallback si RPC absente : update conditionnel strict
+    const { data: updated, error: updClaimErr } = await sb
+      .from("tool_orders")
+      .update({
+        status: "processing",
+        processing_started_at: new Date().toISOString(),
+        user_id: input.userId ?? order.user_id,
+        error_code: null,
+      })
+      .eq("id", order.id)
+      .in("status", FULFILLABLE_STATUSES)
+      .select("id")
+      .maybeSingle();
+
+    if (updClaimErr) {
+      throw new AppError({
+        code: "ORDER_CLAIM_FAILED",
+        status: 500,
+        publicMessage: "Impossible de démarrer la livraison.",
+        message: updClaimErr.message,
+      });
+    }
+    if (!updated) {
+      // Autre worker en cours ou déjà fulfilled — relire
+      const { data: again } = await sb
+        .from("tool_orders")
+        .select(
+          "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
+        )
+        .eq("id", order.id)
+        .maybeSingle();
+      if (
+        again?.status === "fulfilled" &&
+        again.license_key &&
+        again.share_url &&
+        again.share_password
+      ) {
+        return {
+          licenseKey: again.license_key,
+          downloadUrl: again.share_url,
+          downloadPassword: again.share_password,
+          expireTimes: again.expire_times ?? 1,
+          toolTitle: again.tool_title || product.title,
+          scriptId: again.script_id || product.scriptId,
+          orderId: again.id,
+          status: "fulfilled",
+          emailId: again.email_id,
+          emailError: again.email_error,
+        };
+      }
+      throw new AppError({
+        code: "ORDER_CLAIM_RACE",
+        status: 409,
+        publicMessage: "Livraison déjà en cours. Réessayez dans un instant.",
+      });
+    }
+  } else if (claimed !== true) {
+    const { data: again } = await sb
+      .from("tool_orders")
+      .select(
+        "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
+      )
+      .eq("id", order.id)
+      .maybeSingle();
+    if (
+      again?.status === "fulfilled" &&
+      again.license_key &&
+      again.share_url &&
+      again.share_password
+    ) {
+      return {
+        licenseKey: again.license_key,
+        downloadUrl: again.share_url,
+        downloadPassword: again.share_password,
+        expireTimes: again.expire_times ?? 1,
+        toolTitle: again.tool_title || product.title,
+        scriptId: again.script_id || product.scriptId,
+        orderId: again.id,
+        status: "fulfilled",
+        emailId: again.email_id,
+        emailError: again.email_error,
+      };
+    }
+    throw new AppError({
+      code: "ORDER_CLAIM_RACE",
+      status: 409,
+      publicMessage: "Livraison déjà en cours. Réessayez dans un instant.",
+    });
+  } else if (input.userId) {
+    await sb
+      .from("tool_orders")
+      .update({ user_id: input.userId })
+      .eq("id", order.id)
+      .is("user_id", null);
+  }
 
   logEvent("info", "order.processing.started", {
     orderId: order.id,
@@ -404,7 +493,9 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
       share_password: share.password,
       expire_times: expireTimes,
       status: "fulfilled",
+      fulfilled_at: new Date().toISOString(),
       error_code: null,
+      email_status: "pending",
       user_id: input.userId ?? order.user_id,
     })
     .eq("id", order.id);
