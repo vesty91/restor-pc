@@ -12,7 +12,7 @@ export function BentoGrid({
   return (
     <div
       className={cn(
-        "mx-auto grid grid-cols-1 gap-4 md:auto-rows-[minmax(11rem,auto)] md:grid-cols-3",
+        "mx-auto grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4",
         className
       )}
     >
@@ -40,23 +40,32 @@ export function BentoGridItem({
 }) {
   const body = (
     <>
-      {header}
-      <div className="transition duration-200 motion-safe:group-hover/bento:translate-x-1">
+      <div className="flex items-start justify-between gap-3">
         {icon}
-        <div className="mt-3 text-lg font-semibold leading-snug text-ink">
+        {header}
+      </div>
+      <div className="mt-4 flex min-h-0 flex-1 flex-col">
+        <div className="text-[1.05rem] font-semibold leading-snug tracking-tight text-ink">
           {title}
         </div>
-        <div className="mt-2 text-sm font-normal leading-relaxed text-ink-muted">
+        <div className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-ink-muted">
           {description}
         </div>
-        {meta ? <div className="mt-4 text-sm font-semibold text-ink">{meta}</div> : null}
+        {meta ? (
+          <div className="mt-5 border-t border-line pt-4 text-sm font-semibold text-ink">
+            {meta}
+          </div>
+        ) : null}
       </div>
     </>
   );
 
   const classes = cn(
-    "group/bento row-span-1 flex h-full flex-col justify-between space-y-4 rounded-[20px] border border-line bg-paper p-5 md:p-6 shadow-[var(--shadow-soft)] transition duration-200",
-    "hover:border-teal/35 hover:shadow-[var(--shadow-lift)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
+    "group/bento flex h-full flex-col rounded-2xl border border-line bg-paper p-5",
+    "shadow-[var(--shadow-soft)] transition-[border-color,box-shadow,transform] duration-200",
+    "hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-[var(--shadow-lift)]",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
+    "motion-reduce:transform-none motion-reduce:hover:translate-y-0",
     className
   );
 
