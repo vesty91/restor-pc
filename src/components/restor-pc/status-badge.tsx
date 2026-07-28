@@ -21,6 +21,7 @@ export type StatusBadgeStatus =
   | "refunded"
   | "cancelled"
   | "active"
+  | "revoked"
   | "expired"
   | "download_ready"
   | "urgent"
@@ -81,6 +82,12 @@ export const STATUS_BADGE_MAP: Record<StatusBadgeStatus, StatusMeta> = {
     icon: KeyRound,
     description: "Licence active",
   },
+  revoked: {
+    label: "Révoquée",
+    variant: "danger",
+    icon: Ban,
+    description: "Licence révoquée",
+  },
   expired: {
     label: "Licence expirée",
     variant: "danger",
@@ -125,6 +132,7 @@ export function resolveStatusBadgeStatus(
     cancelled: "cancelled",
     canceled: "cancelled",
     active: "active",
+    revoked: "revoked",
     expired: "expired",
     inactive: "expired",
     download_ready: "download_ready",

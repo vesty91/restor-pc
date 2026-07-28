@@ -25,10 +25,14 @@ Complète et remplace partiellement les conclusions de `ACETERNITY_INTEGRATION_R
 | Hero desktop | Three.js | Conservé | Identité Restor-PC | R3F | déjà présent |
 | NAS illustration | — | Animata Storage Status | MIT, pédagogique | aucune | négligeable |
 | Skeleton commandes | — | Animata Receipt + `ui/skeleton` | Un seul skeleton | aucune | négligeable |
-| Tableaux admin | listes custom | **HeroUI refusé** | Pas de besoin mesurable | — | — |
+| Tableaux admin | listes custom | **HeroUI refusé** | Remplacé par TanStack DataTable Restor-PC | — | — |
 | Modales / Tabs / Toast | absents ou custom | **Radix via Shadcn seulement si besoin** | Pas d’installation globale | — | — |
 | Tables data display | principes | **Ant Design refusé (package)** | Référence design uniquement | — | — |
-| Blocs marketing premium | — | **Tailwind Plus non intégré** | Pas de fichiers sous licence | — | — |
+| Tableaux admin | listes custom → DataTable | **TanStack Table + Shadcn Table** | Voir `FUNCTIONAL_TOOLS_REPORT.md` | `@tanstack/react-table` | moyen (admin) |
+| Toast | — | **Sonner** | Unique système | `sonner` | faible |
+| Command palette | — | **Refusé (cmdk)** | Admin trop petit | — | — |
+| Carousel | — | **Refusé (Embla)** | Pas de besoin | — | — |
+| Storybook / E2E | — | Playwright+axe **oui** ; Storybook **plus tard** | Voir rapport outils | devDeps | nul prod |
 
 ---
 

@@ -1,7 +1,11 @@
 "use client";
 
+import { DataTable } from "@/components/restor-pc/data-table";
+import { StatusBadge } from "@/components/restor-pc/status-badge";
 import { Button } from "@/components/ui/Button";
 import { getAllProducts } from "@/lib/data/outils";
+import { notify } from "@/lib/toast";
+import type { ColumnDef, PaginationState } from "@tanstack/react-table";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -56,14 +60,15 @@ function MachineCell({
     try {
       await navigator.clipboard.writeText(boundId);
       setCopied(true);
+      notify.success("Empreinte copiée.");
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      /* ignore */
+      notify.error("Impossible de copier.");
     }
   }
 
   return (
-    <div className="min-w-[180px] space-y-1 text-xs">
+    <div className="min-w-[160px] space-y-1 whitespace-normal text-xs">
       <p className="text-ink">
         <span className="text-ink-muted">Nom :</span>{" "}
         <span className="font-medium">{machineName || "—"}</span>
@@ -76,7 +81,7 @@ function MachineCell({
         <button
           type="button"
           onClick={() => void copyId()}
-          title={machineId}
+          title={boundId}
           className="text-[11px] font-semibold text-teal underline underline-offset-2"
         >
           {copied ? "ID copié" : "Copier l’empreinte"}
@@ -95,6 +100,12 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [total, setTotal] = useState(0);
+  const [pageCount, setPageCount] = useState(1);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 25,
+  });
 
   const [scriptId, setScriptId] = useState(products[0]?.scriptId ?? "change-dns");
   const [note, setNote] = useState("");
@@ -108,19 +119,31 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
       const params = new URLSearchParams();
       if (q.trim()) params.set("q", q.trim());
       if (statusFilter) params.set("status", statusFilter);
+      params.set("page", String(pagination.pageIndex + 1));
+      params.set("pageSize", String(pagination.pageSize));
       const res = await fetch(`/api/atelier/licenses?${params}`);
-      const data = (await res.json()) as { licenses?: LicenseRow[]; error?: string };
+      const data = (await res.json()) as {
+        licenses?: LicenseRow[];
+        total?: number;
+        pageCount?: number;
+        error?: string;
+      };
       if (!res.ok) {
-        setError(data.error || "Chargement impossible");
+        const msg = data.error || "Chargement impossible";
+        setError(msg);
+        notify.error(msg);
         return;
       }
       setRows(data.licenses || []);
+      setTotal(data.total ?? data.licenses?.length ?? 0);
+      setPageCount(data.pageCount ?? 1);
     } catch {
       setError("Erreur réseau");
+      notify.error("Erreur réseau");
     } finally {
       setLoading(false);
     }
-  }, [q, statusFilter]);
+  }, [q, statusFilter, pagination.pageIndex, pagination.pageSize]);
 
   useEffect(() => {
     if (authed) void load();
@@ -137,14 +160,18 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
       });
       const data = (await res.json()) as { license?: LicenseRow; error?: string };
       if (!res.ok) {
-        setError(data.error || "Modification échouée");
+        const msg = data.error || "Modification échouée";
+        setError(msg);
+        notify.error(msg);
         return;
       }
       if (data.license) {
         setRows((prev) => prev.map((r) => (r.id === id ? data.license! : r)));
+        notify.success("Licence mise à jour.");
       }
     } catch {
       setError("Erreur réseau");
+      notify.error("Erreur réseau");
     } finally {
       setBusyId(null);
     }
@@ -164,12 +191,17 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) {
-        setError(data.error || "Suppression échouée");
+        const msg = data.error || "Suppression échouée";
+        setError(msg);
+        notify.error(msg);
         return;
       }
       setRows((prev) => prev.filter((r) => r.id !== id));
+      setTotal((t) => Math.max(0, t - 1));
+      notify.success("Licence supprimée.");
     } catch {
       setError("Erreur réseau");
+      notify.error("Erreur réseau");
     } finally {
       setBusyId(null);
     }
@@ -179,30 +211,153 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
     setCreating(true);
     setError(null);
     try {
-      const res = await fetch("/api/atelier/licenses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          script_id: scriptId,
-          note,
-          max_machines: maxMachines,
-        }),
-      });
-      const data = (await res.json()) as { license?: LicenseRow; error?: string };
-      if (!res.ok) {
-        setError(data.error || "Création échouée");
-        return;
-      }
-      if (data.license) {
-        setRows((prev) => [data.license!, ...prev]);
-        setNote("");
-      }
+      await notify.promise(
+        (async () => {
+          const res = await fetch("/api/atelier/licenses", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              script_id: scriptId,
+              note,
+              max_machines: maxMachines,
+            }),
+          });
+          const data = (await res.json()) as { license?: LicenseRow; error?: string };
+          if (!res.ok) {
+            throw new Error(data.error || "Création échouée");
+          }
+          if (data.license) {
+            setPagination((p) => ({ ...p, pageIndex: 0 }));
+            setNote("");
+            setRows((prev) => [data.license!, ...prev].slice(0, pagination.pageSize));
+            setTotal((t) => t + 1);
+          }
+          return data.license;
+        })(),
+        {
+          loading: "Création de la licence…",
+          success: "Licence créée.",
+          error: (err) =>
+            err instanceof Error ? err.message : "Création échouée",
+        }
+      );
     } catch {
-      setError("Erreur réseau");
+      /* toast déjà affiché */
     } finally {
       setCreating(false);
     }
   }
+
+  const columns = useMemo<ColumnDef<LicenseRow>[]>(
+    () => [
+      {
+        accessorKey: "license_key",
+        header: "Clé",
+        cell: ({ row }) => (
+          <div className="whitespace-normal">
+            <code className="text-xs font-semibold text-ink">{row.original.license_key}</code>
+            <p className="mt-1 text-[11px] text-ink-muted">
+              {formatDate(row.original.created_at)}
+            </p>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "script_id",
+        header: "Script",
+        cell: ({ row }) => (
+          <div className="whitespace-normal">
+            <code className="text-xs">{row.original.script_id}</code>
+            <p className="mt-1 text-[11px] text-ink-muted">
+              max {row.original.max_machines === 0 ? "∞" : row.original.max_machines ?? 1}
+            </p>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "status",
+        header: "Statut",
+        cell: ({ row }) => <StatusBadge status={row.original.status} />,
+      },
+      {
+        id: "machine",
+        header: "PC",
+        enableSorting: false,
+        cell: ({ row }) => (
+          <MachineCell
+            machineId={row.original.machine_id}
+            machineName={row.original.machine_name}
+            biosSerial={row.original.bios_serial}
+            boundAt={row.original.machine_bound_at}
+          />
+        ),
+      },
+      {
+        accessorKey: "note",
+        header: "Note",
+        cell: ({ row }) => (
+          <span className="line-clamp-3 max-w-[180px] whitespace-normal text-xs text-ink-muted">
+            {row.original.note || "—"}
+          </span>
+        ),
+      },
+      {
+        id: "actions",
+        header: "Actions",
+        enableSorting: false,
+        cell: ({ row }) => {
+          const r = row.original;
+          return (
+            <div className="flex flex-wrap items-center gap-1.5 whitespace-normal">
+              {r.status === "active" ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={busyId === r.id}
+                  onClick={() => void patch(r.id, { status: "revoked" })}
+                >
+                  Révoquer
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={busyId === r.id}
+                  onClick={() => void patch(r.id, { status: "active" })}
+                >
+                  Réactiver
+                </Button>
+              )}
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                disabled={busyId === r.id || !r.machine_id}
+                onClick={() => void patch(r.id, { resetMachine: true })}
+              >
+                Reset PC
+              </Button>
+              {r.status === "revoked" ? (
+                <button
+                  type="button"
+                  title="Supprimer définitivement"
+                  aria-label={`Supprimer ${r.license_key}`}
+                  disabled={busyId === r.id}
+                  onClick={() => void removeRevoked(r.id, r.license_key)}
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-red-600 transition hover:bg-red-50 disabled:opacity-50 dark:hover:bg-red-950/40"
+                >
+                  <Trash2 className="size-4" aria-hidden />
+                </button>
+              ) : null}
+            </div>
+          );
+        },
+      },
+    ],
+    [busyId]
+  );
 
   if (!authed) {
     return (
@@ -220,14 +375,20 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
 
   return (
     <div className="mt-8 space-y-8">
-        <div className="flex flex-wrap gap-3">
-          <Button href="/admin" variant="ghost" size="sm">
-            ← Admin
-          </Button>
-          <Button type="button" variant="secondary" size="sm" onClick={() => void load()} disabled={loading}>
-            {loading ? "Chargement…" : "Actualiser"}
-          </Button>
-        </div>
+      <div className="flex flex-wrap gap-3">
+        <Button href="/admin" variant="ghost" size="sm">
+          ← Admin
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => void load()}
+          disabled={loading}
+        >
+          {loading ? "Chargement…" : "Actualiser"}
+        </Button>
+      </div>
 
       <div className="rounded-[24px] border border-line bg-paper p-5 md:p-6">
         <h2 className="font-display text-xl tracking-tight">Nouvelle licence</h2>
@@ -270,151 +431,81 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
             />
           </label>
         </div>
-        <Button type="button" className="mt-4" disabled={creating} onClick={() => void createLicense()}>
+        <Button
+          type="button"
+          className="mt-4"
+          disabled={creating}
+          onClick={() => void createLicense()}
+        >
           {creating ? "Création…" : "Créer une clé"}
         </Button>
       </div>
 
       <div className="rounded-[24px] border border-line bg-paper p-5 md:p-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-          <label className="block flex-1 text-sm text-ink-muted">
-            Recherche
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && void load()}
-              placeholder="clé, note, script_id…"
-              className="mt-1.5 w-full rounded-[12px] border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal"
-            />
-          </label>
-          <label className="block text-sm text-ink-muted sm:w-44">
-            Statut
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="mt-1.5 w-full rounded-[12px] border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal"
-            >
-              <option value="">Tous</option>
-              <option value="active">active</option>
-              <option value="revoked">revoked</option>
-              <option value="expired">expired</option>
-            </select>
-          </label>
-          <Button type="button" variant="secondary" onClick={() => void load()}>
-            Filtrer
-          </Button>
-        </div>
-
-        {error ? <p className="mt-4 text-sm text-red-600">{error}</p> : null}
-
-        <div className="mt-5 overflow-x-auto">
-          <table className="w-full min-w-[720px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-line text-xs uppercase tracking-wide text-ink-muted">
-                <th className="py-2 pr-3 font-semibold">Clé</th>
-                <th className="py-2 pr-3 font-semibold">Script</th>
-                <th className="py-2 pr-3 font-semibold">Statut</th>
-                <th className="py-2 pr-3 font-semibold">PC</th>
-                <th className="py-2 pr-3 font-semibold">Note</th>
-                <th className="py-2 font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.id} className="border-b border-line/70 align-top">
-                  <td className="py-3 pr-3">
-                    <code className="text-xs font-semibold text-ink">{r.license_key}</code>
-                    <p className="mt-1 text-[11px] text-ink-muted">{formatDate(r.created_at)}</p>
-                  </td>
-                  <td className="py-3 pr-3">
-                    <code className="text-xs">{r.script_id}</code>
-                    <p className="mt-1 text-[11px] text-ink-muted">
-                      max {r.max_machines === 0 ? "∞" : r.max_machines ?? 1}
-                    </p>
-                  </td>
-                  <td className="py-3 pr-3">
-                    <span
-                      className={
-                        r.status === "active"
-                          ? "text-emerald-700"
-                          : r.status === "revoked"
-                            ? "text-red-600"
-                            : "text-ink-muted"
-                      }
-                    >
-                      {r.status}
-                    </span>
-                  </td>
-                  <td className="py-3 pr-3">
-                    <MachineCell
-                      machineId={r.machine_id}
-                      machineName={r.machine_name}
-                      biosSerial={r.bios_serial}
-                      boundAt={r.machine_bound_at}
-                    />
-                  </td>
-                  <td className="py-3 pr-3 text-xs text-ink-muted max-w-[180px]">
-                    <span className="line-clamp-3">{r.note || "—"}</span>
-                  </td>
-                  <td className="py-3">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      {r.status === "active" ? (
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="secondary"
-                          disabled={busyId === r.id}
-                          onClick={() => void patch(r.id, { status: "revoked" })}
-                        >
-                          Révoquer
-                        </Button>
-                      ) : (
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="secondary"
-                          disabled={busyId === r.id}
-                          onClick={() => void patch(r.id, { status: "active" })}
-                        >
-                          Réactiver
-                        </Button>
-                      )}
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="ghost"
-                        disabled={busyId === r.id || !r.machine_id}
-                        onClick={() => void patch(r.id, { resetMachine: true })}
-                      >
-                        Reset PC
-                      </Button>
-                      {r.status === "revoked" ? (
-                        <button
-                          type="button"
-                          title="Supprimer définitivement"
-                          aria-label={`Supprimer ${r.license_key}`}
-                          disabled={busyId === r.id}
-                          onClick={() => void removeRevoked(r.id, r.license_key)}
-                          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-red-600 transition hover:bg-red-50 disabled:opacity-50 dark:hover:bg-red-950/40"
-                        >
-                          <Trash2 className="size-4" aria-hidden />
-                        </button>
-                      ) : null}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {!loading && rows.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="py-8 text-center text-ink-muted">
-                    Aucune licence trouvée.
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-4 text-xs text-ink-muted">{rows.length} licence(s) affichée(s) (max 200).</p>
+        <DataTable
+          columns={columns}
+          data={rows}
+          getRowId={(r) => r.id}
+          loading={loading}
+          error={error}
+          emptyTitle="Aucune licence trouvée"
+          emptyDescription="Créez une clé ou élargissez les filtres."
+          manualPagination
+          pageCount={pageCount}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          manualSorting
+          toolbar={
+            <>
+              <label className="block flex-1 text-sm text-ink-muted min-w-[12rem]">
+                Recherche
+                <input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setPagination((p) => ({ ...p, pageIndex: 0 }));
+                      void load();
+                    }
+                  }}
+                  placeholder="clé, note, script_id…"
+                  className="mt-1.5 w-full rounded-[12px] border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal"
+                />
+              </label>
+              <label className="block text-sm text-ink-muted sm:w-44">
+                Statut
+                <select
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setPagination((p) => ({ ...p, pageIndex: 0 }));
+                  }}
+                  className="mt-1.5 w-full rounded-[12px] border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal"
+                >
+                  <option value="">Tous</option>
+                  <option value="active">active</option>
+                  <option value="revoked">revoked</option>
+                  <option value="expired">expired</option>
+                </select>
+              </label>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  setPagination((p) => ({ ...p, pageIndex: 0 }));
+                  void load();
+                }}
+              >
+                Filtrer
+              </Button>
+            </>
+          }
+          footer={
+            <p className="text-xs text-ink-muted">
+              {total} licence(s) au total · pagination serveur
+            </p>
+          }
+        />
       </div>
     </div>
   );

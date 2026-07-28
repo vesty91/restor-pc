@@ -2,6 +2,7 @@ import { ATELIER_COOKIE, atelierCookieOptions, createAtelierSessionToken, logAte
 import { createRequestId, jsonError } from "@/lib/errors";
 import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { sendAlert } from "@/lib/logging/alerts";
+import { atelierAuthSchema, publicZodMessage } from "@/lib/validation";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -38,14 +39,24 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { secret?: string };
+  let json: unknown;
   try {
-    body = (await request.json()) as { secret?: string };
+    json = await request.json();
   } catch {
     return jsonError("INVALID_BODY", "Requete invalide.", 400, requestId);
   }
 
-  if (!body.secret || !verifyAtelierPassword(body.secret)) {
+  const parsed = atelierAuthSchema.safeParse(json);
+  if (!parsed.success) {
+    return jsonError(
+      "INVALID_BODY",
+      publicZodMessage(parsed.error, "Requete invalide."),
+      400,
+      requestId
+    );
+  }
+
+  if (!verifyAtelierPassword(parsed.data.secret)) {
     logAtelierAuth(false, requestId);
     return jsonError("AUTH_DENIED", "Acces refuse.", 401, requestId);
   }

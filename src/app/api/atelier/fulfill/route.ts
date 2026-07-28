@@ -2,6 +2,7 @@ import { isAtelierAuthed } from "@/lib/atelier-auth";
 import { fulfillToolOrder } from "@/lib/fulfillment";
 import { getProductBySlug } from "@/lib/data/outils";
 import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
+import { fulfillOrderSchema, publicZodMessage } from "@/lib/validation";
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 
@@ -14,18 +15,26 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = (await request.json()) as {
-      slug?: string;
-      email?: string;
-      sendEmail?: boolean;
-    };
-    const slug = body.slug?.trim();
-    const email = body.email?.trim().toLowerCase();
-    if (!slug || !getProductBySlug(slug)) {
-      return jsonError("UNKNOWN_PRODUCT", "Produit inconnu.", 400, requestId);
+    let json: unknown;
+    try {
+      json = await request.json();
+    } catch {
+      return jsonError("INVALID_BODY", "Requete invalide.", 400, requestId);
     }
-    if (!email || !email.includes("@")) {
-      return jsonError("INVALID_EMAIL", "Email invalide.", 400, requestId);
+
+    const parsed = fulfillOrderSchema.safeParse(json);
+    if (!parsed.success) {
+      return jsonError(
+        "INVALID_BODY",
+        publicZodMessage(parsed.error, "Donnees invalides."),
+        400,
+        requestId
+      );
+    }
+
+    const { slug, email, sendEmail } = parsed.data;
+    if (!getProductBySlug(slug)) {
+      return jsonError("UNKNOWN_PRODUCT", "Produit inconnu.", 400, requestId);
     }
 
     const result = await fulfillToolOrder({
@@ -33,7 +42,7 @@ export async function POST(request: Request) {
       toolSlug: slug,
       orderRef: `atelier-${randomUUID()}`,
       source: "atelier",
-      sendEmail: body.sendEmail !== false,
+      sendEmail,
     });
 
     return NextResponse.json({ ...result, requestId });
