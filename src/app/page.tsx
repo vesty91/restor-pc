@@ -4,8 +4,11 @@ import { BeforeAfter } from "@/components/home/BeforeAfter";
 import { GuaranteeStrip } from "@/components/home/GuaranteeStrip";
 import { Hero } from "@/components/home/Hero";
 import { HomeServices } from "@/components/home/HomeServices";
+import { InterventionTimeline } from "@/components/home/InterventionTimeline";
 import { ConfiguratorTeaser, Testimonials } from "@/components/home/Testimonials";
 import { TrustSection } from "@/components/home/TrustSection";
+import { BackupIllustrations } from "@/components/restor-pc/backup-illustrations";
+import { TechMarquee } from "@/components/restor-pc/tech-marquee";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeader } from "@/components/ui/Section";
@@ -124,8 +127,11 @@ export default function HomePage() {
       <GuaranteeStrip />
       <QuickDiagnostic />
       <HomeServices />
+      <TechMarquee />
+      <InterventionTimeline />
       <HomeLocal />
       <TrustSection />
+      <BackupIllustrations />
       <BeforeAfter />
       <ConfiguratorTeaser />
       <Testimonials />

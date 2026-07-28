@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { StatusBadge } from "@/components/restor-pc/status-badge";
+import { ReceiptSkeleton } from "@/components/animata/receipt-skeleton";
 import { createClient, signOutClient } from "@/lib/supabase/client";
 import { siteConfig } from "@/lib/site";
 import {
@@ -8,6 +10,7 @@ import {
   normalizeFirstNameInput,
 } from "@/lib/user-display";
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 
 type OrderRow = {
   id: string;
@@ -264,11 +267,15 @@ export function CompteDashboard({
         {!loading && orders.length === 0 ? (
           <p className="mt-6 text-sm text-ink-muted">
             Aucune commande pour cet email. Achats sur la{" "}
-            <a href="/boutique" className="text-teal underline">
+            <Link href="/boutique" className="text-teal underline">
               boutique
-            </a>{" "}
+            </Link>{" "}
             avec la même adresse.
           </p>
+        ) : loading ? (
+          <div className="mt-5">
+            <ReceiptSkeleton rows={2} />
+          </div>
         ) : (
           <ul className="mt-5 space-y-4">
             {orders.map((o) => {
@@ -282,22 +289,24 @@ export function CompteDashboard({
                     <div>
                       <p className="font-display text-lg tracking-tight text-ink">{o.tool_title}</p>
                       <p className="mt-1 text-xs text-ink-muted">
-                        {formatDate(o.created_at)} · {o.source} · {o.status}
+                        {formatDate(o.created_at)} · {o.source}
                       </p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <StatusBadge status={o.status} />
+                        {o.share_url ? <StatusBadge status="download_ready" /> : null}
+                      </div>
                     </div>
                     {lic ? (
-                      <span
-                        className={
-                          lic.status === "active"
-                            ? "text-xs font-semibold text-emerald-700"
-                            : "text-xs font-semibold text-red-600"
-                        }
-                      >
-                        Licence {lic.status}
-                        {lic.machine_id
-                          ? ` · ${lic.machine_name || "PC lié"}${lic.bios_serial ? ` · SN ${lic.bios_serial}` : ""}`
-                          : " · non liée"}
-                      </span>
+                      <div className="text-right">
+                        <StatusBadge
+                          status={lic.status === "active" ? "active" : "expired"}
+                        />
+                        <p className="mt-1 text-xs text-ink-muted">
+                          {lic.machine_id
+                            ? `${lic.machine_name || "PC lié"}${lic.bios_serial ? ` · SN ${lic.bios_serial}` : ""}`
+                            : "Non liée"}
+                        </p>
+                      </div>
                     ) : null}
                   </div>
                   <div className="mt-3 flex flex-wrap items-center gap-2">

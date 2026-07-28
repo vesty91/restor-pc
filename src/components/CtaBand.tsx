@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { BorderBeam } from "@/components/magicui/border-beam";
 import { getOpenStatus } from "@/lib/hours";
 import { siteConfig } from "@/lib/site";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -14,10 +15,9 @@ export function CtaBand({
   title?: string;
   text?: string;
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(() => getOpenStatus().open);
 
   useEffect(() => {
-    setOpen(getOpenStatus().open);
     const id = window.setInterval(() => setOpen(getOpenStatus().open), 60_000);
     return () => window.clearInterval(id);
   }, []);
@@ -31,7 +31,8 @@ export function CtaBand({
   return (
     <section className="py-16 md:py-20">
       <div className="container-site">
-        <div className="relative overflow-hidden rounded-[28px] bg-panel px-6 py-12 md:px-12 md:py-14 text-white">
+        <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-panel px-6 py-12 md:px-12 md:py-14 text-white">
+          <BorderBeam size={90} duration={8} borderWidth={1.5} />
           <div
             className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-teal/30 blur-3xl"
             aria-hidden

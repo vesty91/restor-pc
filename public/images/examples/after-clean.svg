@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" role="img">
+  <title>Exemple illustratif  après nettoyage (visuel neutre)</title>
+  <defs>
+    <linearGradient id="a" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a2748"/>
+      <stop offset="100%" stop-color="#122036"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#a)"/>
+  <rect x="120" y="90" width="560" height="320" rx="18" fill="#0f1a28" stroke="#4ba3ff" stroke-width="2" opacity="0.9"/>
+  <circle cx="260" cy="210" r="36" fill="none" stroke="#4ba3ff" stroke-width="3" opacity="0.55"/>
+  <circle cx="260" cy="210" r="10" fill="#4ba3ff" opacity="0.7"/>
+  <rect x="360" y="170" width="240" height="14" rx="4" fill="#1e3a55"/>
+  <rect x="360" y="200" width="180" height="14" rx="4" fill="#1a334c"/>
+  <rect x="360" y="230" width="210" height="14" rx="4" fill="#1e3a55"/>
+  <rect x="360" y="280" width="120" height="60" rx="8" fill="#16324c" stroke="#2b8af0" stroke-width="1.5"/>
+  <text x="40" y="48" fill="#9ec9f5" font-family="ui-sans-serif,system-ui,sans-serif" font-size="22" font-weight="600">Après  exemple illustratif</text>
+  <text x="40" y="78" fill="#6a92b8" font-family="ui-sans-serif,system-ui,sans-serif" font-size="14">Visuel neutre · pas une photo dintervention</text>
+</svg>
