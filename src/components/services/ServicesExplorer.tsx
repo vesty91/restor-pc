@@ -117,19 +117,18 @@ export function ServicesExplorer() {
       </p>
 
       {list.length > 0 ? (
-        <BentoGrid className="mt-4 md:auto-rows-[minmax(10.5rem,auto)]">
-          {list.map((service, i) => (
+        <BentoGrid className="mt-4 lg:grid-cols-3">
+          {list.map((service) => (
             <BentoGridItem
               key={service.slug}
               href={`/services/${service.slug}`}
-              className={i === 0 ? "md:col-span-2" : undefined}
               header={
                 <Badge variant="info">
                   {serviceBadge[service.slug] ?? "Service"}
                 </Badge>
               }
               icon={
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-soft text-teal">
+                <span className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-teal-soft text-teal">
                   <ServiceIcon name={service.icon} className="h-5 w-5" />
                 </span>
               }

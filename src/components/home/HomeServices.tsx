@@ -7,19 +7,17 @@ import { formatPrice } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
-type BentoCard = {
+type ServiceCard = {
   slug: string;
-  className?: string;
   titleOverride?: string;
   excerptOverride?: string;
   badge?: string;
 };
 
-/** Cartes métier — textes issus du catalogue services. */
-const BENTO_CARDS: BentoCard[] = [
+/** 8 cartes égales — grille alignée (pas de bento irrégulier). */
+const SERVICE_CARDS: ServiceCard[] = [
   {
     slug: "depannage-informatique",
-    className: "md:col-span-2",
     titleOverride: "Dépannage Windows & PC",
     badge: "Prioritaire",
   },
@@ -31,40 +29,38 @@ const BENTO_CARDS: BentoCard[] = [
   },
   {
     slug: "reparation-pc",
-    titleOverride: "Installation et remplacement de composants",
+    titleOverride: "Pièces & composants",
     badge: "Hardware",
   },
   {
     slug: "montage-pc",
-    className: "md:col-span-2",
     titleOverride: "Montage PC sur mesure",
     badge: "Sur mesure",
   },
   {
     slug: "sauvegarde-securite",
-    titleOverride: "NAS et solutions de sauvegarde",
+    titleOverride: "NAS & sauvegarde",
     excerptOverride:
-      "Mise en place de sauvegardes fiables, NAS et stratégie 3-2-1 adaptée à votre usage.",
+      "Sauvegardes fiables, NAS et stratégie 3-2-1 adaptée à votre usage.",
     badge: "NAS",
   },
   {
     slug: "depannage-informatique",
-    titleOverride: "Assistance informatique à domicile",
+    titleOverride: "Assistance à domicile",
     excerptOverride:
-      "Intervention à domicile sur Yerres et communes voisines — diagnostic clair, devis avant réparation.",
+      "Intervention à domicile sur Yerres et communes voisines — devis avant réparation.",
     badge: "Domicile",
   },
   {
     slug: "reparation-pc",
-    className: "md:col-span-2",
-    titleOverride: "Diagnostic matériel et logiciel",
+    titleOverride: "Diagnostic matériel",
     excerptOverride:
-      "Méthode atelier : tests composants, analyse système, cause réelle avant toute facturation.",
+      "Tests composants et analyse système : la cause réelle avant toute facturation.",
     badge: "Atelier",
   },
 ];
 
-function resolveCard(card: BentoCard): Service | undefined {
+function resolveCard(card: ServiceCard): Service | undefined {
   return getService(card.slug);
 }
 
@@ -74,11 +70,11 @@ export function HomeServices() {
       <SectionHeader
         eyebrow="Services"
         title="Tout ce qu’il faut pour faire revivre votre machine"
-        description="Du diagnostic express au montage sur mesure — chaque carte mène à la prestation correspondante."
+        description="Huit prestations claires — cliquez pour le détail, les tarifs et le devis."
       />
 
       <BentoGrid>
-        {BENTO_CARDS.map((card, i) => {
+        {SERVICE_CARDS.map((card, i) => {
           const service = resolveCard(card);
           if (!service) return null;
           const title = card.titleOverride ?? service.title;
@@ -86,11 +82,10 @@ export function HomeServices() {
           return (
             <BentoGridItem
               key={`${card.slug}-${title}-${i}`}
-              className={card.className}
               href={`/services/${service.slug}`}
               header={
                 card.badge ? (
-                  <Badge variant="info" className="mb-1">
+                  <Badge variant="info" className="shrink-0">
                     {card.badge}
                   </Badge>
                 ) : null
@@ -98,14 +93,19 @@ export function HomeServices() {
               title={title}
               description={description}
               icon={
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-soft text-teal">
+                <span className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-teal-soft text-teal">
                   <ServiceIcon name={service.icon} className="h-5 w-5" />
                 </span>
               }
               meta={
                 <span className="inline-flex w-full items-center justify-between gap-2">
-                  <span>À partir de {formatPrice(service.priceFrom)}</span>
-                  <ArrowUpRight className="h-4 w-4 text-ink-muted transition-transform group-hover/bento:translate-x-0.5 group-hover/bento:-translate-y-0.5 group-hover/bento:text-teal" />
+                  <span className="text-ink">
+                    À partir de {formatPrice(service.priceFrom)}
+                  </span>
+                  <ArrowUpRight
+                    className="h-4 w-4 text-ink-muted transition-transform group-hover/bento:translate-x-0.5 group-hover/bento:-translate-y-0.5 group-hover/bento:text-teal"
+                    aria-hidden
+                  />
                 </span>
               }
             />
