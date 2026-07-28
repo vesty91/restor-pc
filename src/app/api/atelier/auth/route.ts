@@ -1,28 +1,40 @@
-import { ATELIER_COOKIE } from "@/lib/atelier-auth";
+import { ATELIER_COOKIE, atelierCookieOptions, createAtelierSessionToken, logAtelierAuth, verifyAtelierPassword } from "@/lib/atelier-auth";
+import { createRequestId, jsonError } from "@/lib/errors";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as { secret?: string };
+  const requestId = createRequestId();
   const expected = process.env.ATELIER_SECRET?.trim();
   if (!expected) {
-    return NextResponse.json({ error: "ATELIER_SECRET non configure" }, { status: 503 });
+    return jsonError(
+      "ATELIER_NOT_CONFIGURED",
+      "Espace atelier non configure.",
+      503,
+      requestId
+    );
   }
-  if (!body.secret || body.secret !== expected) {
-    return NextResponse.json({ error: "Acces refuse" }, { status: 401 });
+
+  let body: { secret?: string };
+  try {
+    body = (await request.json()) as { secret?: string };
+  } catch {
+    return jsonError("INVALID_BODY", "Requete invalide.", 400, requestId);
   }
-  const res = NextResponse.json({ ok: true });
-  res.cookies.set(ATELIER_COOKIE, expected, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 12,
-  });
+
+  if (!body.secret || !verifyAtelierPassword(body.secret)) {
+    logAtelierAuth(false, requestId);
+    return jsonError("AUTH_DENIED", "Acces refuse.", 401, requestId);
+  }
+
+  logAtelierAuth(true, requestId);
+  const token = createAtelierSessionToken();
+  const res = NextResponse.json({ ok: true, requestId });
+  res.cookies.set(ATELIER_COOKIE, token, atelierCookieOptions());
   return res;
 }
 
 export async function DELETE() {
   const res = NextResponse.json({ ok: true });
-  res.cookies.set(ATELIER_COOKIE, "", { httpOnly: true, path: "/", maxAge: 0 });
+  res.cookies.set(ATELIER_COOKIE, "", { ...atelierCookieOptions(0), maxAge: 0 });
   return res;
 }

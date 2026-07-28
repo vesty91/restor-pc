@@ -46,7 +46,7 @@ export function AdminLogin() {
         </div>
       </div>
       <label className="mt-6 block text-sm text-ink-muted">
-        Mot de passe (`ATELIER_SECRET`)
+        Mot de passe atelier
         <input
           type="password"
           value={secret}

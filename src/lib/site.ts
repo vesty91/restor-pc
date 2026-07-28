@@ -65,8 +65,17 @@ export const siteConfig = {
     rcs: null as string | null,
     vat: null as string | null,
     publicationDirector: "M. Martins",
-    /** Renseigner après adhésion (CM2C, FEVAD, etc.) */
-    mediator: null as null | {
+    /** Renseigner via NEXT_PUBLIC_CONSUMER_MEDIATOR_* (ne pas inventer) */
+    mediator: (() => {
+      const name =
+        process.env.NEXT_PUBLIC_CONSUMER_MEDIATOR_NAME?.trim() || null;
+      const url =
+        process.env.NEXT_PUBLIC_CONSUMER_MEDIATOR_WEBSITE?.trim() || null;
+      const address =
+        process.env.NEXT_PUBLIC_CONSUMER_MEDIATOR_ADDRESS?.trim() || undefined;
+      if (!name && !url) return null;
+      return { name: name ?? "Médiateur (à confirmer)", url: url ?? "#", address };
+    })() as null | {
       name: string;
       url: string;
       address?: string;

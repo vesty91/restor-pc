@@ -1,3 +1,4 @@
+import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
@@ -5,29 +6,49 @@ import { NextResponse } from "next/server";
 export const runtime = "nodejs";
 
 export async function GET() {
+  const requestId = createRequestId();
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user?.email) {
-    return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 
   const email = user.email.trim().toLowerCase();
   const sb = getSupabaseAdmin();
 
-  const { data: orders, error } = await sb
+  const byUser = await sb
     .from("tool_orders")
     .select(
-      "id, order_ref, source, email, tool_slug, tool_title, script_id, license_key, status, created_at, share_url, share_password, expire_times, email_sent_at, email_error"
+      "id, order_ref, source, email, user_id, tool_slug, tool_title, script_id, license_key, status, created_at, share_url, share_password, expire_times, email_sent_at, email_error, terms_version, withdrawal_consent_at"
     )
-    .eq("email", email)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(100);
 
+  let orders = byUser.data;
+  const error = byUser.error;
+
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return publicErrorResponse(error, "ORDERS_FETCH_FAILED", requestId);
+  }
+
+  if (!orders?.length) {
+    const legacy = await sb
+      .from("tool_orders")
+      .select(
+        "id, order_ref, source, email, user_id, tool_slug, tool_title, script_id, license_key, status, created_at, share_url, share_password, expire_times, email_sent_at, email_error, terms_version, withdrawal_consent_at"
+      )
+      .is("user_id", null)
+      .eq("email", email)
+      .order("created_at", { ascending: false })
+      .limit(100);
+    if (legacy.error) {
+      return publicErrorResponse(legacy.error, "ORDERS_FETCH_FAILED", requestId);
+    }
+    orders = legacy.data ?? [];
   }
 
   const keys = [...new Set((orders ?? []).map((o) => o.license_key).filter(Boolean))];
@@ -54,7 +75,9 @@ export async function GET() {
 
   return NextResponse.json({
     email,
+    userId: user.id,
     orders: orders ?? [],
     licenses,
+    requestId,
   });
 }

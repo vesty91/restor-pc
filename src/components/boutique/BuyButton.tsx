@@ -6,6 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+const CONSENT_LABEL =
+  "Je demande l’exécution immédiate du contrat avant la fin du délai de rétractation et je reconnais perdre mon droit de rétractation dès la fourniture du téléchargement et de la licence.";
+
 export function BuyButton({
   slug,
   label = "Acheter",
@@ -17,6 +20,7 @@ export function BuyButton({
   const [checking, setChecking] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [consent, setConsent] = useState(false);
 
   const nextPath = `/boutique/${slug}`;
   const signupHref = `/compte?mode=signup&next=${encodeURIComponent(nextPath)}`;
@@ -46,12 +50,16 @@ export function BuyButton({
       setError("Créez un compte pour acheter.");
       return;
     }
+    if (!consent) {
+      setError("Cochez la case de consentement pour continuer.");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/boutique/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug }),
+        body: JSON.stringify({ slug, withdrawalConsent: true }),
       });
       const data = (await res.json()) as { url?: string; error?: string };
       if (!res.ok || !data.url) {
@@ -97,7 +105,22 @@ export function BuyButton({
         <strong className="text-ink">{email}</strong>
         {" — "}licence et lien envoyés à cet email.
       </p>
-      <Button type="button" size="lg" className="w-full sm:w-auto" disabled={loading} onClick={onBuy}>
+      <label className="flex items-start gap-3 rounded-xl border border-line bg-surface-2/40 p-3 text-sm leading-relaxed text-ink-muted cursor-pointer">
+        <input
+          type="checkbox"
+          className="mt-1 h-4 w-4 shrink-0 rounded border-line accent-[#0060cb]"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+        />
+        <span>{CONSENT_LABEL}</span>
+      </label>
+      <Button
+        type="button"
+        size="lg"
+        className="w-full sm:w-auto"
+        disabled={loading || !consent}
+        onClick={onBuy}
+      >
         {loading ? "Redirection…" : label}
       </Button>
       <p className="text-xs text-ink-muted leading-relaxed">

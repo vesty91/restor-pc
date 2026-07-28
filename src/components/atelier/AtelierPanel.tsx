@@ -74,7 +74,7 @@ export function AtelierPanel({ authed }: { authed: boolean }) {
       <div className="mx-auto mt-8 max-w-md rounded-[24px] border border-line bg-paper p-6">
         <h2 className="font-display text-xl tracking-tight">Accès atelier</h2>
         <p className="mt-2 text-sm text-ink-muted">
-          Secret défini dans <code className="text-ink">ATELIER_SECRET</code>.
+          Accès réservé à l’atelier (session sécurisée, 12 h).
         </p>
         <label className="mt-4 block text-sm text-ink-muted">
           Mot de passe atelier

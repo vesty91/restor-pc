@@ -47,10 +47,11 @@ export async function createNasOneTimeShare(opts: {
   try {
     return await createViaHttp({ ...opts, expireTimes });
   } catch (httpErr) {
-    if (!process.env.NAS_SSH_HOST?.trim()) throw httpErr;
+    const sshEnabled = process.env.NAS_SSH_FALLBACK_ENABLED === "true";
+    if (!sshEnabled || !process.env.NAS_SSH_HOST?.trim()) throw httpErr;
     console.warn(
       "NAS HTTP echoue, fallback SSH:",
-      httpErr instanceof Error ? httpErr.message : httpErr
+      httpErr instanceof Error ? httpErr.message : "error"
     );
     return await createViaSsh({ ...opts, expireTimes });
   }
@@ -62,19 +63,29 @@ async function createViaHttp(opts: {
   expireTimes: number;
 }): Promise<NasShareResult> {
   const base = requireEnv("NAS_DSM_URL").replace(/\/$/, "");
+  if (!base.startsWith("https://")) {
+    throw new Error("NAS_DSM_URL doit utiliser HTTPS");
+  }
   const user = requireEnv("NAS_USER");
   const pass = requireEnv("NAS_PASS");
 
-  const loginUrl = new URL(`${base}/webapi/auth.cgi`);
-  loginUrl.searchParams.set("api", "SYNO.API.Auth");
-  loginUrl.searchParams.set("version", "6");
-  loginUrl.searchParams.set("method", "login");
-  loginUrl.searchParams.set("account", user);
-  loginUrl.searchParams.set("passwd", pass);
-  loginUrl.searchParams.set("session", "FileStation");
-  loginUrl.searchParams.set("format", "sid");
+  // POST : ne pas mettre le mot de passe dans l'URL (logs proxy / historique)
+  const loginBody = new URLSearchParams({
+    api: "SYNO.API.Auth",
+    version: "6",
+    method: "login",
+    account: user,
+    passwd: pass,
+    session: "FileStation",
+    format: "sid",
+  });
 
-  const loginRes = await fetch(loginUrl, { method: "GET", cache: "no-store" });
+  const loginRes = await fetch(`${base}/webapi/auth.cgi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: loginBody,
+    cache: "no-store",
+  });
   const loginJson = (await loginRes.json()) as {
     success?: boolean;
     data?: { sid?: string };
@@ -88,16 +99,22 @@ async function createViaHttp(opts: {
   const sid = loginJson.data.sid;
 
   try {
-    const createUrl = new URL(`${base}/webapi/entry.cgi`);
-    createUrl.searchParams.set("api", "SYNO.FileStation.Sharing");
-    createUrl.searchParams.set("version", "3");
-    createUrl.searchParams.set("method", "create");
-    createUrl.searchParams.set("path", JSON.stringify([opts.filePath]));
-    createUrl.searchParams.set("expire_times", String(opts.expireTimes));
-    createUrl.searchParams.set("password", opts.password);
-    createUrl.searchParams.set("_sid", sid);
+    const createBody = new URLSearchParams({
+      api: "SYNO.FileStation.Sharing",
+      version: "3",
+      method: "create",
+      path: JSON.stringify([opts.filePath]),
+      expire_times: String(opts.expireTimes),
+      password: opts.password,
+      _sid: sid,
+    });
 
-    const createRes = await fetch(createUrl, { method: "GET", cache: "no-store" });
+    const createRes = await fetch(`${base}/webapi/entry.cgi`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: createBody,
+      cache: "no-store",
+    });
     const createJson = (await createRes.json()) as {
       success?: boolean;
       data?: { links?: Array<{ id: string; url: string }> };
@@ -117,13 +134,19 @@ async function createViaHttp(opts: {
     };
   } finally {
     try {
-      const logout = new URL(`${base}/webapi/auth.cgi`);
-      logout.searchParams.set("api", "SYNO.API.Auth");
-      logout.searchParams.set("version", "6");
-      logout.searchParams.set("method", "logout");
-      logout.searchParams.set("session", "FileStation");
-      logout.searchParams.set("_sid", sid);
-      await fetch(logout, { method: "GET", cache: "no-store" });
+      const logoutBody = new URLSearchParams({
+        api: "SYNO.API.Auth",
+        version: "6",
+        method: "logout",
+        session: "FileStation",
+        _sid: sid,
+      });
+      await fetch(`${base}/webapi/auth.cgi`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: logoutBody,
+        cache: "no-store",
+      });
     } catch {
       /* ignore */
     }
