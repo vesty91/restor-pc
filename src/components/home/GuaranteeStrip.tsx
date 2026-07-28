@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/Reveal";
+import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/ui/Section";
 import { guarantees } from "@/lib/data/testimonials";
 import { BadgeCheck, Clock3, FileCheck2, LockKeyhole } from "lucide-react";
@@ -7,7 +8,11 @@ const icons = [BadgeCheck, FileCheck2, Clock3, LockKeyhole];
 
 export function GuaranteeStrip() {
   return (
-    <Section className="py-10 md:py-12 bg-paper border-b border-line">
+    <Section className="border-b border-line bg-paper py-10 md:py-12">
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        <Badge variant="success">Engagements atelier</Badge>
+        <Badge variant="muted">Sans surprise</Badge>
+      </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {guarantees.map((item, i) => {
           const Icon = icons[i] ?? BadgeCheck;
@@ -18,8 +23,8 @@ export function GuaranteeStrip() {
                   <Icon className="h-4 w-4" aria-hidden />
                 </span>
                 <div>
-                  <p className="font-semibold text-[15px] leading-snug">{item.title}</p>
-                  <p className="mt-1 text-sm text-ink-muted leading-relaxed">{item.text}</p>
+                  <p className="text-[15px] font-semibold leading-snug">{item.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-muted">{item.text}</p>
                 </div>
               </div>
             </Reveal>

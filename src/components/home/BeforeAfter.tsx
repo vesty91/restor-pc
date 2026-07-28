@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { Reveal } from "@/components/Reveal";
+import { Badge } from "@/components/ui/badge";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { ArrowRight } from "lucide-react";
 
@@ -85,8 +86,10 @@ export function BeforeAfter() {
       />
       <p className="mb-6 rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink-muted">
         {/* TODO: remplacer les SVG neutres par des photos réelles d’atelier (nettoyage, cable management, restauration) avec autorisation client. */}
-        Exemples illustratifs Restor-PC. Aucune photo d’intervention réelle n’est affichée ici pour
-        le moment.
+        <Badge variant="warning" className="mb-2 mr-2">
+          Exemples illustratifs
+        </Badge>
+        Aucune photo d’intervention réelle n’est affichée ici pour le moment.
       </p>
 
       <Reveal>

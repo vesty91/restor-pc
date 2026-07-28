@@ -1,5 +1,6 @@
 import { ServiceIcon } from "@/components/ServiceIcon";
 import { BentoGrid, BentoGridItem } from "@/components/aceternity/bento-grid";
+import { Badge } from "@/components/ui/badge";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { getService, type Service } from "@/lib/data/services";
 import { formatPrice } from "@/lib/utils";
@@ -11,40 +12,47 @@ type BentoCard = {
   className?: string;
   titleOverride?: string;
   excerptOverride?: string;
+  badge?: string;
 };
 
-/** Cartes métier — textes issus du catalogue services (pas de doublon inventé). */
+/** Cartes métier — textes issus du catalogue services. */
 const BENTO_CARDS: BentoCard[] = [
   {
     slug: "depannage-informatique",
     className: "md:col-span-2",
     titleOverride: "Dépannage Windows & PC",
+    badge: "Prioritaire",
   },
-  { slug: "recuperation-donnees" },
+  { slug: "recuperation-donnees", badge: "Données" },
   {
     slug: "virus-optimisation",
     titleOverride: "Nettoyage et optimisation",
+    badge: "Performance",
   },
   {
     slug: "reparation-pc",
     titleOverride: "Installation et remplacement de composants",
+    badge: "Hardware",
   },
   {
     slug: "montage-pc",
     className: "md:col-span-2",
     titleOverride: "Montage PC sur mesure",
+    badge: "Sur mesure",
   },
   {
     slug: "sauvegarde-securite",
     titleOverride: "NAS et solutions de sauvegarde",
     excerptOverride:
       "Mise en place de sauvegardes fiables, NAS et stratégie 3-2-1 adaptée à votre usage.",
+    badge: "NAS",
   },
   {
     slug: "depannage-informatique",
     titleOverride: "Assistance informatique à domicile",
     excerptOverride:
       "Intervention à domicile sur Yerres et communes voisines — diagnostic clair, devis avant réparation.",
+    badge: "Domicile",
   },
   {
     slug: "reparation-pc",
@@ -52,6 +60,7 @@ const BENTO_CARDS: BentoCard[] = [
     titleOverride: "Diagnostic matériel et logiciel",
     excerptOverride:
       "Méthode atelier : tests composants, analyse système, cause réelle avant toute facturation.",
+    badge: "Atelier",
   },
 ];
 
@@ -65,7 +74,7 @@ export function HomeServices() {
       <SectionHeader
         eyebrow="Services"
         title="Tout ce qu’il faut pour faire revivre votre machine"
-        description="Du diagnostic express au montage sur mesure, chaque prestation est pensée pour être claire, efficace et rassurante."
+        description="Du diagnostic express au montage sur mesure — chaque carte mène à la prestation correspondante."
       />
 
       <BentoGrid>
@@ -79,6 +88,13 @@ export function HomeServices() {
               key={`${card.slug}-${title}-${i}`}
               className={card.className}
               href={`/services/${service.slug}`}
+              header={
+                card.badge ? (
+                  <Badge variant="info" className="mb-1">
+                    {card.badge}
+                  </Badge>
+                ) : null
+              }
               title={title}
               description={description}
               icon={

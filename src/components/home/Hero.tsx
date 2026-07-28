@@ -1,8 +1,7 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/badge";
 import { siteConfig } from "@/lib/site";
 import { HeroDiagnosticCard, SceneFallback } from "@/components/three/SceneFallback";
 import { HeroColorPanels } from "@/components/cult/hero-color-panels";
@@ -12,6 +11,8 @@ import {
   type HeroVariant,
 } from "@/lib/hero-variant";
 import { ArrowRight, MapPin, MessageCircle, Phone, ShieldCheck } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
 const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
   ssr: false,
@@ -93,6 +94,20 @@ export function Hero() {
 
       <div className="container-wide relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-10 items-center py-16 md:py-22 lg:py-14">
         <div className="max-w-xl text-white">
+          <div className="mb-4 flex flex-wrap gap-2">
+            <Badge
+              variant="outline"
+              className="border-white/20 bg-white/5 text-white/85"
+            >
+              Atelier · {siteConfig.city}
+            </Badge>
+            <Badge
+              variant="info"
+              className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
+            >
+              {siteConfig.intervention}
+            </Badge>
+          </div>
           <h1 className="text-2xl sm:text-3xl md:text-[2.05rem] font-sans font-semibold leading-[1.5] tracking-tight text-white/85 text-balance">
             {siteConfig.tagline}
           </h1>

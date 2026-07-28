@@ -11,6 +11,7 @@ import { BackupIllustrations } from "@/components/restor-pc/backup-illustrations
 import { TechMarquee } from "@/components/restor-pc/tech-marquee";
 import { Reveal } from "@/components/Reveal";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/badge";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { articles } from "@/lib/data/articles";
 import { siteConfig } from "@/lib/site";
@@ -28,26 +29,25 @@ export const metadata: Metadata = {
 
 function HomeLocal() {
   return (
-    <Section className="bg-paper border-y border-line">
+    <Section className="border-y border-line bg-paper">
       <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal">
+          <Badge variant="info" className="mb-3">
             Ancré à Yerres
-          </p>
-          <h2 className="mt-3 text-3xl md:text-4xl leading-tight text-balance">
+          </Badge>
+          <h2 className="mt-1 text-balance text-3xl leading-tight md:text-4xl">
             Un atelier local, une zone d’intervention claire
           </h2>
-          <p className="mt-4 text-ink-muted leading-relaxed max-w-lg">
+          <p className="mt-4 max-w-lg leading-relaxed text-ink-muted">
             Basés au {siteConfig.address}, nous intervenons en priorité sur Yerres
             et les communes voisines — à domicile, ou en dépôt atelier.
           </p>
           <ul className="mt-5 flex flex-wrap gap-2">
             {siteConfig.nearbyCities.slice(0, 6).map((city) => (
-              <li
-                key={city}
-                className="rounded-lg border border-line bg-surface px-3 py-1.5 text-sm font-medium"
-              >
-                {city}
+              <li key={city}>
+                <Badge variant="outline" className="rounded-lg px-3 py-1.5 text-sm font-medium">
+                  {city}
+                </Badge>
               </li>
             ))}
           </ul>
@@ -61,9 +61,7 @@ function HomeLocal() {
         </div>
         <Reveal>
           <div className="rounded-[24px] border border-line bg-surface p-6 md:p-8">
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted">
-              Atelier
-            </p>
+            <Badge variant="muted">Atelier</Badge>
             <p className="mt-3 font-display text-2xl tracking-tight">
               {siteConfig.street}
             </p>
@@ -96,11 +94,9 @@ function HomeConseils() {
               href={`/conseils/${article.slug}`}
               className="group flex h-full flex-col rounded-[20px] border border-line bg-paper p-5 transition-all hover:border-teal/35 hover:shadow-[var(--shadow-soft)]"
             >
-              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-teal">
-                {article.category}
-              </span>
+              <Badge variant="info">{article.category}</Badge>
               <h3 className="mt-3 text-lg leading-snug">{article.title}</h3>
-              <p className="mt-2 flex-1 text-sm text-ink-muted leading-relaxed">
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-muted">
                 {article.excerpt}
               </p>
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal">
@@ -120,6 +116,10 @@ function HomeConseils() {
   );
 }
 
+/**
+ * Parcours home — bibliothèques UI utilisées une seule fois chacune par rôle :
+ * Cult/Three (Hero) → Badge → Bento → Marquee → Timeline → Compare → Animata NAS → Border Beam CTA.
+ */
 export default function HomePage() {
   return (
     <>
@@ -129,10 +129,10 @@ export default function HomePage() {
       <HomeServices />
       <TechMarquee />
       <InterventionTimeline />
+      <BeforeAfter />
+      <BackupIllustrations />
       <HomeLocal />
       <TrustSection />
-      <BackupIllustrations />
-      <BeforeAfter />
       <ConfiguratorTeaser />
       <Testimonials />
       <HomeConseils />
