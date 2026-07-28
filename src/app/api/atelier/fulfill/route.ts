@@ -1,14 +1,16 @@
 import { isAtelierAuthed } from "@/lib/atelier-auth";
 import { fulfillToolOrder } from "@/lib/fulfillment";
 import { getProductBySlug } from "@/lib/data/outils";
+import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  const requestId = createRequestId();
   if (!(await isAtelierAuthed())) {
-    return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 
   try {
@@ -20,10 +22,10 @@ export async function POST(request: Request) {
     const slug = body.slug?.trim();
     const email = body.email?.trim().toLowerCase();
     if (!slug || !getProductBySlug(slug)) {
-      return NextResponse.json({ error: "produit inconnu" }, { status: 400 });
+      return jsonError("UNKNOWN_PRODUCT", "Produit inconnu.", 400, requestId);
     }
     if (!email || !email.includes("@")) {
-      return NextResponse.json({ error: "email invalide" }, { status: 400 });
+      return jsonError("INVALID_EMAIL", "Email invalide.", 400, requestId);
     }
 
     const result = await fulfillToolOrder({
@@ -34,9 +36,8 @@ export async function POST(request: Request) {
       sendEmail: body.sendEmail !== false,
     });
 
-    return NextResponse.json(result);
+    return NextResponse.json({ ...result, requestId });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "erreur";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return publicErrorResponse(err, "FULFILL_FAILED", requestId);
   }
 }

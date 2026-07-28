@@ -1,17 +1,23 @@
 import { isAtelierAuthed } from "@/lib/atelier-auth";
 import { generateLicenseKey } from "@/lib/fulfillment/keys";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
+import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
+function sanitizeIlike(raw: string): string {
+  return raw.replace(/[%_,.()\\]/g, "").slice(0, 64);
+}
+
 export async function GET(request: Request) {
+  const requestId = createRequestId();
   if (!(await isAtelierAuthed())) {
-    return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get("q")?.trim() || "";
+  const q = sanitizeIlike(searchParams.get("q")?.trim() || "");
   const status = searchParams.get("status")?.trim() || "";
 
   const sb = getSupabaseAdmin();
@@ -32,14 +38,15 @@ export async function GET(request: Request) {
 
   const { data, error } = await query;
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return publicErrorResponse(error, "LICENSES_FETCH_FAILED", requestId);
   }
-  return NextResponse.json({ licenses: data ?? [] });
+  return NextResponse.json({ licenses: data ?? [], requestId });
 }
 
 export async function POST(request: Request) {
+  const requestId = createRequestId();
   if (!(await isAtelierAuthed())) {
-    return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 
   try {
@@ -53,7 +60,7 @@ export async function POST(request: Request) {
 
     const scriptId = (body.script_id || "").trim();
     if (!scriptId) {
-      return NextResponse.json({ error: "script_id requis" }, { status: 400 });
+      return jsonError("MISSING_SCRIPT_ID", "script_id requis.", 400, requestId);
     }
 
     const licenseKey = (body.license_key || generateLicenseKey()).trim().toUpperCase();
@@ -77,18 +84,18 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return publicErrorResponse(error, "LICENSE_CREATE_FAILED", requestId);
     }
-    return NextResponse.json({ license: data });
+    return NextResponse.json({ license: data, requestId });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "erreur";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return publicErrorResponse(err, "LICENSE_CREATE_FAILED", requestId);
   }
 }
 
 export async function PATCH(request: Request) {
+  const requestId = createRequestId();
   if (!(await isAtelierAuthed())) {
-    return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 
   try {
@@ -102,7 +109,7 @@ export async function PATCH(request: Request) {
     };
 
     if (!body.id) {
-      return NextResponse.json({ error: "id requis" }, { status: 400 });
+      return jsonError("MISSING_ID", "id requis.", 400, requestId);
     }
 
     const patch: Record<string, unknown> = {};
@@ -120,7 +127,7 @@ export async function PATCH(request: Request) {
     }
 
     if (Object.keys(patch).length === 0) {
-      return NextResponse.json({ error: "rien a modifier" }, { status: 400 });
+      return jsonError("NO_CHANGES", "Rien a modifier.", 400, requestId);
     }
 
     const sb = getSupabaseAdmin();
@@ -134,24 +141,24 @@ export async function PATCH(request: Request) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return publicErrorResponse(error, "LICENSE_UPDATE_FAILED", requestId);
     }
-    return NextResponse.json({ license: data });
+    return NextResponse.json({ license: data, requestId });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "erreur";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return publicErrorResponse(err, "LICENSE_UPDATE_FAILED", requestId);
   }
 }
 
 export async function DELETE(request: Request) {
+  const requestId = createRequestId();
   if (!(await isAtelierAuthed())) {
-    return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 
   try {
     const body = (await request.json()) as { id?: string };
     if (!body.id) {
-      return NextResponse.json({ error: "id requis" }, { status: 400 });
+      return jsonError("MISSING_ID", "id requis.", 400, requestId);
     }
 
     const sb = getSupabaseAdmin();
@@ -162,25 +169,26 @@ export async function DELETE(request: Request) {
       .maybeSingle();
 
     if (getErr) {
-      return NextResponse.json({ error: getErr.message }, { status: 500 });
+      return publicErrorResponse(getErr, "LICENSE_LOOKUP_FAILED", requestId);
     }
     if (!existing) {
-      return NextResponse.json({ error: "Licence introuvable" }, { status: 404 });
+      return jsonError("NOT_FOUND", "Licence introuvable.", 404, requestId);
     }
     if (existing.status !== "revoked") {
-      return NextResponse.json(
-        { error: "Seules les licences revoked peuvent etre supprimees" },
-        { status: 400 }
+      return jsonError(
+        "NOT_REVOKED",
+        "Seules les licences revoked peuvent etre supprimees.",
+        400,
+        requestId
       );
     }
 
     const { error } = await sb.from("script_licenses").delete().eq("id", body.id);
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return publicErrorResponse(error, "LICENSE_DELETE_FAILED", requestId);
     }
-    return NextResponse.json({ ok: true, id: body.id });
+    return NextResponse.json({ ok: true, id: body.id, requestId });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "erreur";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return publicErrorResponse(err, "LICENSE_DELETE_FAILED", requestId);
   }
 }

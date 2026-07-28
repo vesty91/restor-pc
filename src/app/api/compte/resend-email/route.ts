@@ -1,5 +1,7 @@
 import { fulfillToolOrder } from "@/lib/fulfillment";
+import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -7,36 +9,72 @@ export const runtime = "nodejs";
 
 /** Renvoie le mail de livraison pour une commande du client connecte. */
 export async function POST(request: Request) {
+  const requestId = createRequestId();
+
+  const limited = await enforceRateLimit({
+    request,
+    scope: "resend-email",
+    limit: 5,
+    windowMs: 30 * 60 * 1000,
+  });
+  if (!limited.ok) {
+    return jsonError(
+      "RATE_LIMITED",
+      "Trop de renvois. Reessayez plus tard.",
+      429,
+      requestId
+    );
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user?.email) {
-    return NextResponse.json({ error: "Non authentifie" }, { status: 401 });
+    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 
-  const body = (await request.json()) as { orderId?: string };
+  let body: { orderId?: string };
+  try {
+    body = (await request.json()) as { orderId?: string };
+  } catch {
+    return jsonError("INVALID_BODY", "Requete invalide.", 400, requestId);
+  }
+
   const orderId = body.orderId?.trim();
   if (!orderId) {
-    return NextResponse.json({ error: "orderId requis" }, { status: 400 });
+    return jsonError("MISSING_ORDER_ID", "Commande manquante.", 400, requestId);
   }
 
   const email = user.email.trim().toLowerCase();
   const sb = getSupabaseAdmin();
   const { data: order, error } = await sb
     .from("tool_orders")
-    .select("id, order_ref, email, tool_slug, license_key, share_url, share_password")
+    .select(
+      "id, order_ref, email, user_id, tool_slug, license_key, share_url, share_password"
+    )
     .eq("id", orderId)
     .maybeSingle();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return publicErrorResponse(error, "ORDER_LOOKUP_FAILED", requestId);
   }
-  if (!order || order.email !== email) {
-    return NextResponse.json({ error: "Commande introuvable" }, { status: 404 });
+
+  const owns =
+    order &&
+    (order.user_id === user.id ||
+      (!order.user_id && order.email === email));
+
+  if (!owns || !order) {
+    return jsonError("ORDER_NOT_FOUND", "Commande introuvable.", 404, requestId);
   }
   if (!order.license_key || !order.share_url || !order.share_password) {
-    return NextResponse.json({ error: "Commande incomplete" }, { status: 400 });
+    return jsonError(
+      "ORDER_INCOMPLETE",
+      "Commande encore en preparation.",
+      400,
+      requestId
+    );
   }
 
   try {
@@ -47,20 +85,18 @@ export async function POST(request: Request) {
       source: "stripe",
       sendEmail: true,
       forceEmail: true,
+      userId: user.id,
     });
     if (result.emailError) {
-      return NextResponse.json(
-        {
-          error:
-            "Envoi refuse par le serveur mail (souvent DMARC / Outlook). Verifiez les DNS du domaine. Les acces restent visibles dans votre compte.",
-          detail: result.emailError,
-        },
-        { status: 502 }
+      return jsonError(
+        "EMAIL_SEND_FAILED",
+        "Envoi refuse par le serveur mail. Les acces restent visibles dans votre compte.",
+        502,
+        requestId
       );
     }
-    return NextResponse.json({ ok: true, emailId: result.emailId });
+    return NextResponse.json({ ok: true, emailId: result.emailId, requestId });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "erreur";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return publicErrorResponse(err, "RESEND_FAILED", requestId);
   }
 }

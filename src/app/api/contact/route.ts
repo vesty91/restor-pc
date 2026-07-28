@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/lib/site";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 
 type ContactPayload = {
   name?: string;
@@ -21,29 +22,6 @@ const MAX_PHONE = 40;
 const MAX_CITY = 80;
 const MAX_MESSAGE = 4000;
 const MIN_MESSAGE = 10;
-const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-const RATE_LIMIT_MAX = 5;
-
-type RateEntry = { count: number; resetAt: number };
-const rateBuckets = new Map<string, RateEntry>();
-
-function getClientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
-  return request.headers.get("x-real-ip")?.trim() || "unknown";
-}
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateBuckets.get(ip);
-  if (!entry || now >= entry.resetAt) {
-    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return true;
-  }
-  if (entry.count >= RATE_LIMIT_MAX) return false;
-  entry.count += 1;
-  return true;
-}
 
 function sanitizePhone(phone: string): string {
   return phone.replace(/[^\d+()\s.-]/g, "").trim();
@@ -184,8 +162,13 @@ async function sendWithResend(opts: {
 }
 
 export async function POST(request: Request) {
-  const ip = getClientIp(request);
-  if (!checkRateLimit(ip)) {
+  const limited = await enforceRateLimit({
+    request,
+    scope: "contact",
+    limit: 5,
+    windowMs: 15 * 60 * 1000,
+  });
+  if (!limited.ok) {
     return NextResponse.json(
       { ok: false, error: "Trop de demandes. Réessayez dans quelques minutes." },
       { status: 429 }

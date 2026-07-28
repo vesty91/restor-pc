@@ -1,3 +1,7 @@
+/**
+ * Fulfillment Stripe / atelier — réservation atomique + états.
+ * Un même order_ref / event.id ne crée jamais de doublon licence / NAS.
+ */
 import {
   getNasFilePath,
   getProductBySlug,
@@ -8,6 +12,18 @@ import { sendPurchaseEmail } from "@/lib/fulfillment/email";
 import { generateLicenseKey, generateSharePassword } from "@/lib/fulfillment/keys";
 import { createNasOneTimeShare } from "@/lib/fulfillment/nas";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
+import { getTermsVersion } from "@/lib/env";
+import { logEvent } from "@/lib/logging/logger";
+import { AppError } from "@/lib/errors";
+
+export type OrderStatus =
+  | "pending"
+  | "processing"
+  | "fulfilled"
+  | "failed"
+  | "refunded"
+  | "disputed"
+  | "cancelled";
 
 export type FulfillInput = {
   email: string;
@@ -16,8 +32,17 @@ export type FulfillInput = {
   orderRef: string;
   source: "stripe" | "atelier";
   sendEmail?: boolean;
-  /** Force un nouvel envoi meme si deja envoye */
   forceEmail?: boolean;
+  userId?: string | null;
+  stripeEventId?: string | null;
+  stripePaymentIntentId?: string | null;
+  stripePriceId?: string | null;
+  amountTotal?: number | null;
+  currency?: string | null;
+  termsVersion?: string | null;
+  termsAcceptedAt?: string | null;
+  withdrawalConsentAt?: string | null;
+  digitalDeliveryRequestedAt?: string | null;
 };
 
 export type FulfillResult = {
@@ -28,8 +53,24 @@ export type FulfillResult = {
   toolTitle: string;
   scriptId: string;
   orderId: string;
+  status: OrderStatus;
   emailId?: string | null;
   emailError?: string | null;
+};
+
+type OrderRow = {
+  id: string;
+  status: string;
+  license_key: string | null;
+  share_url: string | null;
+  share_password: string | null;
+  expire_times: number | null;
+  tool_title: string | null;
+  script_id: string | null;
+  email_sent_at: string | null;
+  email_id: string | null;
+  email_error: string | null;
+  user_id: string | null;
 };
 
 async function trySendAndRecord(opts: {
@@ -63,63 +104,247 @@ async function trySendAndRecord(opts: {
         email_sent_at: new Date().toISOString(),
         email_id: id,
         email_error: null,
+        email_retry_needed: false,
       })
       .eq("id", opts.orderId);
+    logEvent("info", "email.sent", { orderId: opts.orderId });
     return { emailId: id, emailError: null };
   } catch (err) {
     const msg = err instanceof Error ? err.message : "email_failed";
-    console.error("purchase email failed", opts.orderId, msg);
+    logEvent("error", "email.failed", { orderId: opts.orderId });
     await sb
       .from("tool_orders")
-      .update({ email_error: msg.slice(0, 500) })
+      .update({
+        email_error: msg.slice(0, 500),
+        email_retry_needed: true,
+      })
       .eq("id", opts.orderId);
     return { emailId: null, emailError: msg };
   }
 }
 
-export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResult> {
+async function markFailed(orderId: string, code: string): Promise<void> {
+  const sb = getSupabaseAdmin();
+  await sb
+    .from("tool_orders")
+    .update({
+      status: "failed",
+      error_code: code.slice(0, 120),
+    })
+    .eq("id", orderId);
+  logEvent("error", "order.processing.failed", { orderId, errorCode: code });
+}
+
+/**
+ * Réserve atomiquement une commande (unique order_ref).
+ * Si déjà fulfilled avec assets → retourne la ligne existante.
+ */
+async function reserveOrder(input: FulfillInput): Promise<OrderRow> {
+  const sb = getSupabaseAdmin();
   const product = getProductBySlug(input.toolSlug);
-  if (!product) throw new Error(`Produit inconnu: ${input.toolSlug}`);
+  if (!product) {
+    throw new AppError({
+      code: "UNKNOWN_PRODUCT",
+      status: 400,
+      publicMessage: "Produit inconnu.",
+      message: `Produit inconnu: ${input.toolSlug}`,
+    });
+  }
 
   const email = input.email.trim().toLowerCase();
-  if (!email || !email.includes("@")) throw new Error("Email invalide");
-
-  const sb = getSupabaseAdmin();
+  const now = new Date().toISOString();
 
   const { data: existing } = await sb
     .from("tool_orders")
     .select(
-      "id, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error"
+      "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
     )
     .eq("order_ref", input.orderRef)
     .maybeSingle();
 
-  if (existing?.license_key && existing.share_url && existing.share_password) {
-    let emailId = existing.email_id as string | null;
-    let emailError = existing.email_error as string | null;
+  if (existing) {
+    return existing as OrderRow;
+  }
+
+  const { data: inserted, error } = await sb
+    .from("tool_orders")
+    .insert({
+      order_ref: input.orderRef,
+      source: input.source,
+      email,
+      user_id: input.userId ?? null,
+      tool_slug: input.toolSlug,
+      tool_title: product.title,
+      script_id: product.scriptId,
+      status: "pending",
+      stripe_event_id: input.stripeEventId ?? null,
+      stripe_payment_intent_id: input.stripePaymentIntentId ?? null,
+      stripe_price_id: input.stripePriceId ?? null,
+      amount_total: input.amountTotal ?? null,
+      currency: input.currency ?? null,
+      terms_version: input.termsVersion ?? getTermsVersion(),
+      terms_accepted_at: input.termsAcceptedAt ?? null,
+      withdrawal_consent_at: input.withdrawalConsentAt ?? null,
+      digital_delivery_requested_at:
+        input.digitalDeliveryRequestedAt ?? now,
+    })
+    .select(
+      "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
+    )
+    .single();
+
+  if (error) {
+    // Course : un autre worker a créé la ligne
+    if (error.code === "23505") {
+      const { data: raced } = await sb
+        .from("tool_orders")
+        .select(
+          "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
+        )
+        .eq("order_ref", input.orderRef)
+        .maybeSingle();
+      if (raced) return raced as OrderRow;
+    }
+    throw new AppError({
+      code: "ORDER_RESERVE_FAILED",
+      status: 500,
+      publicMessage: "Impossible de réserver la commande.",
+      message: error.message,
+    });
+  }
+
+  return inserted as OrderRow;
+}
+
+export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResult> {
+  const product = getProductBySlug(input.toolSlug);
+  if (!product) {
+    throw new AppError({
+      code: "UNKNOWN_PRODUCT",
+      status: 400,
+      publicMessage: "Produit inconnu.",
+    });
+  }
+
+  const email = input.email.trim().toLowerCase();
+  if (!email || !email.includes("@")) {
+    throw new AppError({
+      code: "INVALID_EMAIL",
+      status: 400,
+      publicMessage: "Email invalide.",
+    });
+  }
+
+  if (input.userId) {
+    const uuidRe =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRe.test(input.userId)) {
+      throw new AppError({
+        code: "INVALID_USER_ID",
+        status: 400,
+        publicMessage: "Identifiant utilisateur invalide.",
+      });
+    }
+  }
+
+  const sb = getSupabaseAdmin();
+  const order = await reserveOrder(input);
+
+  // Déjà livré → idempotent (email seulement si besoin)
+  if (
+    order.status === "fulfilled" &&
+    order.license_key &&
+    order.share_url &&
+    order.share_password
+  ) {
+    let emailId = order.email_id;
+    let emailError = order.email_error;
     if (input.sendEmail !== false) {
       const sent = await trySendAndRecord({
-        orderId: existing.id,
+        orderId: order.id,
         email,
-        toolTitle: existing.tool_title || product.title,
-        licenseKey: existing.license_key,
-        downloadUrl: existing.share_url,
-        downloadPassword: existing.share_password,
-        expireTimes: existing.expire_times ?? 1,
+        toolTitle: order.tool_title || product.title,
+        licenseKey: order.license_key,
+        downloadUrl: order.share_url,
+        downloadPassword: order.share_password,
+        expireTimes: order.expire_times ?? 1,
         force: input.forceEmail === true,
-        alreadySentAt: existing.email_sent_at,
+        alreadySentAt: order.email_sent_at,
       });
       emailId = sent.emailId ?? emailId;
       emailError = sent.emailError;
     }
     return {
-      licenseKey: existing.license_key,
-      downloadUrl: existing.share_url,
-      downloadPassword: existing.share_password,
-      expireTimes: existing.expire_times ?? 1,
-      toolTitle: existing.tool_title || product.title,
-      scriptId: existing.script_id || product.scriptId,
-      orderId: existing.id,
+      licenseKey: order.license_key,
+      downloadUrl: order.share_url,
+      downloadPassword: order.share_password,
+      expireTimes: order.expire_times ?? 1,
+      toolTitle: order.tool_title || product.title,
+      scriptId: order.script_id || product.scriptId,
+      orderId: order.id,
+      status: "fulfilled",
+      emailId,
+      emailError,
+    };
+  }
+
+  if (order.status === "refunded" || order.status === "cancelled") {
+    throw new AppError({
+      code: "ORDER_NOT_FULFILLABLE",
+      status: 409,
+      publicMessage: "Cette commande ne peut plus être livrée.",
+    });
+  }
+
+  // Claim processing
+  await sb
+    .from("tool_orders")
+    .update({
+      status: "processing",
+      user_id: input.userId ?? order.user_id,
+    })
+    .eq("id", order.id)
+    .in("status", ["pending", "failed", "processing"]);
+
+  logEvent("info", "order.processing.started", {
+    orderId: order.id,
+    orderRef: input.orderRef,
+  });
+
+  // Si assets déjà présents (retry après échec email uniquement)
+  if (order.license_key && order.share_url && order.share_password) {
+    await sb
+      .from("tool_orders")
+      .update({ status: "fulfilled" })
+      .eq("id", order.id);
+
+    let emailId = order.email_id;
+    let emailError = order.email_error;
+    if (input.sendEmail !== false) {
+      const sent = await trySendAndRecord({
+        orderId: order.id,
+        email,
+        toolTitle: order.tool_title || product.title,
+        licenseKey: order.license_key,
+        downloadUrl: order.share_url,
+        downloadPassword: order.share_password,
+        expireTimes: order.expire_times ?? 1,
+        force: input.forceEmail === true,
+        alreadySentAt: order.email_sent_at,
+      });
+      emailId = sent.emailId ?? emailId;
+      emailError = sent.emailError;
+    }
+
+    return {
+      licenseKey: order.license_key,
+      downloadUrl: order.share_url,
+      downloadPassword: order.share_password,
+      expireTimes: order.expire_times ?? 1,
+      toolTitle: order.tool_title || product.title,
+      scriptId: order.script_id || product.scriptId,
+      orderId: order.id,
+      status: "fulfilled",
       emailId,
       emailError,
     };
@@ -129,49 +354,78 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
   const sharePassword = generateSharePassword();
   const expireTimes = 1;
   const scriptId = product.scriptId;
-  const maxMachines = 1;
 
   const { error: licErr } = await sb.from("script_licenses").insert({
     license_key: licenseKey,
     script_id: scriptId,
     status: "active",
     note: `${input.source}:${input.toolSlug}:${email}`,
-    max_machines: maxMachines,
-  });
-  if (licErr) throw new Error(`Licence insert: ${licErr.message}`);
-
-  const share = await createNasOneTimeShare({
-    filePath: getNasFilePath(product),
-    password: sharePassword,
-    expireTimes,
+    max_machines: 1,
   });
 
-  const { data: orderRow, error: ordErr } = await sb
+  if (licErr) {
+    // Conflit unique improbable : relire
+    await markFailed(order.id, "LICENSE_INSERT_FAILED");
+    throw new AppError({
+      code: "LICENSE_CREATE_FAILED",
+      status: 500,
+      publicMessage: "Échec de création de licence.",
+      message: licErr.message,
+    });
+  }
+
+  logEvent("info", "license.created", { orderId: order.id });
+
+  let share: { id: string; url: string; password: string };
+  try {
+    share = await createNasOneTimeShare({
+      filePath: getNasFilePath(product),
+      password: sharePassword,
+      expireTimes,
+    });
+    logEvent("info", "nas.link.created", { orderId: order.id });
+  } catch (err) {
+    await markFailed(order.id, "NAS_LINK_FAILED");
+    logEvent("error", "nas.link.failed", { orderId: order.id });
+    throw new AppError({
+      code: "NAS_LINK_FAILED",
+      status: 500,
+      publicMessage: "Échec de préparation du téléchargement.",
+      cause: err,
+    });
+  }
+
+  const { error: updErr } = await sb
     .from("tool_orders")
-    .insert({
-      order_ref: input.orderRef,
-      source: input.source,
-      email,
-      tool_slug: input.toolSlug,
-      tool_title: product.title,
-      script_id: scriptId,
+    .update({
       license_key: licenseKey,
       share_id: share.id,
       share_url: share.url,
       share_password: share.password,
       expire_times: expireTimes,
       status: "fulfilled",
+      error_code: null,
+      user_id: input.userId ?? order.user_id,
     })
-    .select("id")
-    .single();
+    .eq("id", order.id);
 
-  if (ordErr) throw new Error(`Order insert: ${ordErr.message}`);
+  if (updErr) {
+    await markFailed(order.id, "ORDER_UPDATE_FAILED");
+    throw new AppError({
+      code: "ORDER_UPDATE_FAILED",
+      status: 500,
+      publicMessage: "Échec d'enregistrement de la commande.",
+      message: updErr.message,
+    });
+  }
+
+  logEvent("info", "order.fulfilled", { orderId: order.id });
 
   let emailId: string | null = null;
   let emailError: string | null = null;
   if (input.sendEmail !== false) {
     const sent = await trySendAndRecord({
-      orderId: orderRow.id,
+      orderId: order.id,
       email,
       toolTitle: product.title,
       licenseKey,
@@ -182,6 +436,7 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
     });
     emailId = sent.emailId;
     emailError = sent.emailError;
+    // Échec email ≠ échec fulfillment (pas de nouvelle licence)
   }
 
   return {
@@ -191,7 +446,8 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
     expireTimes,
     toolTitle: product.title,
     scriptId,
-    orderId: orderRow.id,
+    orderId: order.id,
+    status: "fulfilled",
     emailId,
     emailError,
   };
