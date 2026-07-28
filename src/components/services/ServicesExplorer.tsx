@@ -1,10 +1,11 @@
 "use client";
 
 import { ServiceIcon } from "@/components/ServiceIcon";
+import { BentoGrid, BentoGridItem } from "@/components/aceternity/bento-grid";
+import { Badge } from "@/components/ui/badge";
 import { services } from "@/lib/data/services";
-import { formatPrice } from "@/lib/utils";
-import { cn } from "@/lib/utils";
-import { ArrowUpRight } from "lucide-react";
+import { cn, formatPrice } from "@/lib/utils";
+import { ArrowUpRight, Search } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
@@ -18,9 +19,25 @@ const filters = [
 
 const filterMap: Record<string, string[]> = {
   panne: ["depannage-informatique", "reparation-pc", "maintenance"],
-  logiciel: ["virus-optimisation", "reinstallation-windows", "sauvegarde-securite", "maintenance"],
+  logiciel: [
+    "virus-optimisation",
+    "reinstallation-windows",
+    "sauvegarde-securite",
+    "maintenance",
+  ],
   data: ["recuperation-donnees", "sauvegarde-securite"],
   pc: ["montage-pc"],
+};
+
+const serviceBadge: Record<string, string> = {
+  "depannage-informatique": "Dépannage",
+  "reparation-pc": "Hardware",
+  "virus-optimisation": "Performance",
+  "reinstallation-windows": "Système",
+  "recuperation-donnees": "Données",
+  "montage-pc": "Sur mesure",
+  "sauvegarde-securite": "NAS",
+  maintenance: "Entretien",
 };
 
 export function ServicesExplorer() {
@@ -46,76 +63,107 @@ export function ServicesExplorer() {
 
   return (
     <div>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2">
-          {filters.map((f) => (
-            <button
-              key={f.id}
-              type="button"
-              onClick={() => setFilter(f.id)}
-              className={cn(
-                "rounded-xl px-3.5 py-2 text-sm font-semibold transition-colors",
-                filter === f.id
-                  ? "bg-panel text-panel-fg"
-                  : "border border-line bg-paper text-ink-muted hover:text-ink"
-              )}
-            >
-              {f.label}
-            </button>
-          ))}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div
+          className="flex flex-wrap gap-2"
+          role="group"
+          aria-label="Filtrer les services"
+        >
+          {filters.map((f) => {
+            const active = filter === f.id;
+            return (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => setFilter(f.id)}
+                aria-pressed={active}
+                className={cn(
+                  "rounded-full outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
+                  active ? "" : "hover:opacity-90"
+                )}
+              >
+                <Badge
+                  variant={active ? "default" : "outline"}
+                  className={cn(
+                    "cursor-pointer px-3.5 py-1.5 text-sm",
+                    active && "bg-panel text-panel-fg hover:bg-panel"
+                  )}
+                >
+                  {f.label}
+                </Badge>
+              </button>
+            );
+          })}
         </div>
-        <label className="block sm:w-64">
+        <label className="relative block sm:w-72">
           <span className="sr-only">Rechercher un service</span>
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted"
+            aria-hidden
+          />
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Rechercher…"
-            className="w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm outline-none focus:border-teal"
+            placeholder="Rechercher un service…"
+            className="w-full rounded-xl border border-line bg-paper py-2.5 pl-10 pr-4 text-sm outline-none focus:border-teal focus-visible:ring-2 focus-visible:ring-teal/30"
           />
         </label>
       </div>
 
-      <p className="mt-4 text-sm text-ink-muted">
+      <p className="mt-4 text-sm text-ink-muted" aria-live="polite">
         {list.length} service{list.length > 1 ? "s" : ""} trouvé
         {list.length > 1 ? "s" : ""}
       </p>
 
-      <div className="mt-4 grid gap-4 md:grid-cols-2">
-        {list.map((service) => (
-          <Link
-            key={service.slug}
-            href={`/services/${service.slug}`}
-            className="group card-lift flex gap-5 rounded-[22px] border border-line bg-paper p-6"
-          >
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-teal-soft text-teal">
-              <ServiceIcon name={service.icon} className="h-5 w-5" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-3">
-                <h2 className="text-xl leading-[1.35]">{service.title}</h2>
-                <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-ink-muted group-hover:text-teal" />
-              </div>
-              <p className="mt-2 text-sm leading-[1.6] text-ink-muted">
-                {service.excerpt}
-              </p>
-              <p className="mt-4 text-sm font-semibold">
-                À partir de {formatPrice(service.priceFrom)} · {service.duration}
-              </p>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      {list.length === 0 ? (
-        <p className="mt-8 rounded-2xl border border-line bg-surface p-6 text-center text-ink-muted">
-          Aucun service ne correspond.{" "}
-          <Link href="/contact" className="font-semibold text-teal">
-            Décrivez votre problème
-          </Link>{" "}
-          — on vous oriente.
-        </p>
-      ) : null}
+      {list.length > 0 ? (
+        <BentoGrid className="mt-4 md:auto-rows-[minmax(10.5rem,auto)]">
+          {list.map((service, i) => (
+            <BentoGridItem
+              key={service.slug}
+              href={`/services/${service.slug}`}
+              className={i === 0 ? "md:col-span-2" : undefined}
+              header={
+                <Badge variant="info">
+                  {serviceBadge[service.slug] ?? "Service"}
+                </Badge>
+              }
+              icon={
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-soft text-teal">
+                  <ServiceIcon name={service.icon} className="h-5 w-5" />
+                </span>
+              }
+              title={service.title}
+              description={service.excerpt}
+              meta={
+                <span className="inline-flex w-full items-center justify-between gap-2">
+                  <span>
+                    À partir de {formatPrice(service.priceFrom)}
+                    <span className="font-normal text-ink-muted">
+                      {" "}
+                      · {service.duration}
+                    </span>
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 text-ink-muted transition-transform group-hover/bento:translate-x-0.5 group-hover/bento:-translate-y-0.5 group-hover/bento:text-teal" />
+                </span>
+              }
+            />
+          ))}
+        </BentoGrid>
+      ) : (
+        <div className="mt-8 rounded-[22px] border border-line bg-surface px-6 py-10 text-center">
+          <Badge variant="muted" className="mb-3">
+            Aucun résultat
+          </Badge>
+          <p className="text-ink-muted">
+            Aucun service ne correspond à votre recherche.{" "}
+            <Link href="/contact" className="font-semibold text-teal underline-offset-2 hover:underline">
+              Décrivez votre problème
+            </Link>{" "}
+            — on vous oriente.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
