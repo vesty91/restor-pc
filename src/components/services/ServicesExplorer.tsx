@@ -128,7 +128,7 @@ export function ServicesExplorer() {
                 </Badge>
               }
               icon={
-                <span className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-teal-soft text-teal">
+                <span className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-teal-soft text-teal transition-transform duration-300 group-hover/bento:scale-110 group-hover/bento:border-teal/40 motion-reduce:transition-none">
                   <ServiceIcon name={service.icon} className="h-5 w-5" />
                 </span>
               }
@@ -143,7 +143,7 @@ export function ServicesExplorer() {
                       · {service.duration}
                     </span>
                   </span>
-                  <ArrowUpRight className="h-4 w-4 text-ink-muted transition-transform group-hover/bento:translate-x-0.5 group-hover/bento:-translate-y-0.5 group-hover/bento:text-teal" />
+                  <ArrowUpRight className="h-4 w-4 text-ink-muted transition-transform duration-300 group-hover/bento:translate-x-1 group-hover/bento:-translate-y-1 group-hover/bento:scale-110 group-hover/bento:text-teal motion-reduce:transition-none" />
                 </span>
               }
             />

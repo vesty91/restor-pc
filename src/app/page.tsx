@@ -92,7 +92,7 @@ function HomeConseils() {
           <Reveal key={article.slug} delay={i * 60}>
             <Link
               href={`/conseils/${article.slug}`}
-              className="group flex h-full flex-col rounded-[20px] border border-line bg-paper p-5 transition-all hover:border-teal/35 hover:shadow-[var(--shadow-soft)]"
+              className="tile-wow group flex h-full flex-col rounded-[20px] p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               <Badge variant="info">{article.category}</Badge>
               <h3 className="mt-3 text-lg leading-snug">{article.title}</h3>
@@ -101,7 +101,7 @@ function HomeConseils() {
               </p>
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal">
                 Lire
-                <ArrowUpRight className="h-3.5 w-3.5" />
+                <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" />
               </span>
             </Link>
           </Reveal>

@@ -232,7 +232,7 @@ export default async function ServiceDetailPage({ params }: Props) {
             <Link
               key={s.slug}
               href={`/services/${s.slug}`}
-              className="rounded-2xl border border-line bg-surface px-4 py-4 transition-colors hover:border-teal/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+              className="tile-wow rounded-2xl bg-surface px-4 py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               <Badge variant="info" className="mb-2">
                 {serviceBadge[s.slug] ?? "Service"}
@@ -260,7 +260,7 @@ export default async function ServiceDetailPage({ params }: Props) {
               <Link
                 key={a.slug}
                 href={`/conseils/${a.slug}`}
-                className="rounded-2xl border border-line bg-paper px-4 py-4 transition-colors hover:border-teal/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+                className="tile-wow rounded-2xl px-4 py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
               >
                 <Badge variant="info">{a.category}</Badge>
                 <p className="mt-2 font-semibold leading-snug">{a.title}</p>
