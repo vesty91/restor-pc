@@ -1,4 +1,6 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { StatusBadge } from "@/components/restor-pc/status-badge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import type { Metadata } from "next";
@@ -15,7 +17,7 @@ export default async function BoutiqueSuccesPage({
 }) {
   const sp = searchParams ? await searchParams : {};
   return (
-    <Section className="noise-bg pt-20 md:pt-28 pb-16">
+    <Section className="noise-bg pb-16 pt-20 md:pt-28">
       <Breadcrumbs
         items={[
           { label: "Boutique", href: "/boutique" },
@@ -23,6 +25,10 @@ export default async function BoutiqueSuccesPage({
         ]}
       />
       <div className="mt-6">
+        <div className="mb-4 flex flex-wrap gap-2">
+          <StatusBadge status="fulfilled" />
+          <Badge variant="info">Email en cours d’envoi</Badge>
+        </div>
         <SectionHeader
           eyebrow="Commande"
           title="Paiement bien reçu"
@@ -30,7 +36,9 @@ export default async function BoutiqueSuccesPage({
         />
       </div>
       {sp.session_id ? (
-        <p className="mt-4 text-xs text-ink-muted">Réf. session : {sp.session_id}</p>
+        <p className="mt-4 text-xs text-ink-muted">
+          Réf. session : <code className="rounded bg-surface-2 px-1.5 py-0.5">{sp.session_id}</code>
+        </p>
       ) : null}
       <div className="mt-8 flex flex-wrap gap-3">
         <Button href="/compte" variant="primary">
