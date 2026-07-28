@@ -20,14 +20,41 @@ npm run dev
 
 Ouvrir [http://localhost:3000](http://localhost:3000).
 
-Variables : copier `.env.example` → `.env.local` (Stripe, Supabase, Resend, NAS, `ATELIER_SECRET`).
+Variables : copier `.env.example` → `.env.local` (dev) ou `.env` (Docker NAS).
+
+Obligatoires en prod NAS :
+
+```env
+NEXT_PUBLIC_SITE_URL=https://www.restor-pc.fr
+ALLOW_STRIPE_LIVE=false
+```
+
+## Déploiement Synology (Docker)
+
+Le site est prévu pour tourner sur le **NAS** (Container Manager), pas sur Vercel.
+
+```bash
+cd restor-pc
+# Fichier d'environnement lu par docker-compose
+cp .env.example .env
+# Éditer .env (Stripe, Supabase, Resend, NAS, ATELIER_SECRET, NEXT_PUBLIC_SITE_URL…)
+
+docker compose build
+docker compose up -d
+```
+
+- Conteneur : `restor-pc` sur le port **3000**
+- Reverse proxy Synology / domaine → `http://NAS_IP:3000`
+- Healthcheck : `GET /api/health`
+- Webhook Stripe prod : `https://www.restor-pc.fr/api/stripe/webhook`
 
 ## Scripts npm
 
 - `npm run dev` — développement
-- `npm run build` / `npm run start` — production
+- `npm run build` / `npm run start` — production locale
+- `npm run typecheck` / `npm run test:unit` — qualité
 - `npm run lint` — ESLint
-
+- `npm run stripe:update-webhook` — events webhook boutique
 ## Outils / NAS (dossier parent)
 
 ```powershell

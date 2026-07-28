@@ -12,7 +12,8 @@
 - [ ] Rejeu webhook → aucun doublon
 - [ ] `/api/health` répond `ok`
 - [ ] Cookie atelier : reconnexion après déploiement (session HMAC)
-- [ ] NAS HTTPS + compte API OK ; `NAS_SSH_FALLBACK_ENABLED=false` en prod Vercel
+- [ ] NAS HTTPS + compte API OK ; `NAS_SSH_FALLBACK_ENABLED=false` en prod (Docker NAS)
+- [ ] Variables dans le fichier `.env` du conteneur Docker (pas Vercel)
 - [ ] Secrets uniquement dans Vercel / `.env.local` (jamais Git)
 
 ## Après go-live
