@@ -9,7 +9,11 @@ const SESSION_TTL_SEC = 60 * 60 * 12;
 
 function sessionSigningKey(): string | null {
   const env = getServerEnv();
-  return env.ATELIER_SESSION_SECRET?.trim() || env.ATELIER_SECRET?.trim() || null;
+  const dedicated = env.ATELIER_SESSION_SECRET?.trim();
+  if (dedicated) return dedicated;
+  // Transition : fallback ATELIER_SECRET interdit en production
+  if (env.NODE_ENV === "production") return null;
+  return env.ATELIER_SECRET?.trim() || null;
 }
 
 function atelierPassword(): string | null {
@@ -33,7 +37,11 @@ function safeEqual(a: string, b: string): boolean {
  */
 export function createAtelierSessionToken(): string {
   const key = sessionSigningKey();
-  if (!key) throw new Error("ATELIER_SECRET manquant");
+  if (!key) {
+    throw new Error(
+      "ATELIER_SESSION_SECRET manquant (obligatoire en production)"
+    );
+  }
   const exp = Math.floor(Date.now() / 1000) + SESSION_TTL_SEC;
   const nonce = randomBytes(16).toString("base64url");
   const payload = `v1.${exp}.${nonce}`;

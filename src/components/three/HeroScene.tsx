@@ -141,6 +141,7 @@ export default function HeroScene() {
 
   return (
     <div
+      data-hero-webgl
       className="relative h-[340px] w-full overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(165deg,rgba(8,18,36,0.95)_0%,rgba(6,24,52,0.9)_55%,rgba(5,32,72,0.82)_100%)] shadow-[0_30px_80px_rgb(0_0_0/35%)] sm:h-[380px] md:h-[420px] lg:h-[480px]"
     >
       <DiagnosticHud compact={quality === "low"} />

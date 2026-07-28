@@ -1,7 +1,7 @@
-import { isAtelierAuthed } from "@/lib/atelier-auth";
+import { requireTechnician } from "@/lib/auth/roles";
 import { generateLicenseKey } from "@/lib/fulfillment/keys";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
-import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
+import { AppError, createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import {
   createLicenseSchema,
   deleteLicenseSchema,
@@ -20,11 +20,22 @@ function sanitizeIlike(raw: string): string {
 const LICENSE_SELECT =
   "id, license_key, script_id, status, note, created_at, expires_at, machine_id, machine_name, bios_serial, machine_bound_at, max_machines";
 
+async function assertAtelier(): Promise<NextResponse | null> {
+  try {
+    await requireTechnician();
+    return null;
+  } catch (err) {
+    if (err instanceof AppError) {
+      return jsonError(err.code, err.publicMessage, err.status, createRequestId());
+    }
+    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, createRequestId());
+  }
+}
+
 export async function GET(request: Request) {
   const requestId = createRequestId();
-  if (!(await isAtelierAuthed())) {
-    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
-  }
+  const denied = await assertAtelier();
+  if (denied) return denied;
 
   const { searchParams } = new URL(request.url);
   const parsed = licensesListQuerySchema.safeParse({
@@ -79,9 +90,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const requestId = createRequestId();
-  if (!(await isAtelierAuthed())) {
-    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
-  }
+  const denied = await assertAtelier();
+  if (denied) return denied;
 
   try {
     const json = await request.json();
@@ -122,9 +132,8 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   const requestId = createRequestId();
-  if (!(await isAtelierAuthed())) {
-    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
-  }
+  const denied = await assertAtelier();
+  if (denied) return denied;
 
   try {
     const json = await request.json();
@@ -170,9 +179,8 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   const requestId = createRequestId();
-  if (!(await isAtelierAuthed())) {
-    return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
-  }
+  const denied = await assertAtelier();
+  if (denied) return denied;
 
   try {
     const json = await request.json();

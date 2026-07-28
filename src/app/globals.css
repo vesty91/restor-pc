@@ -5,7 +5,7 @@
 :root {
   --ink: #0a1628;
   --ink-soft: #1c2d45;
-  --ink-muted: #5a6b82;
+  --ink-muted: #4a5d73;
   --surface: #f3f5f8;
   --surface-2: #e9eef3;
   --paper: #ffffff;
@@ -31,7 +31,7 @@
 .dark {
   --ink: #eef3f8;
   --ink-soft: #c5d0de;
-  --ink-muted: #8b9bb0;
+  --ink-muted: #9aabbf;
   --surface: #0b1220;
   --surface-2: #141e2e;
   --paper: #121a28;

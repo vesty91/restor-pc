@@ -11,7 +11,6 @@ import { siteConfig } from "@/lib/site";
 import { ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Contact & devis — Yerres (91)",
@@ -48,13 +47,7 @@ export default function ContactPage() {
                 .
               </p>
               <div className="mt-6">
-                <Suspense
-                  fallback={
-                    <p className="text-sm text-ink-muted">Chargement du formulaire…</p>
-                  }
-                >
-                  <ContactForm />
-                </Suspense>
+                <ContactForm />
               </div>
             </div>
             <AddressMap />

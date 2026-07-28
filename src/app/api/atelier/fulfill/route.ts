@@ -1,7 +1,7 @@
-import { isAtelierAuthed } from "@/lib/atelier-auth";
+import { requireTechnician } from "@/lib/auth/roles";
 import { fulfillToolOrder } from "@/lib/fulfillment";
 import { getProductBySlug } from "@/lib/data/outils";
-import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
+import { AppError, createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import { fulfillOrderSchema, publicZodMessage } from "@/lib/validation";
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
@@ -10,7 +10,12 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const requestId = createRequestId();
-  if (!(await isAtelierAuthed())) {
+  try {
+    await requireTechnician();
+  } catch (err) {
+    if (err instanceof AppError) {
+      return jsonError(err.code, err.publicMessage, err.status, requestId);
+    }
     return jsonError("AUTH_REQUIRED", "Non authentifie.", 401, requestId);
   }
 

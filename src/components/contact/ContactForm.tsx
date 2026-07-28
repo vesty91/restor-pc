@@ -9,7 +9,6 @@ import { notify } from "@/lib/toast";
 import { buildContactWhatsApp } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, MessageCircle, Phone, Send } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useId, useMemo, useState, type ReactNode } from "react";
 
 type FormState = {
@@ -56,7 +55,6 @@ const urgencyLabels: Record<string, string> = {
 };
 
 export function ContactForm() {
-  const params = useSearchParams();
   const uid = useId();
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -66,6 +64,9 @@ export function ContactForm() {
   const [configAttached, setConfigAttached] = useState(false);
 
   useEffect(() => {
+    // Lecture query string côté client uniquement (évite Suspense useSearchParams
+    // qui laisse le fallback SSR et casse les E2E / SEO formulaire).
+    const params = new URLSearchParams(window.location.search);
     const rawType = params.get("type") ?? "devis";
     // Ancien lien « distance » → devis atelier (plus d’assistance à distance)
     const type = rawType === "distance" ? "devis" : rawType;
@@ -119,7 +120,7 @@ export function ContactForm() {
       urgency: resolvedUrgency,
       message: message || f.message,
     }));
-  }, [params]);
+  }, []);
 
   const whatsappHref = useMemo(() => {
     const serviceTitle =
