@@ -101,6 +101,7 @@ export const siteConfig = {
 } as const;
 
 export const navLinks = [
+  { href: "/", label: "Accueil" },
   { href: "/services", label: "Services" },
   { href: "/boutique", label: "Boutique" },
   { href: "/configurateur", label: "Configurateur" },
