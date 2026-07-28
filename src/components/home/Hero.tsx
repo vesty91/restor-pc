@@ -1,11 +1,36 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site";
+import { HeroDiagnosticCard, SceneFallback } from "@/components/three/SceneFallback";
 import { ArrowRight, MapPin, MessageCircle, Phone, ShieldCheck } from "lucide-react";
 
+const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
+  ssr: false,
+  loading: () => <SceneFallback />,
+});
+
 export function Hero() {
+  const [show3d, setShow3d] = useState(false);
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const sync = () => {
+      setShow3d(!reduced.matches);
+    };
+
+    sync();
+    reduced.addEventListener("change", sync);
+    return () => {
+      reduced.removeEventListener("change", sync);
+    };
+  }, []);
+
   return (
     <section className="relative isolate min-h-[calc(100svh-74px)] md:min-h-[calc(100svh-90px)] flex items-stretch">
-      {/* Full-bleed atmospheric plane */}
       <div
         className="absolute inset-0 bg-[linear-gradient(160deg,#05080f_0%,#0a1628_42%,#003a7a_100%)]"
         aria-hidden
@@ -32,7 +57,7 @@ export function Hero() {
         aria-hidden
       />
 
-      <div className="container-wide relative grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-10 items-center py-16 md:py-22 lg:py-14">
+      <div className="container-wide relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-10 items-center py-16 md:py-22 lg:py-14">
         <div className="max-w-xl text-white">
           <h1 className="text-2xl sm:text-3xl md:text-[2.05rem] font-sans font-semibold leading-[1.5] tracking-tight text-white/85 text-balance">
             {siteConfig.tagline}
@@ -99,71 +124,11 @@ export function Hero() {
           </a>
         </div>
 
-        <div className="relative reveal" style={{ animationDelay: "120ms" }}>
-          <div className="relative rounded-[28px] border border-white/10 bg-black/20 backdrop-blur-sm shadow-[0_30px_80px_rgb(0_0_0/35%)] float-slow">
-            <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
-              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-              <span className="ml-3 font-mono text-[11px] tracking-wider text-white/40">
-                DIAGNOSTIC · TEMPS RÉEL
-              </span>
-              <span className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-teal/20 px-2 py-0.5 text-[11px] font-semibold text-[#4ba3ff]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#4ba3ff]" />
-                Prêt
-              </span>
-            </div>
-
-            <div className="p-5 md:p-6 text-white">
-              <p className="text-2xl md:text-[1.75rem] font-semibold leading-[1.55] tracking-tight text-balance">
-                Précision technique,
-                <br />
-                langage clair.
-              </p>
-              <p className="mt-2 text-sm text-white/50">
-                Lecture machine en temps réel — ce que voit le technicien.
-              </p>
-
-              <div className="mt-6 space-y-3">
-                {[
-                  { label: "Santé SSD", value: 92, color: "#4ba3ff" },
-                  { label: "Température CPU", value: 68, color: "#5ec8ff" },
-                  { label: "Charge mémoire", value: 41, color: "#a8b4c4" },
-                  { label: "Score sécurité", value: 96, color: "#4ba3ff" },
-                ].map((row, i) => (
-                  <div key={row.label}>
-                    <div className="mb-1.5 flex justify-between text-xs">
-                      <span className="text-white/55">{row.label}</span>
-                      <span className="font-mono text-white/80">{row.value}%</span>
-                    </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-                      <div
-                        className="hero-meter h-full rounded-full"
-                        style={{
-                          width: `${row.value}%`,
-                          background: row.color,
-                          animationDelay: `${180 + i * 140}ms`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 grid grid-cols-3 gap-2 border-t border-white/10 pt-5">
-                {[
-                  ["PANNE", "Identifiée"],
-                  ["DEVIS", "Validé"],
-                  ["DÉLAI", "J+0"],
-                ].map(([k, v]) => (
-                  <div key={k} className="rounded-xl bg-white/5 px-3 py-2.5 text-center">
-                    <p className="font-mono text-[10px] tracking-wider text-white/40">{k}</p>
-                    <p className="mt-0.5 text-sm font-semibold text-white/90">{v}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+        <div
+          className="relative w-full"
+          aria-hidden={!show3d}
+        >
+          {show3d ? <HeroScene /> : <HeroDiagnosticCard />}
         </div>
       </div>
     </section>

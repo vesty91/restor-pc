@@ -50,9 +50,11 @@ function MachineCell({
     return <span className="text-ink-muted">non lié</span>;
   }
 
+  const boundId = machineId;
+
   async function copyId() {
     try {
-      await navigator.clipboard.writeText(machineId);
+      await navigator.clipboard.writeText(boundId);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {

@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const user = await getCompteUser();
     const email = user?.email?.trim().toLowerCase();
-    if (!email) {
+    if (!user || !email) {
       return NextResponse.json(
         { error: "Compte requis. Créez un compte ou connectez-vous pour acheter." },
         { status: 401 }
