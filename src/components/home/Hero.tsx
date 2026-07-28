@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site";
 import { HeroDiagnosticCard, SceneFallback } from "@/components/three/SceneFallback";
+import { HeroColorPanels } from "@/components/cult/hero-color-panels";
+import {
+  getHeroMobileVariant,
+  getHeroVariant,
+  type HeroVariant,
+} from "@/lib/hero-variant";
 import { ArrowRight, MapPin, MessageCircle, Phone, ShieldCheck } from "lucide-react";
 
 const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
@@ -12,22 +18,50 @@ const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
   loading: () => <SceneFallback />,
 });
 
+function pickVisual(
+  desktop: HeroVariant,
+  mobile: HeroVariant,
+  isMobile: boolean,
+  reduceMotion: boolean
+): "three" | "color-panels" | "static" {
+  if (reduceMotion) return "static";
+  const chosen = isMobile ? mobile : desktop;
+  if (chosen === "three" && isMobile && mobile !== "three") {
+    return mobile === "static" ? "static" : "color-panels";
+  }
+  return chosen;
+}
+
 export function Hero() {
-  const [show3d, setShow3d] = useState(false);
+  const desktopVariant = getHeroVariant();
+  const mobileVariant = getHeroMobileVariant();
+  const [visual, setVisual] = useState<"three" | "color-panels" | "static">(
+    desktopVariant === "three" ? "static" : desktopVariant
+  );
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const narrow = window.matchMedia("(max-width: 1023px)");
 
     const sync = () => {
-      setShow3d(!reduced.matches);
+      setVisual(
+        pickVisual(
+          desktopVariant,
+          mobileVariant,
+          narrow.matches,
+          reduced.matches
+        )
+      );
     };
 
     sync();
     reduced.addEventListener("change", sync);
+    narrow.addEventListener("change", sync);
     return () => {
       reduced.removeEventListener("change", sync);
+      narrow.removeEventListener("change", sync);
     };
-  }, []);
+  }, [desktopVariant, mobileVariant]);
 
   return (
     <section className="relative isolate min-h-[calc(100svh-74px)] md:min-h-[calc(100svh-90px)] flex items-stretch">
@@ -124,11 +158,14 @@ export function Hero() {
           </a>
         </div>
 
-        <div
-          className="relative w-full"
-          aria-hidden={!show3d}
-        >
-          {show3d ? <HeroScene /> : <HeroDiagnosticCard />}
+        <div className="relative w-full flex justify-center lg:justify-end" aria-hidden={visual !== "static"}>
+          {visual === "three" ? (
+            <HeroScene />
+          ) : visual === "color-panels" ? (
+            <HeroColorPanels className="w-full" />
+          ) : (
+            <HeroDiagnosticCard />
+          )}
         </div>
       </div>
     </section>
