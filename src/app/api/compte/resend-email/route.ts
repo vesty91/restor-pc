@@ -1,6 +1,7 @@
 import { fulfillToolOrder } from "@/lib/fulfillment";
 import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -9,6 +10,22 @@ export const runtime = "nodejs";
 /** Renvoie le mail de livraison pour une commande du client connecte. */
 export async function POST(request: Request) {
   const requestId = createRequestId();
+
+  const limited = await enforceRateLimit({
+    request,
+    scope: "resend-email",
+    limit: 5,
+    windowMs: 30 * 60 * 1000,
+  });
+  if (!limited.ok) {
+    return jsonError(
+      "RATE_LIMITED",
+      "Trop de renvois. Reessayez plus tard.",
+      429,
+      requestId
+    );
+  }
+
   const supabase = await createClient();
   const {
     data: { user },

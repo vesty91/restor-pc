@@ -1,9 +1,33 @@
 import { ATELIER_COOKIE, atelierCookieOptions, createAtelierSessionToken, logAtelierAuth, verifyAtelierPassword } from "@/lib/atelier-auth";
 import { createRequestId, jsonError } from "@/lib/errors";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
+import { sendAlert } from "@/lib/logging/alerts";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const requestId = createRequestId();
+
+  const limited = await enforceRateLimit({
+    request,
+    scope: "atelier-auth",
+    limit: 8,
+    windowMs: 15 * 60 * 1000,
+  });
+  if (!limited.ok) {
+    await sendAlert({
+      event: "admin.login.rate_limited",
+      level: "warn",
+      message: "Trop de tentatives de connexion atelier",
+      fields: { requestId },
+    });
+    return jsonError(
+      "RATE_LIMITED",
+      "Trop de tentatives. Reessayez plus tard.",
+      429,
+      requestId
+    );
+  }
+
   const expected = process.env.ATELIER_SECRET?.trim();
   if (!expected) {
     return jsonError(

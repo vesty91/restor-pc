@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main, "security/**"]
+  pull_request:
+    branches: [master, main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Typecheck · Lint · Unit · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # Variables factices valides — aucun service réel contacté au build
+      NEXT_PUBLIC_SITE_URL: https://www.restor-pc.fr
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ci-anon
+      SUPABASE_URL: https://example.supabase.co
+      SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ci-service
+      STRIPE_SECRET_KEY: sk_test_ci_dummy_key_not_real
+      STRIPE_WEBHOOK_SECRET: whsec_ci_dummy
+      ALLOW_STRIPE_LIVE: "false"
+      ATELIER_SECRET: ci-atelier-secret-not-for-production
+      RESEND_API_KEY: re_ci_dummy
+      CONTACT_TO_EMAIL: contact@example.com
+      CONTACT_FROM_EMAIL: Restor-PC <noreply@example.com>
+      NAS_SSH_FALLBACK_ENABLED: "false"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Build
+        run: npm run build
+
+      # Lint global encore bruyant (hooks React préexistants) — on valide le cœur sécu
+      - name: Lint security-critical paths
+        run: npx eslint src/lib/env.ts src/lib/errors.ts src/lib/atelier-auth.ts src/lib/security src/lib/fulfillment src/app/api --max-warnings 0

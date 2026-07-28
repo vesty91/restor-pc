@@ -64,6 +64,11 @@ export type ServerEnv = z.infer<typeof serverEnvSchema>;
 
 let cached: ServerEnv | null = null;
 
+/** Pour les tests unitaires uniquement. */
+export function clearServerEnvCache(): void {
+  cached = null;
+}
+
 export function getServerEnv(): ServerEnv {
   if (cached) return cached;
   const parsed = serverEnvSchema.safeParse(process.env);

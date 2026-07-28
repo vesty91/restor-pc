@@ -69,3 +69,17 @@ Date : 2026-07-28
 ## Mise en production (cases)
 
 Voir `docs/PRODUCTION_CHECKLIST.md`.
+
+---
+
+## Vague 2 (ops / CI) — ajout
+
+Branche `security/wave2-ops-ci-tests` :
+
+- Rate limit Supabase + mémoire (contact, atelier auth, checkout, resend)
+- Vitest : 18 tests unitaires OK
+- CI GitHub Actions + Dependabot
+- Docs backup/restore + alertes webhook optionnelles
+- `npm audit` : 12 high restantes (eslint/next/postcss) — fix `--force` cassant, reporté
+
+Détail : `docs/WAVE2_REPORT.md`

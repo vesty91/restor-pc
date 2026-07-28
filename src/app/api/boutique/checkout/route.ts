@@ -1,6 +1,7 @@
 import { getProductBySlug, getStripePriceId } from "@/lib/data/outils";
 import { getPublicSiteUrl, getTermsVersion } from "@/lib/env";
 import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { getStripe } from "@/lib/stripe";
 import { getCompteUser } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
@@ -8,6 +9,21 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   const requestId = createRequestId();
   try {
+    const limited = await enforceRateLimit({
+      request,
+      scope: "checkout",
+      limit: 10,
+      windowMs: 10 * 60 * 1000,
+    });
+    if (!limited.ok) {
+      return jsonError(
+        "RATE_LIMITED",
+        "Trop de tentatives de paiement. Reessayez plus tard.",
+        429,
+        requestId
+      );
+    }
+
     const user = await getCompteUser();
     const email = user?.email?.trim().toLowerCase();
     if (!user || !email) {
