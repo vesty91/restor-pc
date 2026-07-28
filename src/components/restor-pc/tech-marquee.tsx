@@ -1,7 +1,7 @@
 import { Marquee } from "@/components/magicui/marquee";
-import { Section } from "@/components/ui/Section";
+import { Badge } from "@/components/ui/badge";
 
-/** Technologies / expertises réelles Restor-PC — pas de faux partenaires. */
+/** Expertises réelles Restor-PC — pas de faux partenaires. */
 const ITEMS = [
   "Windows",
   "Linux",
@@ -15,30 +15,35 @@ const ITEMS = [
 
 export function TechMarquee() {
   return (
-    <Section className="!py-8 md:!py-10">
-      <p className="mb-4 text-center font-mono text-[11px] uppercase tracking-[0.16em] text-teal">
+    <div className="border-y border-line bg-paper py-6 md:py-8">
+      <p className="mb-3 text-center font-mono text-[11px] uppercase tracking-[0.16em] text-teal">
         Domaines d’intervention
       </p>
       <div className="relative">
         <div
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-surface to-transparent"
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-paper to-transparent sm:w-20"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-surface to-transparent"
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-paper to-transparent sm:w-20"
           aria-hidden
         />
-        <Marquee pauseOnHover className="[--duration:35s]" aria-label="Domaines d’intervention">
+        <Marquee
+          pauseOnHover
+          className="[--duration:35s]"
+          aria-label="Domaines d’intervention"
+        >
           {ITEMS.map((item) => (
-            <span
+            <Badge
               key={item}
-              className="mx-1 rounded-full border border-line bg-paper px-4 py-2 text-sm font-medium text-ink-soft"
+              variant="outline"
+              className="mx-1 rounded-full border-line bg-surface px-4 py-1.5 text-sm font-medium text-ink-soft"
             >
               {item}
-            </span>
+            </Badge>
           ))}
         </Marquee>
       </div>
-    </Section>
+    </div>
   );
 }
