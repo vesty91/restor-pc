@@ -59,10 +59,10 @@ export default function TarifsPage() {
             return (
               <article
                 key={row.label}
-                className="group rounded-[22px] border border-line bg-surface p-6 transition-colors hover:border-teal/40"
+                className="tile-wow group rounded-[22px] p-6"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-soft text-teal">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-soft text-teal transition-transform duration-300 group-hover:scale-110 group-hover:border group-hover:border-teal/40 motion-reduce:transition-none">
                     <Icon className="h-5 w-5" aria-hidden />
                   </div>
                   <Badge variant={i === 0 ? "warning" : "muted"}>

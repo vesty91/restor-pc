@@ -14,10 +14,10 @@ export function PricingTiers() {
         <article
           key={tier.id}
           className={cn(
-            "relative flex flex-col overflow-hidden rounded-[24px] border p-6 md:p-7",
+            "relative flex flex-col overflow-hidden rounded-[24px] p-6 md:p-7",
             tier.highlight
-              ? "border-teal/50 bg-panel text-panel-fg shadow-[var(--shadow-lift)] lg:-translate-y-2 lg:scale-[1.02]"
-              : "border-line bg-paper"
+              ? "border border-teal/50 bg-panel text-panel-fg shadow-[var(--shadow-lift)] lg:-translate-y-2 lg:scale-[1.02]"
+              : "tile-wow"
           )}
         >
           {tier.highlight ? (
