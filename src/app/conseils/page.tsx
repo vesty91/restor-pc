@@ -30,7 +30,7 @@ export default function ConseilsPage() {
             <Link
               key={article.slug}
               href={`/conseils/${article.slug}`}
-              className="group flex flex-col rounded-[22px] border border-line bg-paper p-6 transition-all hover:border-teal/35 hover:shadow-[var(--shadow-soft)]"
+              className="tile-wow group flex flex-col rounded-[22px] p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               <div className="flex items-center justify-between gap-3">
                 <span className="text-xs font-semibold uppercase tracking-[0.14em] text-teal">
@@ -46,7 +46,7 @@ export default function ConseilsPage() {
               </p>
               <p className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal">
                 Lire l’article
-                <ArrowUpRight className="h-4 w-4" />
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" />
               </p>
             </Link>
           ))}

@@ -61,11 +61,8 @@ export function BentoGridItem({
   );
 
   const classes = cn(
-    "group/bento flex h-full flex-col rounded-2xl border border-line bg-paper p-5",
-    "shadow-[var(--shadow-soft)] transition-[border-color,box-shadow,transform] duration-200",
-    "hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-[var(--shadow-lift)]",
+    "tile-wow group/bento flex h-full flex-col rounded-2xl p-5",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
-    "motion-reduce:transform-none motion-reduce:hover:translate-y-0",
     className
   );
 

@@ -102,7 +102,7 @@ export function BoutiqueCatalog({ tools }: { tools: OutilProduct[] }) {
               <Link
                 key={tool.slug}
                 href={`/boutique/${tool.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper shadow-[var(--shadow-soft)] transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-[var(--shadow-lift)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal motion-reduce:transform-none"
+                className="tile-wow group flex h-full flex-col overflow-hidden rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
               >
                 <ToolGuiPreview
                   title={tool.title}
@@ -131,7 +131,10 @@ export function BoutiqueCatalog({ tools }: { tools: OutilProduct[] }) {
                     </p>
                     <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal">
                       Détail
-                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+                      <ArrowUpRight
+                        className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"
+                        aria-hidden
+                      />
                     </span>
                   </div>
                 </div>
