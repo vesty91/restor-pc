@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/restor-pc/status-badge";
 import { siteConfig, CONFIG_STORAGE_KEY } from "@/lib/site";
 import { services } from "@/lib/data/services";
 import { buildContactWhatsApp } from "@/lib/whatsapp";
@@ -221,16 +223,17 @@ export function ContactForm() {
         tabIndex={-1}
         ref={(node) => node?.focus()}
       >
-        <CheckCircle2 className="mx-auto h-10 w-10 text-teal success-pop" aria-hidden />
+        <StatusBadge status="fulfilled" className="mx-auto" />
+        <CheckCircle2 className="success-pop mx-auto mt-4 h-10 w-10 text-teal" aria-hidden />
         <h3 className="mt-4 text-2xl">Message envoyé</h3>
-        <p className="mt-2 text-ink-muted leading-relaxed">
+        <p className="mt-2 leading-relaxed text-ink-muted">
           Merci {form.name.split(" ")[0]} ! Nous vous répondons généralement{" "}
           {siteConfig.responseTime.toLowerCase().replace(/^réponse\s+/i, "")}.
         </p>
         <p className="mt-3 text-sm text-ink-muted">
           En attendant, un appel ou un WhatsApp accélère souvent le diagnostic.
         </p>
-        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Button href={siteConfig.phoneHref} variant="secondary">
             <Phone className="h-4 w-4" />
             Appeler
@@ -256,6 +259,9 @@ export function ContactForm() {
     <form onSubmit={onSubmit} className="space-y-4" noValidate aria-busy={loading}>
       {configAttached ? (
         <p className="rounded-xl border border-teal/25 bg-teal-soft/40 px-4 py-3 text-sm text-ink-soft">
+          <Badge variant="info" className="mb-2 mr-2">
+            Config jointe
+          </Badge>
           Votre configuration PC a été préremplie dans le message. Vous pouvez
           l’ajuster avant envoi.
         </p>
@@ -263,7 +269,8 @@ export function ContactForm() {
 
       {form.type === "urgence" ? (
         <p className="rounded-xl border border-amber/30 bg-amber-soft px-4 py-3 text-sm text-ink-soft">
-          Urgence sélectionnée — on priorise le rappel. Vous pouvez aussi{" "}
+          <StatusBadge status="urgent" className="mb-2 mr-2" />
+          On priorise le rappel. Vous pouvez aussi{" "}
           <a href={siteConfig.phoneHref} className="font-semibold text-teal">
             appeler directement
           </a>
