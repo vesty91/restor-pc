@@ -25,7 +25,7 @@ export async function GET() {
   const { data: orders, error } = await sb
     .from("tool_orders")
     .select(
-      "id, order_ref, source, email, user_id, tool_slug, tool_title, script_id, license_key, status, created_at, share_url, share_password, expire_times, email_sent_at, email_error, terms_version, withdrawal_consent_at"
+      "id, order_ref, source, email, user_id, tool_slug, tool_title, script_id, license_key, status, created_at, share_url, share_password, expire_times, email_sent_at, email_retry_needed, terms_version, withdrawal_consent_at"
     )
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
@@ -59,10 +59,25 @@ export async function GET() {
     licenses = licRows ?? [];
   }
 
+  // Ne jamais exposer le détail technique de `email_error` au client.
+  // On remplace par un code générique basé sur `email_retry_needed`.
+  type OrdersRowForEmail = { email_retry_needed?: unknown };
+  const ordersSafe =
+    (orders ?? []).map((o) => {
+      const email_error = Boolean(
+        (o as OrdersRowForEmail).email_retry_needed
+      )
+        ? "EMAIL_SEND_FAILED"
+        : null;
+      const mapped = { ...(o as Record<string, unknown>), email_error };
+      delete (mapped as Record<string, unknown>).email_retry_needed;
+      return mapped;
+    }) ?? [];
+
   return NextResponse.json({
     email: user.email ?? null,
     userId: user.id,
-    orders: orders ?? [],
+    orders: ordersSafe,
     licenses,
     requestId,
   });

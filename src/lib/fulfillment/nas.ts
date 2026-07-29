@@ -12,7 +12,109 @@ function requireEnv(name: string): string {
 }
 
 function publicBase(): string {
-  return (process.env.NAS_PUBLIC_BASE || "https://nas.restor-pc.fr").replace(/\/$/, "");
+  const raw = (process.env.NAS_PUBLIC_BASE || "https://nas.restor-pc.fr").trim();
+  let u: URL;
+  try {
+    u = new URL(raw);
+  } catch {
+    throw new Error("NAS_PUBLIC_BASE invalide (URL non valide).");
+  }
+
+  const protocol = u.protocol.toLowerCase();
+  const isProd = process.env.NODE_ENV === "production";
+
+  // Bloque explicitement toute URL non HTTP(S) (ex: javascript:, data:, ftp:, etc.)
+  const isHttp = protocol === "http:";
+  const isHttps = protocol === "https:";
+  if (!isHttp && !isHttps) {
+    throw new Error("NAS_PUBLIC_BASE invalide (protocole non autorisé).");
+  }
+  if (isProd && !isHttps) {
+    throw new Error(
+      "NAS_PUBLIC_BASE invalide (https obligatoire en production)."
+    );
+  }
+
+  // Les identifiants DSM ne doivent jamais être intégrés dans l'URL.
+  // (username/password dans NAS_PUBLIC_BASE)
+  if (u.username || u.password) {
+    throw new Error("NAS_PUBLIC_BASE invalide (identifiants intégrés interdits).");
+  }
+
+  // Retire le slash final pour éviter des doubles slash lors de concaténation.
+  return u.toString().replace(/\/$/, "");
+}
+
+function nasHttpTimeoutMs(): number {
+  const raw = process.env.NAS_HTTP_TIMEOUT_MS?.trim();
+  const n = raw ? Number(raw) : NaN;
+  if (!Number.isFinite(n) || n <= 0) return 10000;
+  // Évite les timeouts excessivement élevés.
+  return Math.min(Math.floor(n), 60000);
+}
+
+class NasDsmTimeoutError extends Error {
+  constructor() {
+    super("NAS_DSM_TIMEOUT");
+    this.name = "NasDsmTimeoutError";
+  }
+}
+
+class NasDsmNetworkError extends Error {
+  constructor() {
+    super("NAS_DSM_NETWORK_ERROR");
+    this.name = "NasDsmNetworkError";
+  }
+}
+
+class NasDsmHttpError extends Error {
+  readonly status: number;
+  constructor(status: number) {
+    super(`NAS_DSM_HTTP_ERROR_${status}`);
+    this.name = "NasDsmHttpError";
+    this.status = status;
+  }
+}
+
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  timeoutMs = nasHttpTimeoutMs()
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { ...init, signal: controller.signal });
+    if (!res.ok) {
+      // Distingue clairement erreur HTTP.
+      throw new NasDsmHttpError(res.status);
+    }
+    return res;
+  } catch (err) {
+    // Si l'erreur a déjà été catégorisée, on la conserve.
+    if (
+      err instanceof NasDsmTimeoutError ||
+      err instanceof NasDsmNetworkError ||
+      err instanceof NasDsmHttpError
+    ) {
+      throw err;
+    }
+
+    const name =
+      err && typeof err === "object" && "name" in err
+        ? (err as { name?: unknown }).name
+        : undefined;
+    // Distinction timeout vs réseau.
+    if (name === "AbortError") {
+      throw new NasDsmTimeoutError();
+    }
+    if (err instanceof TypeError) {
+      throw new NasDsmNetworkError();
+    }
+    throw new NasDsmNetworkError();
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /** Normalise l'URL renvoyee par DSM (parfois absolue avec :9169). */
@@ -80,7 +182,7 @@ async function createViaHttp(opts: {
     format: "sid",
   });
 
-  const loginRes = await fetch(`${base}/webapi/auth.cgi`, {
+  const loginRes = await fetchWithTimeout(`${base}/webapi/auth.cgi`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: loginBody,
@@ -109,7 +211,7 @@ async function createViaHttp(opts: {
       _sid: sid,
     });
 
-    const createRes = await fetch(`${base}/webapi/entry.cgi`, {
+    const createRes = await fetchWithTimeout(`${base}/webapi/entry.cgi`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: createBody,
@@ -141,12 +243,20 @@ async function createViaHttp(opts: {
         session: "FileStation",
         _sid: sid,
       });
-      await fetch(`${base}/webapi/auth.cgi`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: logoutBody,
-        cache: "no-store",
-      });
+      try {
+        await fetchWithTimeout(
+          `${base}/webapi/auth.cgi`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: logoutBody,
+            cache: "no-store",
+          },
+          2000
+        );
+      } catch {
+        // Best-effort : le partage a déjà été créé avec succès.
+      }
     } catch {
       /* ignore */
     }
@@ -258,3 +368,10 @@ function extractJson(text: string): {
     data?: { links?: Array<{ id: string; url: string }> };
   };
 }
+
+/** @internal Réservé aux tests unitaires. */
+export const __nasTestUtils = {
+  publicBase,
+  nasHttpTimeoutMs,
+  fetchWithTimeout,
+} as const;
