@@ -35,6 +35,31 @@ const productionOnlyHeaders = [
       "upgrade-insecure-requests",
     ].join("; "),
   },
+  {
+    key: "Reporting-Endpoints",
+    value: 'csp-endpoint="/api/csp-report"',
+  },
+  {
+    key: "Content-Security-Policy-Report-Only",
+    value: [
+      "default-src 'self'",
+      "base-uri 'self'",
+      "form-action 'self' https://checkout.stripe.com",
+      "frame-ancestors 'none'",
+      "object-src 'none'",
+      "img-src 'self' data: blob: https:",
+      "font-src 'self' data:",
+      "style-src 'self' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-inline'",
+      "script-src-attr 'none'",
+      "connect-src 'self' https://*.supabase.co",
+      "frame-src https://maps.google.com https://www.google.com",
+      "worker-src 'self'",
+      "upgrade-insecure-requests",
+      "report-to csp-endpoint",
+      "report-uri /api/csp-report",
+    ].join("; "),
+  },
 ];
 
 const securityHeaders = isDev
