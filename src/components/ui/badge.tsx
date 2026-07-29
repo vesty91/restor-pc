@@ -16,11 +16,11 @@ const badgeVariants = cva(
         secondary: "border-line bg-surface-2 text-ink-soft",
         outline: "border-line bg-transparent text-ink",
         success:
-          "border-transparent bg-[color-mix(in_oklab,var(--success)_18%,transparent)] text-[var(--success)]",
+          "border-transparent bg-[color-mix(in_oklab,var(--success)_16%,white)] text-[#0b4d28] dark:bg-[color-mix(in_oklab,var(--success)_22%,transparent)] dark:text-[#86efac]",
         warning:
-          "border-transparent bg-amber-soft text-amber",
+          "border-transparent bg-amber-soft text-[#92400e] dark:text-[#fcd34d]",
         danger:
-          "border-transparent bg-[color-mix(in_oklab,var(--danger)_18%,transparent)] text-[var(--danger)]",
+          "border-transparent bg-[color-mix(in_oklab,var(--danger)_14%,white)] text-[#991b1b] dark:bg-[color-mix(in_oklab,var(--danger)_22%,transparent)] dark:text-[#fca5a5]",
         muted: "border-transparent bg-surface text-ink-muted",
         info: "border-transparent bg-teal-soft text-teal",
       },

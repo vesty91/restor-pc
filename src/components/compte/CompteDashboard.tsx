@@ -63,11 +63,19 @@ export function CompteDashboard({
   const [copied, setCopied] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState(firstName || "");
   const [nameDraft, setNameDraft] = useState(firstName || "");
+  const [nameSource, setNameSource] = useState(firstName || "");
   const [editingName, setEditingName] = useState(false);
   const [savingName, setSavingName] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
   const [resendId, setResendId] = useState<string | null>(null);
   const [resendMsg, setResendMsg] = useState<string | null>(null);
+
+  const incomingName = firstName || "";
+  if (incomingName !== nameSource) {
+    setNameSource(incomingName);
+    setDisplayName(incomingName);
+    setNameDraft(incomingName);
+  }
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -93,13 +101,11 @@ export function CompteDashboard({
   }, []);
 
   useEffect(() => {
-    void load();
+    const id = window.setTimeout(() => {
+      void load();
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [load]);
-
-  useEffect(() => {
-    setDisplayName(firstName || "");
-    setNameDraft(firstName || "");
-  }, [firstName]);
 
   async function logout() {
     await signOutClient();

@@ -147,7 +147,11 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
   }, [q, statusFilter, pagination.pageIndex, pagination.pageSize]);
 
   useEffect(() => {
-    if (authed) void load();
+    if (!authed) return;
+    const id = window.setTimeout(() => {
+      void load();
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [authed, load]);
 
   async function patch(id: string, body: Record<string, unknown>) {

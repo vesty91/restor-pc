@@ -12,14 +12,20 @@ export function AnnouncementBar() {
   const [status, setStatus] = useState(() => getOpenStatus());
 
   useEffect(() => {
-    setStatus(getOpenStatus());
+    const id = window.setInterval(() => setStatus(getOpenStatus()), 60_000);
+    let dismissed = false;
     try {
-      if (sessionStorage.getItem(DISMISS_KEY) === "1") return;
+      dismissed = sessionStorage.getItem(DISMISS_KEY) === "1";
     } catch {
       /* ignore */
     }
-    setVisible(true);
-    const id = window.setInterval(() => setStatus(getOpenStatus()), 60_000);
+    if (!dismissed) {
+      const show = window.setTimeout(() => setVisible(true), 0);
+      return () => {
+        window.clearInterval(id);
+        window.clearTimeout(show);
+      };
+    }
     return () => window.clearInterval(id);
   }, []);
 
@@ -55,7 +61,8 @@ export function AnnouncementBar() {
           ) : (
             <a
               href="/contact?type=urgence&urgency=asap"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-amber px-2.5 py-1.5 text-xs font-semibold text-white dark:text-[#1a1205]"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-amber px-2.5 py-1.5 text-xs font-semibold text-black"
+              style={{ color: "#000000" }}
             >
               Demander un rappel
             </a>

@@ -66,60 +66,65 @@ export function ContactForm() {
   useEffect(() => {
     // Lecture query string côté client uniquement (évite Suspense useSearchParams
     // qui laisse le fallback SSR et casse les E2E / SEO formulaire).
-    const params = new URLSearchParams(window.location.search);
-    const rawType = params.get("type") ?? "devis";
-    // Ancien lien « distance » → devis atelier (plus d’assistance à distance)
-    const type = rawType === "distance" ? "devis" : rawType;
-    const service =
-      params.get("service") === "assistance-distance"
-        ? "depannage-informatique"
-        : (params.get("service") ?? "");
-    const summary = params.get("summary");
-    const total = params.get("total");
-    const usage = params.get("usage");
-    const budget = params.get("budget");
-    const mode =
-      params.get("mode") === "distance"
-        ? "atelier"
-        : rawType === "distance"
+    const id = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const rawType = params.get("type") ?? "devis";
+      // Ancien lien « distance » → devis atelier (plus d’assistance à distance)
+      const type = rawType === "distance" ? "devis" : rawType;
+      const service =
+        params.get("service") === "assistance-distance"
+          ? "depannage-informatique"
+          : (params.get("service") ?? "");
+      const summary = params.get("summary");
+      const total = params.get("total");
+      const usage = params.get("usage");
+      const budget = params.get("budget");
+      const mode =
+        params.get("mode") === "distance"
           ? "atelier"
-          : (params.get("mode") ?? "");
-    const city = params.get("city") ?? "";
-    const urgency = params.get("urgency") ?? "";
+          : rawType === "distance"
+            ? "atelier"
+            : (params.get("mode") ?? "");
+      const city = params.get("city") ?? "";
+      const urgency = params.get("urgency") ?? "";
 
-    let message = "";
-    let stored: string | null = null;
-    try {
-      stored = sessionStorage.getItem(CONFIG_STORAGE_KEY);
-    } catch {
-      stored = null;
-    }
+      let message = "";
+      let stored: string | null = null;
+      try {
+        stored = sessionStorage.getItem(CONFIG_STORAGE_KEY);
+      } catch {
+        stored = null;
+      }
 
-    if (stored) {
-      message = `Bonjour,\n\nJe souhaite un devis pour la configuration suivante :\n${stored}\n\nCordialement`;
-      setConfigAttached(true);
-    } else if (summary && type === "config") {
-      message = `Bonjour,\n\nJe souhaite un devis pour la configuration suivante :\n${summary}${total ? `\nTotal estimé : ${total} €` : ""}${usage ? `\nUsage : ${usage}` : ""}${budget ? `\nBudget : ${budget}` : ""}\n\nCordialement`;
-      setConfigAttached(true);
-    } else if (summary) {
-      message = `Bonjour,\n\n${decodeURIComponent(summary)}\n\nCordialement`;
-    }
+      let attached = false;
+      if (stored) {
+        message = `Bonjour,\n\nJe souhaite un devis pour la configuration suivante :\n${stored}\n\nCordialement`;
+        attached = true;
+      } else if (summary && type === "config") {
+        message = `Bonjour,\n\nJe souhaite un devis pour la configuration suivante :\n${summary}${total ? `\nTotal estimé : ${total} €` : ""}${usage ? `\nUsage : ${usage}` : ""}${budget ? `\nBudget : ${budget}` : ""}\n\nCordialement`;
+        attached = true;
+      } else if (summary) {
+        message = `Bonjour,\n\n${decodeURIComponent(summary)}\n\nCordialement`;
+      }
 
-    const resolvedType =
-      stored || (summary && type === "config") ? "config" : type;
-    const resolvedUrgency =
-      urgency ||
-      (resolvedType === "urgence" ? "asap" : empty.urgency);
+      const resolvedType =
+        stored || (summary && type === "config") ? "config" : type;
+      const resolvedUrgency =
+        urgency ||
+        (resolvedType === "urgence" ? "asap" : empty.urgency);
 
-    setForm((f) => ({
-      ...f,
-      type: resolvedType,
-      service,
-      mode,
-      city: city || f.city,
-      urgency: resolvedUrgency,
-      message: message || f.message,
-    }));
+      if (attached) setConfigAttached(true);
+      setForm((f) => ({
+        ...f,
+        type: resolvedType,
+        service,
+        mode,
+        city: city || f.city,
+        urgency: resolvedUrgency,
+        message: message || f.message,
+      }));
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   const whatsappHref = useMemo(() => {

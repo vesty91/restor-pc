@@ -26,21 +26,21 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
             <BrandLogo variant="full" />
-            <p className="mt-4 text-sm leading-relaxed text-white/65 max-w-xs">
+            <p className="mt-4 text-sm leading-relaxed text-white/70 max-w-xs">
               Atelier de dépannage informatique à Yerres (91). Diagnostic précis,
               réparation soignée, configurations sur mesure.
             </p>
-            <p className="mt-3 text-xs text-white/40">{siteConfig.guarantee}</p>
+            <p className="mt-3 text-xs text-white/55">{siteConfig.guarantee}</p>
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/55">
               Navigation
             </p>
             <ul className="mt-4 space-y-2.5">
               {navLinks.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-white/75 hover:text-white">
+                  <Link href={l.href} className="text-sm text-white/80 hover:text-white">
                     {l.label}
                   </Link>
                 </li>
@@ -49,13 +49,13 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/55">
               Infos
             </p>
             <ul className="mt-4 space-y-2.5">
               {legal.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-white/75 hover:text-white">
+                  <Link href={l.href} className="text-sm text-white/80 hover:text-white">
                     {l.label}
                   </Link>
                 </li>
@@ -66,7 +66,7 @@ export function Footer() {
                     href={l.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-white/75 hover:text-white"
+                    className="text-sm text-white/80 hover:text-white"
                   >
                     {l.label}
                   </a>
@@ -76,10 +76,10 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/55">
               Contact
             </p>
-            <ul className="mt-4 space-y-3 text-sm text-white/75">
+            <ul className="mt-4 space-y-3 text-sm text-white/80">
               <li>
                 <a href={siteConfig.phoneHref} className="inline-flex items-center gap-2 hover:text-white">
                   <Phone className="h-4 w-4 text-teal" />
@@ -116,7 +116,7 @@ export function Footer() {
                     <br />
                     {siteConfig.postalCode} {siteConfig.city}
                     <br />
-                    <span className="text-white/45">{siteConfig.hours}</span>
+                    <span className="text-white/55">{siteConfig.hours}</span>
                   </span>
                 </a>
               </li>
@@ -124,7 +124,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/45 md:flex-row md:items-center md:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/55 md:flex-row md:items-center md:justify-between">
           <p>
             © {new Date().getFullYear()} {siteConfig.name} — {siteConfig.city} ({siteConfig.postalCode}).
             Tous droits réservés.

@@ -40,7 +40,12 @@ export function SectionHeader({
       )}
     >
       {eyebrow ? (
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-teal">
+        <p
+          className={cn(
+            "mb-3 text-xs font-semibold uppercase tracking-[0.18em]",
+            tone === "dark" ? "text-[#7eb8ff]" : "text-teal"
+          )}
+        >
           {eyebrow}
         </p>
       ) : null}

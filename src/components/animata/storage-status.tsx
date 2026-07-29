@@ -31,7 +31,12 @@ function Section({
       style={{ height: `${Math.max(pct, 8)}%` }}
       title={`${label} : ${value} Go`}
     >
-      <div className="flex h-full w-full items-center justify-center px-1 text-center text-xs font-semibold text-white/90">
+      <div
+        className={cn(
+          "flex h-full w-full items-center justify-center px-1 text-center text-xs font-semibold",
+          stretch ? "text-ink" : "text-white"
+        )}
+      >
         {label}
       </div>
     </div>

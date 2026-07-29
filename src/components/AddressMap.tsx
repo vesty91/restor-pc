@@ -28,7 +28,8 @@ export function AddressMap({
                 href={siteConfig.mapsDirectionsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-10 items-center gap-2 rounded-xl bg-teal px-4 text-sm font-semibold text-white"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-teal px-4 text-sm font-semibold !text-white"
+                style={{ color: "#ffffff" }}
               >
                 <Navigation className="h-4 w-4" />
                 Itinéraire

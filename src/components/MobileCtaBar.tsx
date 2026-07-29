@@ -10,10 +10,9 @@ import { useEffect, useState } from "react";
 
 export function MobileCtaBar() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(() => getOpenStatus().open);
 
   useEffect(() => {
-    setOpen(getOpenStatus().open);
     const id = window.setInterval(() => setOpen(getOpenStatus().open), 60_000);
     return () => window.clearInterval(id);
   }, []);

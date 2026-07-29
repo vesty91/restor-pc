@@ -308,7 +308,7 @@ export function generateBuild(
   let remaining = budget.max - ASSEMBLY_FEE; // leave room for assembly
 
   // CPU first to determine platform
-  let cpu =
+  const cpu =
     overrides?.cpu
       ? catalog.find((c) => c.id === overrides.cpu)!
       : pickBest("cpu", usage, budgetId, prefs, mid, remaining, null);
@@ -348,7 +348,7 @@ export function generateBuild(
   }
   remaining -= storage.price;
 
-  let motherboard = pick("motherboard");
+  const motherboard = pick("motherboard");
   remaining -= motherboard.price;
 
   let caseOpt = pick("case");

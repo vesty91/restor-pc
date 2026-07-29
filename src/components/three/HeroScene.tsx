@@ -74,13 +74,24 @@ function useSceneQuality(): SceneQuality {
   useEffect(() => {
     const sync = () => {
       const w = window.innerWidth;
-      if (w < 768) setQuality("low");
+      // Save-Data / cœurs faibles → qualité basse même en desktop
+      const cores = navigator.hardwareConcurrency || 4;
+      const saveData =
+        "connection" in navigator &&
+        Boolean(
+          (navigator as Navigator & { connection?: { saveData?: boolean } })
+            .connection?.saveData
+        );
+      if (saveData || cores <= 4 || w < 768) setQuality("low");
       else if (w < 1024) setQuality("medium");
       else setQuality("high");
     };
-    sync();
+    const id = window.setTimeout(sync, 0);
     window.addEventListener("resize", sync, { passive: true });
-    return () => window.removeEventListener("resize", sync);
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener("resize", sync);
+    };
   }, []);
 
   return quality;
@@ -118,8 +129,11 @@ function SceneContent({
 /**
  * Scène 3D Hero — chargée via dynamic(ssr:false).
  * Canvas en absolute inset-0 ; overlays HTML superposés.
+ * Fallback immédiat si WebGL / reduced-motion.
  */
 export default function HeroScene() {
+  const [rootEl, setRootEl] = useState<HTMLElement | null>(null);
+
   const [webglOk] = useState(() => {
     if (typeof window === "undefined") return true;
     try {
@@ -132,7 +146,7 @@ export default function HeroScene() {
     }
   });
 
-  const motion = useHeroMotion(true);
+  const motion = useHeroMotion(true, rootEl);
   const quality = useSceneQuality();
 
   if (!webglOk || motion.reducedMotion) {
@@ -141,6 +155,7 @@ export default function HeroScene() {
 
   return (
     <div
+      ref={setRootEl}
       data-hero-webgl
       className="relative h-[340px] w-full overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(165deg,rgba(8,18,36,0.95)_0%,rgba(6,24,52,0.9)_55%,rgba(5,32,72,0.82)_100%)] shadow-[0_30px_80px_rgb(0_0_0/35%)] sm:h-[380px] md:h-[420px] lg:h-[480px]"
     >
@@ -166,7 +181,7 @@ export default function HeroScene() {
             gl={{
               antialias: quality !== "low",
               alpha: true,
-              powerPreference: "high-performance",
+              powerPreference: quality === "low" ? "low-power" : "high-performance",
             }}
             frameloop={motion.visible ? "always" : "never"}
             onCreated={({ gl }) => {
