@@ -46,13 +46,14 @@ async function BoutiqueInner({
     <div className="boutique-grid-scene">
       <BoutiqueGridBg />
       <Section className="pb-16 pt-20 md:pb-20 md:pt-28">
-        <Breadcrumbs items={[{ label: "Boutique" }]} />
+        <Breadcrumbs items={[{ label: "Boutique", href: "/boutique" }]} />
         <div className="mb-4 flex flex-wrap gap-2">
           <Badge variant="info">Outils atelier</Badge>
           <Badge variant="outline">Licence 1 PC</Badge>
           <Badge variant="success">Paiement Stripe</Badge>
         </div>
         <SectionHeader
+          as="h1"
           eyebrow="Boutique"
           title="Outils atelier Restor-PC"
           description="Fiches détaillées, licence liée à 1 PC, email avec clé + lien de téléchargement (1 fois)."

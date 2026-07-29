@@ -2,10 +2,10 @@
 # Projet: rjymdpstakbrbqtfpomj
 #
 # 1) Supabase Dashboard > Authentication > URL Configuration
-#    Site URL (prod): https://www.restor-pc.fr
+#    Site URL (prod): https://atelier.restor-pc.fr
 #    Redirect URLs (ajouter) :
 #      http://localhost:3000/auth/callback
-#      https://www.restor-pc.fr/auth/callback
+#      https://atelier.restor-pc.fr/auth/callback
 #
 # 2) Google Cloud Console > APIs & Services > Credentials > OAuth client ID
 #    Type: Application Web
@@ -15,7 +15,7 @@
 #      Supabase > Authentication > Providers > Google > Enable
 #
 # 3) GitHub > Settings > Developer settings > OAuth Apps > New
-#    Homepage URL: https://www.restor-pc.fr
+#    Homepage URL: https://atelier.restor-pc.fr
 #    Authorization callback URL:
 #      https://rjymdpstakbrbqtfpomj.supabase.co/auth/v1/callback
 #    Copier Client ID + Client Secret dans :
@@ -25,3 +25,6 @@
 #    pour le fallback email/mot de passe.
 #
 # App route: /auth/callback (echange code PKCE → session cookies)
+# Note: localhost ci-dessus sert uniquement au développement OAuth local.
+# L’URL canonique publique de ce projet est uniquement :
+#   https://atelier.restor-pc.fr

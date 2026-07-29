@@ -9,49 +9,78 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Zone d’intervention — Yerres & Essonne",
+  title: "Zone d’intervention — Yerres et Essonne",
   description:
-    "Atelier Restor-PC à Yerres (3 rue Auber). Dépôt machine ou intervention à domicile en Essonne & Île-de-France.",
+    "Restor-PC intervient à Yerres (atelier 3 rue Auber) et dans les communes voisines : Brunoy, Crosne, Montgeron, Draveil, Vigneux-sur-Seine et alentours.",
   alternates: { canonical: "/zone-intervention" },
+  openGraph: {
+    title: "Zone d’intervention — Yerres et Essonne | Restor-PC",
+    description:
+      "Atelier à Yerres, dépannage à domicile dans un rayon d’environ 15 km.",
+  },
 };
 
 const modes = [
   {
     icon: Home,
     title: "À domicile",
-    text: "Je me déplace : Yerres et communes voisines en priorité, puis Essonne / proche Île-de-France selon planning.",
+    text: "Je me déplace : Yerres et communes voisines en priorité (environ 15 km), puis Essonne / proche Île-de-France selon planning.",
   },
   {
     icon: Warehouse,
     title: "En atelier",
-    text: `Vous venez déposer / récupérer la machine : ${siteConfig.addressShort}. Idéal hardware, récupération et montage.`,
+    text: `Vous venez déposer / récupérer la machine : ${siteConfig.addressShort}. Idéal hardware, récupération de données et montage PC.`,
   },
 ];
 
 const communeDetails: { name: string; text: string }[] = [
   {
     name: "Yerres",
-    text: "Atelier sur place. Dépannage domicile rapide, dépôt machine, montage PC et rendez-vous atelier sans long trajet.",
+    text: "Zone principale. Atelier sur place pour dépôt machine, dépannage domicile rapide, montage PC et rendez-vous sans long trajet.",
   },
   {
     name: "Brunoy",
-    text: "Intervention domicile fréquente : optimisation, virus, réinstallation et petits dépannages sur place.",
-  },
-  {
-    name: "Montgeron",
-    text: "Atelier à quelques minutes. Idéal pour récupération de données, hardware et configs gaming.",
+    text: "Intervention domicile fréquente : optimisation, virus, réinstallation Windows et dépannages sur place.",
   },
   {
     name: "Crosne",
     text: "Dépannage à domicile ou dépôt atelier Yerres selon la panne. Réponse rapide en journée.",
   },
   {
+    name: "Montgeron",
+    text: "Atelier à quelques minutes. Adapté à la récupération de données, au hardware et aux configs gaming.",
+  },
+  {
     name: "Draveil",
     text: "Assistance particulière et TPE : sauvegarde, sécurité, maintenance et dépannage sur rendez-vous.",
   },
   {
+    name: "Vigneux-sur-Seine",
+    text: "Intervention planifiée à domicile, ou dépôt / retrait à l’atelier Yerres selon le diagnostic.",
+  },
+  {
+    name: "Épinay-sous-Sénart",
+    text: "Dépannage PC et portables sur rendez-vous, avec possibilité de dépôt atelier pour les réparations plus longues.",
+  },
+  {
+    name: "Boussy-Saint-Antoine",
+    text: "Assistance à domicile pour virus, lenteurs et réinstallation, ou atelier Yerres pour le matériel.",
+  },
+  {
+    name: "Quincy-sous-Sénart",
+    text: "Prise en charge domicile pour les pannes courantes ; atelier pour SSD, récupération et montage.",
+  },
+  {
     name: "Villeneuve-Saint-Georges",
     text: "Intervention planifiée à domicile, ou dépôt / retrait à l’atelier Yerres selon le diagnostic.",
+  },
+  {
+    name: "Mandres-les-Roses",
+    text: "Déplacement sur rendez-vous dans le rayon d’intervention ; dépôt atelier recommandé pour le hardware.",
+  },
+  {
+    name: "Marolles-en-Brie",
+    text: "Assistance informatique à domicile selon créneaux, avec alternative dépôt atelier à Yerres.",
   },
 ];
 
@@ -59,10 +88,15 @@ export default function ZonePage() {
   return (
     <>
       <Section className="noise-bg pt-20 md:pt-28">
-        <Breadcrumbs items={[{ label: "Zone d’intervention" }]} />
+        <Breadcrumbs
+          items={[
+            { label: "Zone d’intervention", href: "/zone-intervention" },
+          ]}
+        />
         <SectionHeader
+          as="h1"
           eyebrow="Zone d’intervention"
-          title={siteConfig.zone}
+          title="Dépannage informatique à Yerres et alentours"
           description={siteConfig.zoneDetail}
         />
 
@@ -78,22 +112,28 @@ export default function ZonePage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           {modes.map((m) => (
-            <div key={m.title} className="rounded-[22px] border border-line bg-paper p-6">
+            <div
+              key={m.title}
+              className="rounded-[22px] border border-line bg-paper p-6"
+            >
               <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-soft text-teal">
                 <m.icon className="h-5 w-5" />
               </span>
               <h2 className="mt-4 text-xl">{m.title}</h2>
-              <p className="mt-2 text-sm text-ink-muted leading-relaxed">{m.text}</p>
+              <p className="mt-2 text-sm text-ink-muted leading-relaxed">
+                {m.text}
+              </p>
             </div>
           ))}
         </div>
 
         <div className="mt-14">
-          <h2 className="text-2xl md:text-3xl">Communes prioritaires</h2>
+          <h2 className="text-2xl md:text-3xl">Communes desservies</h2>
           <p className="mt-3 max-w-2xl text-ink-muted leading-relaxed">
-            Voici comment on intervient le plus souvent autour de l’atelier.
-            Votre commune n’est pas listée ? Contactez-nous : on confirme
-            disponibilité, délai et mode (domicile ou atelier).
+            Yerres est la zone principale. Les communes ci-dessous sont
+            couvertes pour l’assistance à domicile ou le dépôt en atelier.
+            Votre commune n’apparaît pas ? Contactez-nous pour confirmer
+            disponibilité, délai et mode d’intervention.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {communeDetails.map((c) => (
@@ -102,12 +142,14 @@ export default function ZonePage() {
                 className="rounded-[20px] border border-line bg-paper p-5"
               >
                 <h3 className="text-lg">{c.name}</h3>
-                <p className="mt-2 text-sm text-ink-muted leading-relaxed">{c.text}</p>
+                <p className="mt-2 text-sm text-ink-muted leading-relaxed">
+                  {c.text}
+                </p>
                 <Link
                   href={`/contact?mode=domicile&type=devis&city=${encodeURIComponent(c.name)}`}
                   className="mt-4 inline-block text-sm font-semibold text-teal hover:text-teal-deep"
                 >
-                  Demander une intervention →
+                  Demander une intervention à {c.name}
                 </Link>
               </article>
             ))}
@@ -123,6 +165,9 @@ export default function ZonePage() {
           </Button>
           <Button href={siteConfig.phoneHref} variant="secondary" size="lg">
             Appeler {siteConfig.phone}
+          </Button>
+          <Button href="/services/depannage-informatique" variant="secondary" size="lg">
+            Voir le dépannage informatique
           </Button>
         </div>
       </Section>

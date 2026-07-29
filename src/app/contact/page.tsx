@@ -22,7 +22,7 @@ export default function ContactPage() {
   return (
     <>
       <Section className="noise-bg pb-8 pt-20 md:pt-28">
-        <Breadcrumbs items={[{ label: "Contact" }]} />
+        <Breadcrumbs items={[{ label: "Contact", href: "/contact" }]} />
         <div className="mt-6">
           <ContactHero />
         </div>

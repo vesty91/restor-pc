@@ -28,10 +28,11 @@ export default function FaqPage() {
     <>
       <JsonLd data={faqSchema} />
       <Section className="noise-bg pt-20 md:pt-28 pb-8">
-        <Breadcrumbs items={[{ label: "FAQ" }]} />
+        <Breadcrumbs items={[{ label: "FAQ", href: "/faq" }]} />
         <SectionHeader
+          as="h1"
           eyebrow="FAQ"
-          title="Les réponses aux questions qu’on nous pose le plus"
+          title="Questions fréquentes sur le dépannage à Yerres"
           description="Recherchez un mot-clé, ou contactez l’atelier Yerres directement."
         />
       </Section>

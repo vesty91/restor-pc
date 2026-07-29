@@ -5,14 +5,14 @@ L’hébergement cible est le **NAS Synology** (Docker), pas Vercel.
 ## Prérequis
 
 - Container Manager (Docker) sur le NAS
-- Domaine / reverse proxy HTTPS vers le conteneur (ex. `www.restor-pc.fr` → port 3000)
+- Domaine / reverse proxy HTTPS vers le conteneur (ex. `atelier.restor-pc.fr` → port 3000)
 - Fichier `.env` avec les secrets (jamais dans Git)
 
 ## Variables critiques
 
 ```env
 NODE_ENV=production
-NEXT_PUBLIC_SITE_URL=https://www.restor-pc.fr
+NEXT_PUBLIC_SITE_URL=https://atelier.restor-pc.fr
 ALLOW_STRIPE_LIVE=false
 STRIPE_SECRET_KEY=sk_test_…
 STRIPE_WEBHOOK_SECRET=whsec_…
@@ -55,7 +55,7 @@ curl -s http://127.0.0.1:3000/api/health
 
 ## Stripe
 
-- Webhook actif : `https://www.restor-pc.fr/api/stripe/webhook`
+- Webhook actif : `https://atelier.restor-pc.fr/api/stripe/webhook`
 - Le reverse proxy NAS doit exposer cette URL en HTTPS public
 
 ## Notes

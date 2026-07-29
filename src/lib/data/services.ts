@@ -59,7 +59,7 @@ export const services: Service[] = [
         a: "Le diagnostic atelier est à 30 € s’il est réalisé seul. Il est déduit si vous validez la réparation.",
       },
     ],
-    seoTitle: "Dépannage informatique Yerres (91) | Restor-PC",
+    seoTitle: "Dépannage informatique à Yerres (91)",
     seoDescription:
       "Dépannage PC rapide et professionnel à Yerres, Essonne et Île-de-France. Diagnostic précis, devis transparent, intervention à domicile ou en atelier.",
   },
@@ -105,9 +105,9 @@ export const services: Service[] = [
         a: "Souvent sous 24–48 h selon disponibilité des pièces.",
       },
     ],
-    seoTitle: "Réparation PC & hardware | Restor-PC",
+    seoTitle: "Réparation PC et portable à Yerres",
     seoDescription:
-      "Réparation ordinateur portable et fixe : SSD, RAM, alimentation, surchauffe. Atelier professionnel Restor-PC.",
+      "Réparation d’ordinateur fixe et portable à Yerres (91) : SSD, RAM, alimentation, surchauffe. Atelier Restor-PC, domicile possible.",
   },
   {
     slug: "virus-optimisation",
@@ -147,9 +147,9 @@ export const services: Service[] = [
         a: "Nous travaillons avec des copies de sécurité dès que possible. Vos données restent prioritaires.",
       },
     ],
-    seoTitle: "Suppression virus & optimisation PC | Restor-PC",
+    seoTitle: "Suppression de virus à Yerres",
     seoDescription:
-      "Nettoyage virus, malware et optimisation Windows. Retrouvez un PC rapide et sécurisé avec Restor-PC.",
+      "Nettoyage virus, malware et optimisation PC à Yerres et en Essonne. Retrouvez un ordinateur rapide et sécurisé.",
   },
   {
     slug: "reinstallation-windows",
@@ -189,9 +189,9 @@ export const services: Service[] = [
         a: "Dans la plupart des cas, la licence OEM est réactivée automatiquement. Sinon, nous vous guidons.",
       },
     ],
-    seoTitle: "Réinstallation Windows 10/11 | Restor-PC",
+    seoTitle: "Installation Windows à Yerres",
     seoDescription:
-      "Réinstallation Windows propre avec sauvegarde de données, drivers et optimisation. Service Restor-PC.",
+      "Réinstallation Windows 10/11 à Yerres avec sauvegarde des données, drivers et configuration. Atelier ou domicile.",
   },
   {
     slug: "recuperation-donnees",
@@ -200,7 +200,7 @@ export const services: Service[] = [
     excerpt:
       "Disque inaccessible, suppression accidentelle, crash : on tente de sauver l’essentiel.",
     description:
-      "Fichiers disparus, partition perdue, disque qui clique : Restor-PC évalue la situation, tente une récupération logicielle ou matérielle selon le cas, et vous restitue un rapport transparent sur ce qui a pu être sauvé.",
+      "Fichiers disparus, partition perdue, disque qui clique : Restor-PC évalue la situation, tente une récupération logicielle ou matérielle selon le cas, et vous restitue un rapport transparent sur ce qui a pu être sauvé. Important : n’utilisez plus un disque défaillant, ne le formatez pas et n’initialisez pas un volume « non initialisé » avant diagnostic — chaque écriture peut réduire les chances de récupération. Aucune récupération n’est garantie avant analyse.",
     icon: "HardDrive",
     priceFrom: 90,
     duration: "24 – 72 h",
@@ -230,10 +230,14 @@ export const services: Service[] = [
         q: "Garantie de récupération ?",
         a: "Aucune récupération n’est jamais garantie à 100 %. Nous sommes transparents dès le diagnostic.",
       },
+      {
+        q: "Que faire si mon disque fait des bruits ou refuse de démarrer ?",
+        a: "Éteignez la machine, ne lancez pas de réparation intrusive et contactez-nous pour un diagnostic. Continuer à utiliser le support peut aggraver la perte de données.",
+      },
     ],
-    seoTitle: "Récupération de données PC | Restor-PC",
+    seoTitle: "Récupération de données à Yerres",
     seoDescription:
-      "Récupération de fichiers sur disque dur, SSD ou clé USB. Diagnostic transparent et confidentialité totale.",
+      "Récupération de fichiers sur disque dur, SSD ou clé USB à Yerres. Diagnostic transparent, sans garantie avant analyse.",
   },
   {
     slug: "sauvegarde-securite",
@@ -273,9 +277,9 @@ export const services: Service[] = [
         a: "Idéalement les deux. Nous construisons une solution réaliste selon votre budget.",
       },
     ],
-    seoTitle: "Sauvegarde & sécurité informatique | Restor-PC",
+    seoTitle: "Sauvegarde et sécurité informatique à Yerres",
     seoDescription:
-      "Mise en place de sauvegardes fiables et sécurisation PC. Protégez vos données avec Restor-PC.",
+      "Mise en place de sauvegardes fiables et sécurisation PC à Yerres et environs. Protégez vos données avant la panne.",
   },
   {
     slug: "montage-pc",
@@ -315,9 +319,9 @@ export const services: Service[] = [
         a: "Oui. Utilisez notre configurateur ou venez avec votre liste : nous validons la compatibilité.",
       },
     ],
-    seoTitle: "Montage PC sur mesure | Restor-PC",
+    seoTitle: "Montage PC sur mesure à Yerres",
     seoDescription:
-      "PC gaming, création ou pro assemblé sur mesure. Config équilibrée, montage soigné, tests inclus.",
+      "PC gaming, création ou bureautique assemblé à Yerres. Configuration équilibrée, montage soigné, tests inclus.",
   },
   {
     slug: "maintenance",
@@ -357,9 +361,9 @@ export const services: Service[] = [
         a: "Une à deux fois par an pour un usage domestique, plus souvent en usage intensif.",
       },
     ],
-    seoTitle: "Maintenance informatique préventive | Restor-PC",
+    seoTitle: "Maintenance informatique à Yerres",
     seoDescription:
-      "Entretien PC préventif : nettoyage, check-up, mises à jour. Prolongez la vie de votre ordinateur.",
+      "Entretien PC préventif à Yerres : nettoyage, check-up, mises à jour. Prolongez la durée de vie de votre ordinateur.",
   },
 ];
 

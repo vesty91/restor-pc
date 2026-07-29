@@ -108,12 +108,15 @@ export function Hero() {
               {siteConfig.intervention}
             </Badge>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-[2.05rem] font-sans font-semibold leading-[1.5] tracking-tight text-white/85 text-balance">
-            {siteConfig.tagline}
+          <h1 className="text-2xl sm:text-3xl md:text-[2.05rem] font-sans font-semibold leading-[1.5] tracking-tight text-white text-balance">
+            Dépannage informatique à Yerres
           </h1>
-          <p className="mt-5 text-base md:text-lg text-white/60 leading-relaxed max-w-md">
+          <p className="mt-3 text-base md:text-lg text-white/70 leading-relaxed max-w-md font-medium">
+            {siteConfig.tagline}
+          </p>
+          <p className="mt-4 text-base md:text-lg text-white/60 leading-relaxed max-w-md">
             Atelier à Yerres (91) pour dépanner, sécuriser et assembler votre
-            ordinateur — avec clarté, méthode et résultats durables.
+            ordinateur — à domicile ou en dépôt atelier, avec méthode et résultats durables.
           </p>
           <p className="mt-3 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white/45">
             <MapPin className="h-3.5 w-3.5 text-[#4ba3ff] shrink-0" aria-hidden />

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/JsonLd";
-import { siteConfig } from "@/lib/site";
+import { absoluteUrl } from "@/lib/seo";
 import { ChevronRight } from "lucide-react";
 
 export type Crumb = { label: string; href?: string };
@@ -15,9 +15,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
       "@type": "ListItem",
       position: i + 1,
       name: item.label,
-      ...(item.href
-        ? { item: item.href.startsWith("http") ? item.href : `${siteConfig.url}${item.href}` }
-        : {}),
+      ...(item.href ? { item: absoluteUrl(item.href) } : {}),
     })),
   };
 
@@ -29,14 +27,28 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
           {all.map((item, i) => {
             const last = i === all.length - 1;
             return (
-              <li key={`${item.label}-${i}`} className="inline-flex items-center gap-1.5">
-                {i > 0 ? <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden /> : null}
+              <li
+                key={`${item.label}-${i}`}
+                className="inline-flex items-center gap-1.5"
+              >
+                {i > 0 ? (
+                  <ChevronRight
+                    className="h-3.5 w-3.5 opacity-50"
+                    aria-hidden
+                  />
+                ) : null}
                 {last || !item.href ? (
-                  <span className={last ? "font-medium text-ink" : undefined} aria-current={last ? "page" : undefined}>
+                  <span
+                    className={last ? "font-medium text-ink" : undefined}
+                    aria-current={last ? "page" : undefined}
+                  >
                     {item.label}
                   </span>
                 ) : (
-                  <Link href={item.href} className="hover:text-teal transition-colors">
+                  <Link
+                    href={item.href}
+                    className="hover:text-teal transition-colors"
+                  >
                     {item.label}
                   </Link>
                 )}

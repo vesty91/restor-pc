@@ -1,6 +1,15 @@
+import { serializeJsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
-export function JsonLd({ data }: { data?: Record<string, unknown> | Record<string, unknown>[] }) {
+export function JsonLd({
+  data,
+}: {
+  data?: Record<string, unknown> | Record<string, unknown>[];
+}) {
+  const areaCities = siteConfig.nearbyCities.filter(
+    (name) => name !== siteConfig.city
+  );
+
   const localBusiness = {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "ComputerStore"],
@@ -11,11 +20,12 @@ export function JsonLd({ data }: { data?: Record<string, unknown> | Record<strin
     telephone: siteConfig.phone,
     email: siteConfig.email,
     image: `${siteConfig.url}/opengraph-image`,
+    logo: `${siteConfig.url}/brand/restor-pc-logo.png`,
     areaServed: [
       { "@type": "City", name: siteConfig.city },
       { "@type": "AdministrativeArea", name: siteConfig.department },
       { "@type": "AdministrativeArea", name: siteConfig.region },
-      ...siteConfig.nearbyCities.slice(1, 8).map((name) => ({
+      ...areaCities.map((name) => ({
         "@type": "City",
         name,
       })),
@@ -23,7 +33,14 @@ export function JsonLd({ data }: { data?: Record<string, unknown> | Record<strin
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ],
         opens: "09:00",
         closes: "19:00",
       },
@@ -65,24 +82,26 @@ export function JsonLd({ data }: { data?: Record<string, unknown> | Record<strin
     Object.assign(localBusiness, { sameAs });
   }
 
-  if (siteConfig.googleRating && siteConfig.googleReviewCount) {
-    Object.assign(localBusiness, {
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: siteConfig.googleRating,
-        reviewCount: siteConfig.googleReviewCount,
-        bestRating: 5,
-        worstRating: 1,
-      },
-    });
-  }
+  // Pas d'aggregateRating / review dans le JSON-LD tant que note et avis
+  // ne sont pas vérifiés, affichés de façon maintenue et issus d'avis réels.
 
-  const payload = data ?? localBusiness;
+  const website = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteConfig.url}/#website`,
+    name: siteConfig.name,
+    url: siteConfig.url,
+    description: siteConfig.description,
+    inLanguage: "fr-FR",
+    publisher: { "@id": `${siteConfig.url}/#business` },
+  };
+
+  const payload = data ?? [website, localBusiness];
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(payload) }}
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(payload) }}
     />
   );
 }
