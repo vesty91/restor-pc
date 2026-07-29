@@ -4,14 +4,15 @@ import { Section, SectionHeader } from "@/components/ui/Section";
 import { articles } from "@/lib/data/articles";
 import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Conseils & guides informatiques",
   description:
     "Guides Restor-PC (Yerres) : PC lent, sauvegarde, config gaming, dépannage à domicile en Essonne. Conseils clairs par un atelier pro.",
-  alternates: { canonical: "/conseils" },
-};
+  path: "/conseils",
+});
 
 export default function ConseilsPage() {
   return (

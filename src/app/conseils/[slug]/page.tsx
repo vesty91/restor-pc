@@ -7,6 +7,7 @@ import { Section } from "@/components/ui/Section";
 import { articles, getArticle } from "@/lib/data/articles";
 import { getService } from "@/lib/data/services";
 import { siteConfig } from "@/lib/site";
+import { buildPageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -21,23 +22,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = getArticle(slug);
   if (!article) return {};
-  const url = `/conseils/${article.slug}`;
-  return {
+  return buildPageMetadata({
     title: article.title,
     description: article.seoDescription,
-    alternates: { canonical: url },
-    openGraph: {
-      title: article.title,
-      description: article.seoDescription,
-      url,
-      type: "article",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: article.title,
-      description: article.seoDescription,
-    },
-  };
+    path: `/conseils/${article.slug}`,
+    openGraphTitle: article.title,
+    openGraphType: "article",
+  });
 }
 
 export default async function ArticlePage({ params }: Props) {

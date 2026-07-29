@@ -95,13 +95,14 @@ export function ServicesExplorer() {
             );
           })}
         </div>
-        <label className="relative block sm:w-72">
+        <label className="relative block sm:w-72" htmlFor="services-search">
           <span className="sr-only">Rechercher un service</span>
           <Search
             className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted"
             aria-hidden
           />
           <input
+            id="services-search"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}

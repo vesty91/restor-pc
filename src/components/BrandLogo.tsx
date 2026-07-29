@@ -34,6 +34,7 @@ export function BrandLogo({
           unoptimized
           className="h-auto w-[min(320px,92vw)] bg-transparent drop-shadow-[0_12px_40px_rgb(0_0_0/35%)]"
           priority={priority}
+          fetchPriority={priority ? "high" : "auto"}
         />
       </Link>
     );
@@ -56,6 +57,7 @@ export function BrandLogo({
         unoptimized
         className="h-full w-auto max-w-[min(90vw,180px)] bg-transparent object-contain object-left drop-shadow-sm sm:max-w-[220px] md:max-w-[260px]"
         priority={priority}
+        fetchPriority={priority ? "high" : "auto"}
       />
       <span className="sr-only">{siteConfig.name}</span>
     </Link>

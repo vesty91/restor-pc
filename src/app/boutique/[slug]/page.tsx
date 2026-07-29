@@ -10,6 +10,7 @@ import {
   getAllProducts,
   getProductBySlug,
 } from "@/lib/data/outils";
+import { buildPageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -24,11 +25,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = getProductBySlug(slug);
   if (!product) return { title: "Outil" };
   const details = getOutilDetails(product.slug);
-  return {
+  return buildPageMetadata({
     title: `${product.title} — Boutique`,
     description: details.when || product.tagline,
-    alternates: { canonical: `/boutique/${product.slug}` },
-  };
+    path: `/boutique/${product.slug}`,
+  });
 }
 
 export default async function BoutiqueProductPage({ params }: Props) {

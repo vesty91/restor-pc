@@ -10,13 +10,14 @@ import { faqs } from "@/lib/data/faq";
 import { siteConfig } from "@/lib/site";
 import { ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Contact & devis — Yerres (91)",
-  description: `Contactez Restor-PC au ${siteConfig.phone} — atelier ${siteConfig.address}. Devis, urgence, assistance Yerres & Essonne.`,
-  alternates: { canonical: "/contact" },
-};
+  description: "Contactez Restor-PC au 07 67 28 23 65 — atelier 3 rue Auber, 91330 Yerres. Devis, urgence, assistance Yerres & Essonne.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

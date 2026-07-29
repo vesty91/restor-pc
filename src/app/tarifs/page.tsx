@@ -16,12 +16,13 @@ import {
 import { formatPrice } from "@/lib/utils";
 import { CalendarDays, Check, Clock, Moon } from "lucide-react";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Tarifs & forfaits — Yerres",
   description: `Tarifs Restor-PC Yerres : domicile dès ${DOMICILE_MIN} € la première heure, urgence dès ${URGENCY_RATES.standard} €, atelier au forfait.`,
-  alternates: { canonical: "/tarifs" },
-};
+  path: "/tarifs",
+});
 
 const urgencyIcons = [Clock, Moon, CalendarDays] as const;
 

@@ -16,14 +16,14 @@ import {
 } from "@/lib/data/outils";
 import { Download, Shield, Wifi } from "lucide-react";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Boutique outils atelier",
-  description:
-    "Achetez les outils Restor-PC : fiches détaillées, licence 1 PC, téléchargement sécurisé (1 fois), guides inclus.",
-  alternates: { canonical: "/boutique" },
-};
+  description: "Achetez les outils Restor-PC : fiches détaillées, licence 1 PC, téléchargement sécurisé (1 fois), guides inclus.",
+  path: "/boutique",
+});
 
 export default function BoutiquePage({
   searchParams,

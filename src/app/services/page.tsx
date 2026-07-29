@@ -6,13 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { siteConfig } from "@/lib/site";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Services de dépannage informatique — Yerres",
-  description:
-    "Prestations Restor-PC à Yerres (91) : dépannage, réparation, virus, réinstallation, récupération de données, montage PC et assistance.",
-  alternates: { canonical: "/services" },
-};
+  description: "Prestations Restor-PC à Yerres (91) : dépannage, réparation, virus, réinstallation, récupération de données, montage PC et assistance.",
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (

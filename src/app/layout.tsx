@@ -40,8 +40,10 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR",
     siteName: siteConfig.name,
+    url: "/",
     title: `${siteConfig.name} — Dépannage informatique Yerres (91)`,
     description: siteConfig.description,
+    images: [{ url: "/opengraph-image" }],
   },
   twitter: {
     card: "summary_large_image",

@@ -1,11 +1,14 @@
 import { Section } from "@/components/ui/Section";
 import { siteConfig } from "@/lib/site";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Politique de confidentialité",
-  alternates: { canonical: "/politique-confidentialite" },
-};
+  description:
+    "Politique de confidentialité Restor-PC : données personnelles, cookies, espace client et boutique en ligne.",
+  path: "/politique-confidentialite",
+});
 
 export default function PrivacyPage() {
   return (

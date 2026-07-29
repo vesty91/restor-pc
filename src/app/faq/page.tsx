@@ -5,13 +5,13 @@ import { JsonLd } from "@/components/JsonLd";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { faqs } from "@/lib/data/faq";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "FAQ — Dépannage informatique Yerres",
-  description:
-    "Questions fréquentes Restor-PC Yerres : délais, devis, garantie, atelier, domicile, montage PC.",
-  alternates: { canonical: "/faq" },
-};
+  description: "Questions fréquentes Restor-PC Yerres : délais, devis, garantie, atelier, domicile, montage PC.",
+  path: "/faq",
+});
 
 export default function FaqPage() {
   const faqSchema = {

@@ -3,7 +3,7 @@ export const siteConfig = {
   legalName: "Restor-PC",
   tagline: "Diagnostic précis. Réparation soignée. Performance retrouvée.",
   description:
-    "Dépannage et réparation informatique à Yerres (91) : PC, portables, virus, Windows, récupération de données et assistance à domicile — atelier Restor-PC et communes voisines.",
+    "Dépannage informatique à Yerres (91) : réparation PC et portables, virus, Windows, récupération de données et assistance à domicile — atelier Restor-PC.",
   url: "https://atelier.restor-pc.fr",
   phone: "07 67 28 23 65",
   phoneHref: "tel:+33767282365",

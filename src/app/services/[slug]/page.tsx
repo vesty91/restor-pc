@@ -10,6 +10,7 @@ import { articles } from "@/lib/data/articles";
 import { siteConfig } from "@/lib/site";
 import { formatPrice } from "@/lib/utils";
 import { Check, Clock3, ShieldCheck } from "lucide-react";
+import { buildPageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -35,21 +36,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const service = getService(slug);
   if (!service) return {};
-  return {
+  return buildPageMetadata({
     title: service.seoTitle,
     description: service.seoDescription,
-    alternates: { canonical: `/services/${service.slug}` },
-    openGraph: {
-      title: `${service.seoTitle} | ${siteConfig.name}`,
-      description: service.seoDescription,
-      url: `/services/${service.slug}`,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${service.seoTitle} | ${siteConfig.name}`,
-      description: service.seoDescription,
-    },
-  };
+    path: `/services/${service.slug}`,
+    openGraphTitle: `${service.seoTitle} | ${siteConfig.name}`,
+  });
 }
 
 export default async function ServiceDetailPage({ params }: Props) {

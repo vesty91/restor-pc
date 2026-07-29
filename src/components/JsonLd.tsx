@@ -11,7 +11,6 @@ export function JsonLd({
   );
 
   const localBusiness = {
-    "@context": "https://schema.org",
     "@type": ["LocalBusiness", "ComputerStore"],
     "@id": `${siteConfig.url}/#business`,
     name: siteConfig.name,
@@ -55,6 +54,8 @@ export function JsonLd({
       },
     ],
     priceRange: "€€",
+    // Format court recommandé en complément de openingHoursSpecification.
+    openingHours: ["Mo-Sa 09:00-19:00"],
     address: {
       "@type": "PostalAddress",
       streetAddress: siteConfig.street,
@@ -86,7 +87,6 @@ export function JsonLd({
   // ne sont pas vérifiés, affichés de façon maintenue et issus d'avis réels.
 
   const website = {
-    "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": `${siteConfig.url}/#website`,
     name: siteConfig.name,
@@ -96,7 +96,11 @@ export function JsonLd({
     publisher: { "@id": `${siteConfig.url}/#business` },
   };
 
-  const payload = data ?? [website, localBusiness];
+  // @graph : @type visible pour les validateurs qui n’inspectent pas un tableau JSON racine.
+  const payload = data ?? {
+    "@context": "https://schema.org",
+    "@graph": [website, localBusiness],
+  };
 
   return (
     <script

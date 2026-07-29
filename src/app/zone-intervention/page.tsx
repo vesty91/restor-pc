@@ -6,19 +6,16 @@ import { Section, SectionHeader } from "@/components/ui/Section";
 import { siteConfig } from "@/lib/site";
 import { Home, MapPin, Train, Warehouse } from "lucide-react";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Zone d’intervention — Yerres et Essonne",
   description:
-    "Restor-PC intervient à Yerres (atelier 3 rue Auber) et dans les communes voisines : Brunoy, Crosne, Montgeron, Draveil, Vigneux-sur-Seine et alentours.",
-  alternates: { canonical: "/zone-intervention" },
-  openGraph: {
-    title: "Zone d’intervention — Yerres et Essonne | Restor-PC",
-    description:
-      "Atelier à Yerres, dépannage à domicile dans un rayon d’environ 15 km.",
-  },
-};
+    "Restor-PC intervient à Yerres (atelier 3 rue Auber) et communes voisines : Brunoy, Crosne, Montgeron, Draveil, Vigneux-sur-Seine.",
+  path: "/zone-intervention",
+  openGraphTitle: "Zone d’intervention — Yerres et Essonne | Restor-PC",
+});
 
 const modes = [
   {

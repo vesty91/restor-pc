@@ -1,12 +1,15 @@
 import { Section } from "@/components/ui/Section";
 import { siteConfig } from "@/lib/site";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Mentions légales",
+  description:
+    "Mentions légales Restor-PC : éditeur, hébergement, contact et informations légales de l’atelier à Yerres.",
+  path: "/mentions-legales",
   robots: { index: true, follow: true },
-  alternates: { canonical: "/mentions-legales" },
-};
+});
 
 export default function MentionsLegalesPage() {
   const { legal } = siteConfig;

@@ -4,13 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/ui/Section";
 import { siteConfig } from "@/lib/site";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Configurateur PC — Yerres",
   description:
     "Configurateur PC Restor-PC : estimation indicative selon usage et budget. Devis atelier à confirmer à Yerres.",
-  alternates: { canonical: "/configurateur" },
-};
+  path: "/configurateur",
+});
 
 export default function ConfigurateurPage() {
   return (

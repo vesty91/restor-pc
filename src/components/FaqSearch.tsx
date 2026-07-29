@@ -16,9 +16,10 @@ export function FaqSearch() {
 
   return (
     <div>
-      <label className="mx-auto mb-6 block max-w-3xl">
+      <label className="mx-auto mb-6 block max-w-3xl" htmlFor="faq-search">
         <span className="sr-only">Rechercher dans la FAQ</span>
         <input
+          id="faq-search"
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}

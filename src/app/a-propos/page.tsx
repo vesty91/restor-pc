@@ -17,14 +17,15 @@ import {
   Users,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "À propos — Atelier Yerres",
   description:
     "Restor-PC, atelier de dépannage informatique à Yerres (91). Méthode, transparence et exigence technique au 3 rue Auber.",
-  alternates: { canonical: "/a-propos" },
-};
+  path: "/a-propos",
+});
 
 const commitmentIcons = [FileCheck2, LockKeyhole, Shield, MessageCircle];
 

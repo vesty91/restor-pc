@@ -5,12 +5,14 @@ import { Section, SectionHeader } from "@/components/ui/Section";
 import { getCompteUser } from "@/lib/supabase/server";
 import { getUserFirstName } from "@/lib/user-display";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Mon compte",
   description: "Connexion client Restor-PC — commandes et licences outils.",
+  path: "/compte",
   robots: { index: false, follow: false },
-};
+});
 
 export default async function ComptePage({
   searchParams,
@@ -30,6 +32,7 @@ export default async function ComptePage({
       <Breadcrumbs items={[{ label: firstName || "Compte" }]} />
       <div className="mt-6">
         <SectionHeader
+          as="h1"
           eyebrow="Espace client"
           title={
             user

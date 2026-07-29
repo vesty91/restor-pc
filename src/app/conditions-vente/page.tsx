@@ -1,13 +1,14 @@
 import { Section } from "@/components/ui/Section";
 import { siteConfig } from "@/lib/site";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Conditions générales de vente",
   description:
     "Conditions générales de vente des outils logiciels Restor-PC — boutique en ligne.",
-  alternates: { canonical: "/conditions-vente" },
-};
+  path: "/conditions-vente",
+});
 
 export default function ConditionsVentePage() {
   const { legal } = siteConfig;

@@ -15,20 +15,20 @@ import { Badge } from "@/components/ui/badge";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { articles } from "@/lib/data/articles";
 import { siteConfig } from "@/lib/site";
+import { buildPageMetadata } from "@/lib/seo";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: {
-    absolute: `Dépannage informatique à Yerres (91) | ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: `Dépannage informatique à Yerres | ${siteConfig.name}`,
+  ...buildPageMetadata({
+    title: {
+      absolute: `Dépannage informatique à Yerres (91) | ${siteConfig.name}`,
+    },
     description: siteConfig.description,
-  },
+    path: "/",
+    openGraphTitle: `Dépannage informatique à Yerres | ${siteConfig.name}`,
+  }),
 };
 
 function HomeLocal() {
