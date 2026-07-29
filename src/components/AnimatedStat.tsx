@@ -59,8 +59,8 @@ export function AnimatedStat({
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce || parsed.target == null) {
-      setDisplay(value);
-      return;
+      const id = window.setTimeout(() => setDisplay(value), 0);
+      return () => window.clearTimeout(id);
     }
 
     let raf = 0;

@@ -94,6 +94,8 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   const cols = useMemo(() => columns, [columns]);
 
+  // TanStack Table expose des fonctions non mémoïsables — React Compiler skip (attendu).
+  // eslint-disable-next-line react-hooks/incompatible-library -- useReactTable API incompatible with React Compiler memoization
   const table = useReactTable({
     data,
     columns: cols,
@@ -153,8 +155,20 @@ export function DataTable<TData>({
                 {hg.headers.map((header) => {
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
+                  const ariaSort =
+                    !canSort
+                      ? undefined
+                      : sorted === "asc"
+                        ? ("ascending" as const)
+                        : sorted === "desc"
+                          ? ("descending" as const)
+                          : ("none" as const);
                   return (
-                    <TableHead key={header.id} style={{ width: header.getSize() !== 150 ? header.getSize() : undefined }}>
+                    <TableHead
+                      key={header.id}
+                      style={{ width: header.getSize() !== 150 ? header.getSize() : undefined }}
+                      aria-sort={ariaSort}
+                    >
                       {header.isPlaceholder ? null : canSort ? (
                         <button
                           type="button"
@@ -166,13 +180,6 @@ export function DataTable<TData>({
                               header.column.getToggleSortingHandler()?.(e);
                             }
                           }}
-                          aria-sort={
-                            sorted === "asc"
-                              ? "ascending"
-                              : sorted === "desc"
-                                ? "descending"
-                                : "none"
-                          }
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           <SortIcon sorted={sorted} />

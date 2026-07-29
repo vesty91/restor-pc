@@ -27,6 +27,8 @@ export default async function OpenGraphImage() {
           fontFamily: "sans-serif",
         }}
       >
+        {/* next/og ImageResponse n’accepte pas next/image — <img> data-URI requis. */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- OG runtime Satori */}
         <img
           src={logoSrc}
           width={520}

@@ -19,6 +19,8 @@ export default defineConfig({
     baseURL,
     trace: "on-first-retry",
     locale: "fr-FR",
+    /** Déterministe : contraste Axe indépendant du thème OS du runner. */
+    colorScheme: "light",
   },
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined

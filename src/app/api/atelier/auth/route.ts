@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
   if (!verifyAtelierPassword(parsed.data.secret)) {
     logAtelierAuth(false, requestId);
-    return jsonError("AUTH_DENIED", "Acces refuse.", 401, requestId);
+    return jsonError("AUTH_DENIED", "Accès refusé.", 401, requestId);
   }
 
   logAtelierAuth(true, requestId);

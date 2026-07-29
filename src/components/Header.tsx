@@ -22,7 +22,14 @@ export function Header() {
   const menuBtnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const wasOpen = useRef(false);
+  const [navPath, setNavPath] = useState(pathname);
   const compteActive = pathname === "/compte" || pathname.startsWith("/compte/");
+
+  // Ferme le menu mobile au changement de route (ajuste l’état pendant le rendu).
+  if (pathname !== navPath) {
+    setNavPath(pathname);
+    if (open) setOpen(false);
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -59,10 +66,6 @@ export function Header() {
       cancelled = true;
       authListener.subscription.unsubscribe();
     };
-  }, [pathname]);
-
-  useEffect(() => {
-    setOpen(false);
   }, [pathname]);
 
   useEffect(() => {

@@ -53,6 +53,8 @@
 }
 
 @theme inline {
+  --color-black: #000000;
+  --color-white: #ffffff;
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-ink-muted: var(--ink-muted);
@@ -335,6 +337,10 @@ a {
 
 .btn-press:active {
   transform: translateY(1px);
+}
+
+.btn-glow-primary {
+  color: #fff;
 }
 
 .btn-glow-primary:hover {

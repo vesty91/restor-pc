@@ -5,9 +5,9 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useLayoutEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
@@ -22,43 +22,89 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
+const THEME_EVENT = "restor-pc-theme";
+
 function applyTheme(theme: Theme) {
   const root = document.documentElement;
   root.classList.toggle("dark", theme === "dark");
   root.style.colorScheme = theme;
 }
 
+function readStoredTheme(): Theme | null {
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === "light" || stored === "dark") return stored;
+  } catch {
+    /* private mode */
+  }
+  return null;
+}
+
+function getThemeSnapshot(): Theme {
+  const stored = readStoredTheme();
+  if (stored) return stored;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+/** SSR : le script inline du layout applique déjà la classe avant hydratation. */
+function getServerThemeSnapshot(): Theme {
+  return "light";
+}
+
+function subscribeTheme(onStoreChange: () => void) {
+  const onCustom = () => onStoreChange();
+  const onStorage = (e: StorageEvent) => {
+    if (e.key === THEME_STORAGE_KEY || e.key === null) onStoreChange();
+  };
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const onMq = () => {
+    if (!readStoredTheme()) onStoreChange();
+  };
+
+  window.addEventListener(THEME_EVENT, onCustom);
+  window.addEventListener("storage", onStorage);
+  mq.addEventListener("change", onMq);
+  return () => {
+    window.removeEventListener(THEME_EVENT, onCustom);
+    window.removeEventListener("storage", onStorage);
+    mq.removeEventListener("change", onMq);
+  };
+}
+
+function getClientReadySnapshot() {
+  return true;
+}
+
+function getServerReadySnapshot() {
+  return false;
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("light");
-  const [ready, setReady] = useState(false);
+  const theme = useSyncExternalStore(
+    subscribeTheme,
+    getThemeSnapshot,
+    getServerThemeSnapshot
+  );
+  const ready = useSyncExternalStore(
+    subscribeTheme,
+    getClientReadySnapshot,
+    getServerReadySnapshot
+  );
 
-  useEffect(() => {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
-    const preferred =
-      stored === "light" || stored === "dark"
-        ? stored
-        : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-    setThemeState(preferred);
-    applyTheme(preferred);
-    setReady(true);
-
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = (e: MediaQueryListEvent) => {
-      if (localStorage.getItem(THEME_STORAGE_KEY)) return;
-      const next: Theme = e.matches ? "dark" : "light";
-      setThemeState(next);
-      applyTheme(next);
-    };
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
+  useLayoutEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
 
   const setTheme = useCallback((next: Theme) => {
-    setThemeState(next);
-    localStorage.setItem(THEME_STORAGE_KEY, next);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, next);
+    } catch {
+      /* ignore */
+    }
     applyTheme(next);
+    window.dispatchEvent(new Event(THEME_EVENT));
   }, []);
 
   const toggleTheme = useCallback(() => {

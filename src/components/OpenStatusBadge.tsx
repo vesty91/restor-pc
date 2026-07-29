@@ -14,7 +14,6 @@ export function OpenStatusBadge({
   const [status, setStatus] = useState(() => getOpenStatus());
 
   useEffect(() => {
-    setStatus(getOpenStatus());
     const id = window.setInterval(() => setStatus(getOpenStatus()), 60_000);
     return () => window.clearInterval(id);
   }, []);
