@@ -54,7 +54,7 @@ const serverEnv = {
 };
 
 const server = useStandalone
-  ? spawn("node", [".next/standalone/server.js"], {
+  ? spawn("node", ["server.js"], {
       stdio: "inherit",
       shell: false,
       env: serverEnv,
