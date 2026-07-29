@@ -6,10 +6,11 @@ import { type NextRequest } from "next/server";
  * Les pages marketing / légales / services statiques sont exclues.
  * Les API gardent leur propre contrôle d’autorisation.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   return updateSession(request);
 }
 
+/** Matcher statique requis par Next.js (analyse compile-time). */
 export const config = {
   matcher: [
     "/compte/:path*",
