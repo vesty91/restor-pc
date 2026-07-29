@@ -18,16 +18,17 @@ export default function ServicesPage() {
   return (
     <div className="soft-grid-bg">
       <Section className="pb-8 pt-20 md:pt-28">
-        <Breadcrumbs items={[{ label: "Services" }]} />
+        <Breadcrumbs items={[{ label: "Services", href: "/services" }]} />
         <div className="mb-4 flex flex-wrap gap-2">
           <Badge variant="info">Atelier · {siteConfig.city}</Badge>
           <Badge variant="outline">Domicile · Essonne</Badge>
           <Badge variant="success">Devis avant intervention</Badge>
         </div>
         <SectionHeader
+          as="h1"
           eyebrow="Services"
-          title="Des interventions claires pour chaque situation"
-          description="Filtrez, cherchez, ou décrivez simplement votre problème — on vous oriente vers la bonne solution."
+          title="Dépannage et réparation informatique à Yerres"
+          description="Filtrez, cherchez, ou décrivez simplement votre problème — on vous oriente vers la bonne intervention à domicile ou en atelier."
         />
       </Section>
 

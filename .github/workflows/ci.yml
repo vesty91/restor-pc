@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NEXT_PUBLIC_SITE_URL: https://www.restor-pc.fr
+  NEXT_PUBLIC_SITE_URL: https://atelier.restor-pc.fr
   NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
   NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ci-anon
   SUPABASE_URL: https://example.supabase.co

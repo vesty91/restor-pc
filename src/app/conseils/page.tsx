@@ -17,10 +17,11 @@ export default function ConseilsPage() {
   return (
     <>
       <Section className="noise-bg pt-20 md:pt-28 pb-8">
-        <Breadcrumbs items={[{ label: "Conseils" }]} />
+        <Breadcrumbs items={[{ label: "Conseils", href: "/conseils" }]} />
         <SectionHeader
+          as="h1"
           eyebrow="Conseils"
-          title="Des guides utiles, sans jargon inutile"
+          title="Guides informatiques pour Yerres et l’Essonne"
           description="Des articles écrits comme on explique en atelier à Yerres : concrets, actionnables, orientés résultats."
         />
       </Section>

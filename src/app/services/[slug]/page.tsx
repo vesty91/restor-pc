@@ -40,13 +40,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: service.seoDescription,
     alternates: { canonical: `/services/${service.slug}` },
     openGraph: {
-      title: service.seoTitle,
+      title: `${service.seoTitle} | ${siteConfig.name}`,
       description: service.seoDescription,
       url: `/services/${service.slug}`,
     },
     twitter: {
       card: "summary_large_image",
-      title: service.seoTitle,
+      title: `${service.seoTitle} | ${siteConfig.name}`,
       description: service.seoDescription,
     },
   };

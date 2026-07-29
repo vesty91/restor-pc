@@ -29,7 +29,7 @@ export default function TarifsPage() {
   return (
     <>
       <Section className="noise-bg pb-8 pt-20 md:pt-28">
-        <Breadcrumbs items={[{ label: "Tarifs" }]} />
+        <Breadcrumbs items={[{ label: "Tarifs", href: "/tarifs" }]} />
         <div className="mt-6">
           <PricingHero />
         </div>

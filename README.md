@@ -25,7 +25,7 @@ Variables : copier `.env.example` → `.env.local` (dev) ou `.env` (Docker NAS).
 Obligatoires en prod NAS :
 
 ```env
-NEXT_PUBLIC_SITE_URL=https://www.restor-pc.fr
+NEXT_PUBLIC_SITE_URL=https://atelier.restor-pc.fr
 ALLOW_STRIPE_LIVE=false
 ```
 
@@ -46,7 +46,7 @@ docker compose up -d
 - Conteneur : `restor-pc` sur le port **3000**
 - Reverse proxy Synology / domaine → `http://NAS_IP:3000`
 - Healthcheck : `GET /api/health`
-- Webhook Stripe prod : `https://www.restor-pc.fr/api/stripe/webhook`
+- Webhook Stripe prod : `https://atelier.restor-pc.fr/api/stripe/webhook`
 
 ## Scripts npm
 

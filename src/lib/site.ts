@@ -3,8 +3,8 @@ export const siteConfig = {
   legalName: "Restor-PC",
   tagline: "Diagnostic précis. Réparation soignée. Performance retrouvée.",
   description:
-    "Restor-PC, atelier de dépannage informatique à Yerres (91). Diagnostic, réparation, optimisation, récupération de données et montage PC — à domicile ou en atelier.",
-  url: "https://www.restor-pc.fr",
+    "Dépannage et réparation informatique à Yerres (91) : PC, portables, virus, Windows, récupération de données et assistance à domicile — atelier Restor-PC et communes voisines.",
+  url: "https://atelier.restor-pc.fr",
   phone: "07 67 28 23 65",
   phoneHref: "tel:+33767282365",
   phoneRaw: "0767282365",
@@ -48,11 +48,13 @@ export const siteConfig = {
     "Crosne",
     "Montgeron",
     "Draveil",
-    "Villeneuve-Saint-Georges",
+    "Vigneux-sur-Seine",
     "Épinay-sous-Sénart",
-    "Quincy-sous-Sénart",
     "Boussy-Saint-Antoine",
-    "Limeil-Brévannes",
+    "Quincy-sous-Sénart",
+    "Villeneuve-Saint-Georges",
+    "Mandres-les-Roses",
+    "Marolles-en-Brie",
   ],
   transport: "Proche gare RER D Yerres · Accès voiture facile",
   guarantee: "Garantie intervention 90 jours",
@@ -81,9 +83,9 @@ export const siteConfig = {
       address?: string;
     },
     host: {
-      name: "Vercel Inc.",
-      address: "440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
-      url: "https://vercel.com",
+      name: "Hébergement sur infrastructure Synology (auto-hébergé)",
+      address: "3 rue Auber, 91330 Yerres, France",
+      url: "https://atelier.restor-pc.fr",
     },
   },
   /** Note Google (fiche publique). */
@@ -103,6 +105,7 @@ export const siteConfig = {
 export const navLinks = [
   { href: "/", label: "Accueil" },
   { href: "/services", label: "Services" },
+  { href: "/zone-intervention", label: "Zone" },
   { href: "/boutique", label: "Boutique" },
   { href: "/configurateur", label: "Configurateur" },
   { href: "/tarifs", label: "Tarifs" },

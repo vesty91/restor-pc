@@ -25,13 +25,17 @@ export function SectionHeader({
   description,
   align = "left",
   tone = "light",
+  as = "h2",
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
   align?: "left" | "center";
   tone?: "light" | "dark";
+  /** Utiliser `h1` uniquement pour le titre principal de page. */
+  as?: "h1" | "h2";
 }) {
+  const Heading = as;
   return (
     <div
       className={cn(
@@ -49,14 +53,14 @@ export function SectionHeader({
           {eyebrow}
         </p>
       ) : null}
-      <h2
+      <Heading
         className={cn(
           "text-3xl md:text-4xl lg:text-[2.75rem] leading-[1.3] text-balance",
           tone === "dark" && "text-panel-fg"
         )}
       >
         {title}
-      </h2>
+      </Heading>
       {description ? (
         <p
           className={cn(

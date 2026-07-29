@@ -21,10 +21,14 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: {
-    absolute: `${siteConfig.name} — Dépannage informatique à Yerres (91)`,
+    absolute: `Dépannage informatique à Yerres (91) | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   alternates: { canonical: "/" },
+  openGraph: {
+    title: `Dépannage informatique à Yerres | ${siteConfig.name}`,
+    description: siteConfig.description,
+  },
 };
 
 function HomeLocal() {
@@ -36,11 +40,13 @@ function HomeLocal() {
             Ancré à Yerres
           </Badge>
           <h2 className="mt-1 text-balance text-3xl leading-tight md:text-4xl">
-            Un atelier local, une zone d’intervention claire
+            Réparateur informatique à Yerres et communes voisines
           </h2>
           <p className="mt-4 max-w-lg leading-relaxed text-ink-muted">
-            Basés au {siteConfig.address}, nous intervenons en priorité sur Yerres
-            et les communes voisines — à domicile, ou en dépôt atelier.
+            Basés au {siteConfig.address}, nous prenons en charge PC et
+            portables : pannes, virus, Windows, récupération de données et
+            montage — à domicile dans un rayon d’environ 15 km, ou en dépôt
+            atelier.
           </p>
           <ul className="mt-5 flex flex-wrap gap-2">
             {siteConfig.nearbyCities.slice(0, 6).map((city) => (
@@ -52,7 +58,9 @@ function HomeLocal() {
             ))}
           </ul>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Button href="/zone-intervention">Voir la zone</Button>
+            <Button href="/zone-intervention">
+              Voir les zones d’intervention
+            </Button>
             <Button href={siteConfig.mapsDirectionsUrl} variant="secondary">
               <MapPin className="h-4 w-4" />
               Itinéraire atelier
