@@ -23,7 +23,7 @@ import Link from "next/link";
 export const metadata: Metadata = buildPageMetadata({
   title: "À propos — Atelier Yerres",
   description:
-    "Restor-PC, atelier de dépannage informatique à Yerres (91). Méthode, transparence et exigence technique au 3 rue Auber.",
+    "Restor-PC, atelier de dépannage informatique à Yerres (91) : méthode, transparence et exigence technique au 3 rue Auber.",
   path: "/a-propos",
 });
 

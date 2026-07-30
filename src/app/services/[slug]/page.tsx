@@ -60,21 +60,7 @@ export default async function ServiceDetailPage({ params }: Props) {
     name: service.title,
     description: service.seoDescription,
     provider: {
-      "@type": "LocalBusiness",
-      name: siteConfig.name,
-      telephone: siteConfig.phone,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: siteConfig.street,
-        postalCode: siteConfig.postalCode,
-        addressLocality: siteConfig.city,
-        addressCountry: siteConfig.countryCode,
-      },
-      areaServed: [
-        { "@type": "City", name: siteConfig.city },
-        { "@type": "AdministrativeArea", name: siteConfig.department },
-        { "@type": "AdministrativeArea", name: siteConfig.region },
-      ],
+      "@id": `${siteConfig.url}/#business`,
     },
     areaServed: [
       { "@type": "City", name: siteConfig.city },

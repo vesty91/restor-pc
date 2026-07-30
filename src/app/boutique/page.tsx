@@ -21,7 +21,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Boutique outils atelier",
-  description: "Achetez les outils Restor-PC : fiches détaillées, licence 1 PC, téléchargement sécurisé (1 fois), guides inclus.",
+  description: "Boutique Restor-PC : outils atelier avec licence 1 PC, fiches détaillées, téléchargement sécurisé (1 fois) et guides inclus.",
   path: "/boutique",
 });
 

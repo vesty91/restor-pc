@@ -9,7 +9,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Configurateur PC — Yerres",
   description:
-    "Configurateur PC Restor-PC : estimation indicative selon usage et budget. Devis atelier à confirmer à Yerres.",
+    "Configurateur PC Restor-PC : estimation selon usage et budget, puis devis atelier confirmé à Yerres pour un montage adapté.",
   path: "/configurateur",
 });
 

@@ -364,6 +364,15 @@ describe("CSP Phase 1 — Report-Only + /api/csp-report", () => {
     expect(keys).not.toContain("Reporting-Endpoints");
     expect(keys).not.toContain("Content-Security-Policy-Report-Only");
     expect(keys).not.toContain("Content-Security-Policy");
+    expect(keys).not.toContain("Strict-Transport-Security");
+  });
+
+  it("ne définit pas HSTS (responsabilité du reverse proxy TLS)", async () => {
+    vi.resetModules();
+    (process.env as Record<string, string>).NODE_ENV = "production";
+    const config = (await import("../../next.config")).default;
+    const headers = (await config.headers!())[0].headers;
+    expect(headers.map((h) => h.key)).not.toContain("Strict-Transport-Security");
   });
 
   it("conserve la CSP enforcement strictement inchangée", async () => {

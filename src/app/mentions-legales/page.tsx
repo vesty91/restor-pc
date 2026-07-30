@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Section } from "@/components/ui/Section";
 import { siteConfig } from "@/lib/site";
 import type { Metadata } from "next";
@@ -6,7 +7,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Mentions légales",
   description:
-    "Mentions légales Restor-PC : éditeur, hébergement, contact et informations légales de l’atelier à Yerres.",
+    "Mentions légales Restor-PC à Yerres (91) : éditeur du site, SIRET, hébergement, contact et informations légales atelier.",
   path: "/mentions-legales",
   robots: { index: true, follow: true },
 });
@@ -17,6 +18,7 @@ export default function MentionsLegalesPage() {
   return (
     <Section className="pt-20 md:pt-28 max-w-none">
       <div className="container-site prose-legal max-w-3xl">
+        <Breadcrumbs items={[{ label: "Mentions légales" }]} />
         <h1 className="text-3xl md:text-4xl">Mentions légales</h1>
         <p className="mt-4 text-ink-muted">
           Conformément aux dispositions des articles 6-III et 19 de la loi n°

@@ -149,7 +149,7 @@ export const services: Service[] = [
     ],
     seoTitle: "Suppression de virus à Yerres",
     seoDescription:
-      "Nettoyage virus, malware et optimisation PC à Yerres et en Essonne. Retrouvez un ordinateur rapide et sécurisé.",
+      "Nettoyage virus, malware et optimisation PC à Yerres et Essonne : machine rapide, sécurisée et prête à reprendre le travail.",
   },
   {
     slug: "reinstallation-windows",
@@ -191,7 +191,7 @@ export const services: Service[] = [
     ],
     seoTitle: "Installation Windows à Yerres",
     seoDescription:
-      "Réinstallation Windows 10/11 à Yerres avec sauvegarde des données, drivers et configuration. Atelier ou domicile.",
+      "Réinstallation Windows 10/11 à Yerres avec sauvegarde des données, drivers et configuration — atelier Restor-PC ou domicile.",
   },
   {
     slug: "recuperation-donnees",
@@ -237,7 +237,7 @@ export const services: Service[] = [
     ],
     seoTitle: "Récupération de données à Yerres",
     seoDescription:
-      "Récupération de fichiers sur disque dur, SSD ou clé USB à Yerres. Diagnostic transparent, sans garantie avant analyse.",
+      "Récupération de données à Yerres sur disque dur, SSD ou clé USB : diagnostic transparent avant toute intervention Restor-PC.",
   },
   {
     slug: "sauvegarde-securite",
@@ -279,7 +279,7 @@ export const services: Service[] = [
     ],
     seoTitle: "Sauvegarde et sécurité informatique à Yerres",
     seoDescription:
-      "Mise en place de sauvegardes fiables et sécurisation PC à Yerres et environs. Protégez vos données avant la panne.",
+      "Sauvegardes fiables et sécurisation PC à Yerres et environs : protégez vos données personnelles avant la prochaine panne.",
   },
   {
     slug: "montage-pc",
@@ -321,7 +321,7 @@ export const services: Service[] = [
     ],
     seoTitle: "Montage PC sur mesure à Yerres",
     seoDescription:
-      "PC gaming, création ou bureautique assemblé à Yerres. Configuration équilibrée, montage soigné, tests inclus.",
+      "Montage PC gaming, création ou bureautique à Yerres : configuration équilibrée, assemblage soigné et tests de stabilité.",
   },
   {
     slug: "maintenance",
@@ -363,7 +363,7 @@ export const services: Service[] = [
     ],
     seoTitle: "Maintenance informatique à Yerres",
     seoDescription:
-      "Entretien PC préventif à Yerres : nettoyage, check-up, mises à jour. Prolongez la durée de vie de votre ordinateur.",
+      "Entretien PC préventif à Yerres : nettoyage interne, check-up système et mises à jour pour prolonger la durée de vie PC.",
   },
 ];
 

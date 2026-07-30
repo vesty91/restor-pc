@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Section } from "@/components/ui/Section";
 import { siteConfig } from "@/lib/site";
 import type { Metadata } from "next";
@@ -6,7 +7,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Politique de confidentialité",
   description:
-    "Politique de confidentialité Restor-PC : données personnelles, cookies, espace client et boutique en ligne.",
+    "Politique de confidentialité Restor-PC : données personnelles, cookies, espace client, boutique en ligne et droits RGPD.",
   path: "/politique-confidentialite",
 });
 
@@ -14,6 +15,7 @@ export default function PrivacyPage() {
   return (
     <Section className="pt-20 md:pt-28">
       <div className="max-w-3xl">
+        <Breadcrumbs items={[{ label: "Confidentialité" }]} />
         <h1 className="text-3xl md:text-4xl">Politique de confidentialité</h1>
         <p className="mt-4 text-ink-muted leading-relaxed">
           Cette page décrit la manière dont {siteConfig.name} collecte et traite

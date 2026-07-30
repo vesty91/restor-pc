@@ -15,7 +15,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Contact & devis — Yerres (91)",
-  description: "Contactez Restor-PC au 07 67 28 23 65 — atelier 3 rue Auber, 91330 Yerres. Devis, urgence, assistance Yerres & Essonne.",
+  description: "Contactez Restor-PC au 07 67 28 23 65 — atelier 3 rue Auber, 91330 Yerres. Devis gratuit d’orientation, urgence et Essonne.",
   path: "/contact",
 });
 

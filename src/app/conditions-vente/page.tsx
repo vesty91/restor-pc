@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Section } from "@/components/ui/Section";
 import { siteConfig } from "@/lib/site";
 import type { Metadata } from "next";
@@ -6,7 +7,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Conditions générales de vente",
   description:
-    "Conditions générales de vente des outils logiciels Restor-PC — boutique en ligne.",
+    "Conditions générales de vente Restor-PC : licence logicielle, téléchargement sécurisé, paiement et SAV boutique en ligne.",
   path: "/conditions-vente",
 });
 
@@ -16,6 +17,7 @@ export default function ConditionsVentePage() {
   return (
     <Section className="pt-20 md:pt-28 max-w-none">
       <div className="container-site prose-legal max-w-3xl">
+        <Breadcrumbs items={[{ label: "Conditions de vente" }]} />
         <h1 className="text-3xl md:text-4xl">Conditions générales de vente</h1>
         <p className="mt-4 text-ink-muted">
           Applicables aux achats d’outils logiciels sur la boutique{" "}

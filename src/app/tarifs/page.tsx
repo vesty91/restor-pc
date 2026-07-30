@@ -20,7 +20,7 @@ import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Tarifs & forfaits — Yerres",
-  description: `Tarifs Restor-PC Yerres : domicile dès ${DOMICILE_MIN} € la première heure, urgence dès ${URGENCY_RATES.standard} €, atelier au forfait.`,
+  description: `Tarifs Restor-PC à Yerres : domicile dès ${DOMICILE_MIN} € la première heure, urgence dès ${URGENCY_RATES.standard} €, et réparations atelier au forfait clair.`,
   path: "/tarifs",
 });
 

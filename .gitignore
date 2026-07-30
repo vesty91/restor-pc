@@ -49,3 +49,7 @@ next-env.d.ts
 *.ps1
 .cursor/
 
+
+.bak-seo-*/
+*.bak-*
+

@@ -9,7 +9,7 @@ import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Mon compte",
-  description: "Connexion client Restor-PC — commandes et licences outils.",
+  description: "Espace client Restor-PC à Yerres : suivez vos commandes boutique, téléchargez vos outils logiciels et gérez vos licences.",
   path: "/compte",
   robots: { index: false, follow: false },
 });

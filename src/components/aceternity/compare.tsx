@@ -7,10 +7,15 @@ import {
   useCallback,
   type KeyboardEvent,
 } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { SparklesCore } from "@/components/aceternity/sparkles";
+
+/** Dimensions intrinsèques des SVG illustratifs locaux (ratio 16:10). */
+const COMPARE_IMG_W = 960;
+const COMPARE_IMG_H = 600;
 
 interface CompareProps {
   firstImage?: string;
@@ -213,10 +218,13 @@ export function Compare({
             )}
             style={{ clipPath: `inset(0 ${100 - sliderXPercent}% 0 0)` }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element -- assets SVG locaux illustratifs */}
-            <img
+            <Image
               alt={firstAlt}
               src={firstImage}
+              width={COMPARE_IMG_W}
+              height={COMPARE_IMG_H}
+              sizes="(max-width: 768px) 100vw, 720px"
+              unoptimized
               className={cn(
                 "absolute inset-0 z-20 h-full w-full shrink-0 rounded-2xl object-cover select-none",
                 firstImageClassName
@@ -228,14 +236,17 @@ export function Compare({
       </div>
 
       {secondImage ? (
-        // eslint-disable-next-line @next/next/no-img-element -- assets SVG locaux illustratifs
-        <img
+        <Image
           className={cn(
             "absolute top-0 left-0 z-[19] h-full w-full rounded-2xl object-cover select-none",
             secondImageClassname
           )}
           alt={secondAlt}
           src={secondImage}
+          width={COMPARE_IMG_W}
+          height={COMPARE_IMG_H}
+          sizes="(max-width: 768px) 100vw, 720px"
+          unoptimized
           draggable={false}
         />
       ) : null}

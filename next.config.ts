@@ -12,11 +12,9 @@ const baseSecurityHeaders = [
   },
 ];
 
+// HSTS est géré uniquement par le reverse proxy Synology (TLS termination).
+// Ne pas le redéfinir ici : doublon public avec max-age différents (63072000 vs 15768000).
 const productionOnlyHeaders = [
-  {
-    key: "Strict-Transport-Security",
-    value: "max-age=63072000; includeSubDomains; preload",
-  },
   {
     key: "Content-Security-Policy",
     value: [
