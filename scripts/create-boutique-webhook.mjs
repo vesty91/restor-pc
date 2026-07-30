@@ -37,7 +37,7 @@ if (
 }
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-const url = (env.NEXT_PUBLIC_SITE_URL || "https://atelier.restor-pc.fr").replace(
+const url = (env.NEXT_PUBLIC_SITE_URL || "https://www.restor-pc.fr").replace(
   /\/$/,
   ""
 ) + "/api/stripe/webhook";

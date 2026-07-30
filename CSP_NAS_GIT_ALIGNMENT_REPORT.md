@@ -4,6 +4,11 @@ Date : 2026-07-29
 Projet : Restor-PC  
 Auteur audit : agent DevOps (exécution réelle des contrôles)
 
+> **Mise à jour domaine (2026-07-30)** : l’URL canonique de production est désormais
+> **`https://www.restor-pc.fr`**. `https://atelier.restor-pc.fr` redirige en 301 vers www.
+> Les mesures HTTP de la section 6 ci-dessous reflètent l’état **avant** cette migration
+> (historique d’audit CSP) et ne doivent plus être utilisées comme source de vérité SEO.
+
 ## 1. SHA GitHub `master`
 
 `b363df4` — `fix(docker): pass public environment variables at build time`
@@ -77,8 +82,9 @@ Contrôles conteneur (sans restart) :
 
 ## 7. Résultat des en-têtes HTTP
 
-Site Next.js de production pour ce projet : **`https://atelier.restor-pc.fr`**  
-(`www.restor-pc.fr` = autre site / static Web Station, hors scope Docker Restor-PC)
+~~Site Next.js de production pour ce projet : `https://atelier.restor-pc.fr`~~  
+~~(`www.restor-pc.fr` = autre site / static Web Station, hors scope Docker Restor-PC)~~  
+**Obsolète** — depuis 2026-07-30 : production = **`https://www.restor-pc.fr`** (Docker Restor-PC derrière nginx DSM).
 
 ### `https://atelier.restor-pc.fr/`
 
