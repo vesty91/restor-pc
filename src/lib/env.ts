@@ -102,7 +102,7 @@ export function getPublicSiteUrl(fallbackOrigin?: string): string {
     return env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
   }
   if (fallbackOrigin) return fallbackOrigin.replace(/\/$/, "");
-  return "https://atelier.restor-pc.fr";
+  return "https://www.restor-pc.fr";
 }
 
 export function isStripeLiveKey(key?: string | null): boolean {

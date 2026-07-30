@@ -4,7 +4,7 @@ export const siteConfig = {
   tagline: "Diagnostic précis. Réparation soignée. Performance retrouvée.",
   description:
     "Dépannage informatique à Yerres (91) : réparation PC et portables, virus, Windows et récupération de données — atelier Restor-PC.",
-  url: "https://atelier.restor-pc.fr",
+  url: "https://www.restor-pc.fr",
   phone: "07 67 28 23 65",
   phoneHref: "tel:+33767282365",
   phoneRaw: "0767282365",
@@ -85,7 +85,7 @@ export const siteConfig = {
     host: {
       name: "Hébergement sur infrastructure Synology (auto-hébergé)",
       address: "3 rue Auber, 91330 Yerres, France",
-      url: "https://atelier.restor-pc.fr",
+      url: "https://www.restor-pc.fr",
     },
   },
   /** Note Google (fiche publique). */
