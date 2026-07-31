@@ -17,6 +17,7 @@ export const config = {
     "/boutique/:path*",
     "/admin/:path*",
     "/atelier/:path*",
-    "/auth/:path*",
+    // Pas /auth/* : le callback OAuth pose déjà de gros Set-Cookie (JWT) ;
+    // un 2e refresh middleware les double et nginx renvoyait 502 (too big header).
   ],
 };

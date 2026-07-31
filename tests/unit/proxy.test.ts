@@ -11,7 +11,7 @@ const updateSessionMock = vi.mocked(updateSession);
 
 /** Vérifie qu’un pathname est couvert par le matcher restreint (préfixes documentés). */
 function isProxyPath(pathname: string): boolean {
-  const prefixes = ["/compte", "/boutique", "/admin", "/atelier", "/auth"];
+  const prefixes = ["/compte", "/boutique", "/admin", "/atelier"];
   return prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
@@ -22,12 +22,11 @@ describe("proxy matcher", () => {
       "/boutique/:path*",
       "/admin/:path*",
       "/atelier/:path*",
-      "/auth/:path*",
     ]);
-    expect(config.matcher).toHaveLength(5);
+    expect(config.matcher).toHaveLength(4);
   });
 
-  it("couvre compte, boutique, admin, atelier et auth", () => {
+  it("couvre compte, boutique, admin et atelier", () => {
     const covered = [
       "/compte",
       "/compte/commandes",
@@ -36,15 +35,13 @@ describe("proxy matcher", () => {
       "/admin",
       "/admin/licences",
       "/atelier",
-      "/auth/callback",
-      "/auth/confirm",
     ];
     for (const path of covered) {
       expect(isProxyPath(path), path).toBe(true);
     }
   });
 
-  it("exclut les routes publiques et assets", () => {
+  it("exclut auth OAuth, routes publiques et assets", () => {
     const excluded = [
       "/",
       "/contact",
@@ -53,6 +50,8 @@ describe("proxy matcher", () => {
       "/mentions-legales",
       "/politique-confidentialite",
       "/conseils/foo",
+      "/auth/callback",
+      "/auth/confirm",
       "/api/health",
       "/api/stripe/webhook",
       "/_next/static/chunks/main.js",

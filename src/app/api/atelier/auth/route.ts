@@ -62,7 +62,17 @@ export async function POST(request: Request) {
   }
 
   logAtelierAuth(true, requestId);
-  const token = createAtelierSessionToken();
+  let token: string;
+  try {
+    token = createAtelierSessionToken();
+  } catch {
+    return jsonError(
+      "ATELIER_NOT_CONFIGURED",
+      "Espace atelier non configure (session).",
+      503,
+      requestId
+    );
+  }
   const res = NextResponse.json({ ok: true, requestId });
   res.cookies.set(ATELIER_COOKIE, token, atelierCookieOptions());
   return res;
