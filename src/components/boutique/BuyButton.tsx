@@ -66,6 +66,8 @@ export function BuyButton({
         setError(data.error || "Paiement indisponible pour le moment.");
         return;
       }
+      const { trackBeginCheckout } = await import("@/lib/analytics");
+      trackBeginCheckout(slug);
       window.location.href = data.url;
     } catch {
       setError("Erreur réseau. Réessayez.");

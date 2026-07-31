@@ -104,6 +104,13 @@ export function ConfiguratorApp() {
     } catch {
       /* private mode */
     }
+    void import("@/lib/analytics").then(({ trackBeginQuote }) => {
+      trackBeginQuote({
+        usage,
+        budget,
+        total: build.grandTotal,
+      });
+    });
     router.push(
       `/contact?type=config&usage=${usage}&budget=${budget}&total=${build.grandTotal}`
     );

@@ -1,3 +1,4 @@
+import { CookiePrefsButton } from "@/components/analytics/CookiePrefsButton";
 import { BrandLogo } from "@/components/BrandLogo";
 import { siteConfig, navLinks } from "@/lib/site";
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
@@ -60,6 +61,11 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <CookiePrefsButton className="text-sm text-white/80 hover:text-white">
+                  Cookies
+                </CookiePrefsButton>
+              </li>
               {googleLinks.map((l) => (
                 <li key={l.href}>
                   <a

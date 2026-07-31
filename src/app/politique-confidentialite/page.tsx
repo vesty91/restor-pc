@@ -176,13 +176,28 @@ export default function PrivacyPage() {
           ).
         </p>
 
-        <h2 className="mt-10 text-xl">Cookies et stockage local</h2>
+        <h2 id="cookies" className="mt-10 text-xl scroll-mt-24">
+          Cookies et stockage local
+        </h2>
         <p className="mt-3 text-ink-muted leading-relaxed">
           Le site utilise des cookies et stockage local techniques nécessaires au
           fonctionnement : session d’authentification (Supabase), préférence de
           thème, mémorisation temporaire d’une configuration PC, fermeture du
-          bandeau d’annonce. Aucun cookie publicitaire n’est déposé sans
-          consentement préalable.
+          bandeau d’annonce, et mémorisation de votre choix de mesure d’audience.
+        </p>
+        <p className="mt-3 text-ink-muted leading-relaxed">
+          Avec votre consentement explicite, nous activons{" "}
+          <strong className="text-ink">Google Analytics 4</strong> (mesure
+          d’audience uniquement) pour comprendre les visites et les conversions
+          utiles : clic téléphone, clic e-mail, envoi du formulaire de contact,
+          demande de devis ou de rendez-vous, et paiement boutique réussi. IP
+          anonymisée. Aucune publicité ciblée, aucun cookie publicitaire sans
+          consentement. Vous pouvez accepter ou refuser via le bandeau, ou
+          modifier votre choix via le lien « Cookies » du pied de page.
+        </p>
+        <p className="mt-3 text-ink-muted leading-relaxed">
+          Base légale : consentement (art. 6.1.a RGPD) pour la mesure d’audience
+          non essentielle. Sans consentement, GA4 n’est pas chargé.
         </p>
 
         <h2 className="mt-10 text-xl">Liens utiles</h2>

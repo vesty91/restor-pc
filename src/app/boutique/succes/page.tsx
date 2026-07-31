@@ -1,3 +1,4 @@
+import { PurchaseSuccessTracker } from "@/components/analytics/PurchaseSuccessTracker";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { StatusBadge } from "@/components/restor-pc/status-badge";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,7 @@ export default async function BoutiqueSuccesPage({
   const sp = searchParams ? await searchParams : {};
   return (
     <Section className="noise-bg pb-16 pt-20 md:pt-28">
+      <PurchaseSuccessTracker sessionId={sp.session_id} />
       <Breadcrumbs
         items={[
           { label: "Boutique", href: "/boutique" },

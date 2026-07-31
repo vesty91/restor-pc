@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono, Syne } from "next/font/google";
+import { AnalyticsRoot } from "@/components/analytics/AnalyticsRoot";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
@@ -89,22 +90,24 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col antialiased pb-20 md:pb-0">
         <ThemeProvider>
-          <JsonLd />
-          <a
-            href="#contenu"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-paper focus:px-4 focus:py-2"
-          >
-            Aller au contenu
-          </a>
-          <AnnouncementBar />
-          <Header />
-          <main id="contenu" className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <MobileCtaBar />
-          <ScrollToTop />
-          <Toaster />
+          <AnalyticsRoot>
+            <JsonLd />
+            <a
+              href="#contenu"
+              className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-paper focus:px-4 focus:py-2"
+            >
+              Aller au contenu
+            </a>
+            <AnnouncementBar />
+            <Header />
+            <main id="contenu" className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <MobileCtaBar />
+            <ScrollToTop />
+            <Toaster />
+          </AnalyticsRoot>
         </ThemeProvider>
       </body>
     </html>

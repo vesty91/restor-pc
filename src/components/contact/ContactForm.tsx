@@ -213,6 +213,13 @@ export function ContactForm() {
       } catch {
         /* ignore */
       }
+      const { trackContactSuccess } = await import("@/lib/analytics");
+      trackContactSuccess({
+        type: form.type,
+        service: form.service || undefined,
+        mode: form.mode || undefined,
+        urgency: form.urgency || undefined,
+      });
       setSent(true);
       notify.success("Demande envoyée. Nous vous recontactons rapidement.");
     } catch {
