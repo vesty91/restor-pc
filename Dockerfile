@@ -38,9 +38,11 @@ RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs \
   && apk add --no-cache wget
 
-COPY --from=builder /app/public ./public
+# chown obligatoire : sur Synology les fichiers public/ peuvent arriver en 700 root.
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+RUN chmod -R u+rwX,go+rX /app/public
 
 USER nextjs
 EXPOSE 3000
