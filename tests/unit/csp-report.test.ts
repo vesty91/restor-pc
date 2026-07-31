@@ -13,7 +13,7 @@ const EXPECTED_ENFORCEMENT = [
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline' https://js.stripe.com https://checkout.stripe.com https://www.googletagmanager.com",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://checkout.stripe.com https://api.resend.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://checkout.stripe.com https://api.resend.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com https://*.googletagmanager.com",
   "frame-src https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://maps.google.com https://www.google.com",
   "worker-src 'self' blob:",
   "upgrade-insecure-requests",
@@ -30,13 +30,30 @@ const EXPECTED_REPORT_ONLY = [
   "style-src 'self' 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
   "script-src-attr 'none'",
-  "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+  "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com https://*.googletagmanager.com",
   "frame-src https://maps.google.com https://www.google.com",
   "worker-src 'self'",
   "upgrade-insecure-requests",
   "report-to csp-endpoint",
   "report-uri /api/csp-report",
 ].join("; ");
+
+/** Hosts GA4 requis (apex + wildcards) — *.host ne couvre pas l’apex. */
+const GA4_CONNECT_HOSTS = [
+  "https://www.google-analytics.com",
+  "https://*.google-analytics.com",
+  "https://analytics.google.com",
+  "https://*.analytics.google.com",
+  "https://www.googletagmanager.com",
+  "https://*.googletagmanager.com",
+] as const;
+
+const FORBIDDEN_CSP_PATTERNS = [
+  /(?:^|;\s*)default-src\s+\*/i,
+  /(?:^|;\s*)script-src[^;]*\s\*(?:\s|;|$)/i,
+  /(?:^|;\s*)connect-src[^;]*\s\*(?:\s|;|$)/i,
+  /unsafe-eval/i,
+] as const;
 
 function findHeader(
   headers: Array<{ key: string; value: string }>,
@@ -375,12 +392,51 @@ describe("CSP Phase 1 — Report-Only + /api/csp-report", () => {
     expect(headers.map((h) => h.key)).not.toContain("Strict-Transport-Security");
   });
 
-  it("conserve la CSP enforcement strictement inchangée", async () => {
+  it("conserve la CSP enforcement (incl. hosts GA4 apex + wildcards)", async () => {
     vi.resetModules();
     (process.env as Record<string, string>).NODE_ENV = "production";
     const config = (await import("../../next.config")).default;
     const headers = (await config.headers!())[0].headers;
     const enforcement = findHeader(headers, "Content-Security-Policy");
     expect(enforcement?.value).toBe(EXPECTED_ENFORCEMENT);
+  });
+
+  it("autorise GA4 dans script-src et connect-src (enforcement + report-only)", async () => {
+    vi.resetModules();
+    (process.env as Record<string, string>).NODE_ENV = "production";
+    const config = (await import("../../next.config")).default;
+    const headers = (await config.headers!())[0].headers;
+    const enforcement = findHeader(headers, "Content-Security-Policy")!.value;
+    const reportOnly = findHeader(
+      headers,
+      "Content-Security-Policy-Report-Only"
+    )!.value;
+
+    for (const policy of [enforcement, reportOnly]) {
+      expect(policy).toMatch(/script-src[^;]*https:\/\/www\.googletagmanager\.com/);
+      for (const host of GA4_CONNECT_HOSTS) {
+        expect(policy).toContain(host);
+      }
+      // img-src actuel : https: couvre déjà les pixels GA (pas de wildcard global dangereux)
+      expect(policy).toMatch(/img-src[^;]*https:/);
+    }
+  });
+
+  it("n'affaiblit pas la CSP avec * / unsafe-eval", async () => {
+    vi.resetModules();
+    (process.env as Record<string, string>).NODE_ENV = "production";
+    const config = (await import("../../next.config")).default;
+    const headers = (await config.headers!())[0].headers;
+    const enforcement = findHeader(headers, "Content-Security-Policy")!.value;
+    const reportOnly = findHeader(
+      headers,
+      "Content-Security-Policy-Report-Only"
+    )!.value;
+
+    for (const policy of [enforcement, reportOnly]) {
+      for (const pattern of FORBIDDEN_CSP_PATTERNS) {
+        expect(policy).not.toMatch(pattern);
+      }
+    }
   });
 });

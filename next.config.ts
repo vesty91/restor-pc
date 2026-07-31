@@ -27,7 +27,8 @@ const productionOnlyHeaders = [
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
       "script-src 'self' 'unsafe-inline' https://js.stripe.com https://checkout.stripe.com https://www.googletagmanager.com",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://checkout.stripe.com https://api.resend.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+      // GA4 : *.host ne couvre PAS l’apex (ex. analytics.google.com). Inclure apex + www explicites.
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://checkout.stripe.com https://api.resend.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com https://*.googletagmanager.com",
       "frame-src https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://maps.google.com https://www.google.com",
       "worker-src 'self' blob:",
       "upgrade-insecure-requests",
@@ -50,7 +51,7 @@ const productionOnlyHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
       "script-src-attr 'none'",
-      "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+      "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com https://*.googletagmanager.com",
       "frame-src https://maps.google.com https://www.google.com",
       "worker-src 'self'",
       "upgrade-insecure-requests",

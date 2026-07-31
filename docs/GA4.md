@@ -42,10 +42,12 @@ Dans GA4 → Admin → Événements → Marquer comme événement clé :
 
 ## CSP
 
-`next.config.ts` autorise déjà :
+`next.config.ts` autorise :
 
 - `script-src` : `https://www.googletagmanager.com`
-- `connect-src` : `*.google-analytics.com`, `*.analytics.google.com`, `*.googletagmanager.com`
+- `connect-src` : apex + wildcards — `https://www.google-analytics.com`, `https://*.google-analytics.com`, `https://analytics.google.com`, `https://*.analytics.google.com`, `https://www.googletagmanager.com`, `https://*.googletagmanager.com`
+
+> Important : en CSP, `*.analytics.google.com` **ne couvre pas** `analytics.google.com` (apex). Les deux sont requis.
 
 ## Vérification
 
