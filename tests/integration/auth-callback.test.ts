@@ -46,6 +46,24 @@ describe("auth callback GET", () => {
     expect(location).not.toContain("evil.example");
   });
 
+  it("n’utilise jamais 0.0.0.0 comme origine de redirection", async () => {
+    exchangeCodeForSessionMock.mockResolvedValue({ error: null });
+    const prev = process.env.NEXT_PUBLIC_SITE_URL;
+    process.env.NEXT_PUBLIC_SITE_URL = "https://www.restor-pc.fr";
+    const response = await GET(
+      new Request("https://0.0.0.0:3000/auth/callback?code=valid&next=/compte", {
+        headers: {
+          host: "0.0.0.0:3000",
+          "x-forwarded-proto": "https",
+        },
+      })
+    );
+    expect(response.headers.get("location")).toBe(
+      "https://www.restor-pc.fr/compte"
+    );
+    process.env.NEXT_PUBLIC_SITE_URL = prev;
+  });
+
   it("refuse un next sans slash initial", async () => {
     exchangeCodeForSessionMock.mockResolvedValue({ error: null });
     const response = await GET(
