@@ -6,26 +6,52 @@ export type RateLimitResult = {
   resetAt: number;
 };
 
+export type RateLimitMode = "public" | "auth";
+
 type MemoryEntry = { count: number; resetAt: number };
 
 const memory = new Map<string, MemoryEntry>();
 
-function getTrustedIp(request: Request): string {
-  // Ne faire confiance à x-forwarded-for que derrière un proxy maîtrisé (Vercel).
-  const trustProxy = process.env.TRUST_PROXY_HEADERS !== "false";
-  if (trustProxy) {
-    const forwarded = request.headers.get("x-forwarded-for");
-    if (forwarded) {
-      const first = forwarded.split(",")[0]?.trim();
-      if (first) return first;
-    }
-    const realIp = request.headers.get("x-real-ip")?.trim();
-    if (realIp) return realIp;
+/**
+ * Opt-in explicite uniquement.
+ * Derrière Synology/Nginx, activer UNIQUEMENT si le reverse proxy
+ * écrase X-Real-IP / X-Forwarded-For avec $remote_addr (jamais la valeur client).
+ */
+export function isTrustProxyHeadersEnabled(): boolean {
+  const raw = process.env.TRUST_PROXY_HEADERS?.trim().toLowerCase();
+  return raw === "true" || raw === "1" || raw === "yes";
+}
+
+function supabaseRateLimitConfigured(): boolean {
+  return Boolean(
+    process.env.SUPABASE_URL?.trim() &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
+  );
+}
+
+/**
+ * IP client pour le rate-limit.
+ * Sans TRUST_PROXY_HEADERS=true → "unknown" (pas de confiance aux headers navigateur).
+ * Avec trust → préfère X-Real-IP (souvent posé par nginx), sinon 1er hop X-Forwarded-For.
+ */
+export function getTrustedIp(request: Request): string {
+  if (!isTrustProxyHeadersEnabled()) {
+    return "unknown";
   }
+
+  const realIp = request.headers.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
+
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+
   return "unknown";
 }
 
-/** Clé stable (IP hashée) pour éviter de stocker l'IP brute en clair si souhaité. */
+/** Clé stable (IP hashée) — n’expose pas l’IP brute dans les logs applicatifs. */
 export function rateLimitKey(
   request: Request,
   scope: string,
@@ -67,10 +93,7 @@ async function checkSupabase(
   limit: number,
   windowMs: number
 ): Promise<RateLimitResult | null> {
-  if (
-    !process.env.SUPABASE_URL?.trim() ||
-    !process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
-  ) {
+  if (!supabaseRateLimitConfigured()) {
     return null;
   }
   try {
@@ -99,6 +122,10 @@ async function checkSupabase(
 
 /**
  * Rate limit : tente Supabase (persistant), sinon mémoire process.
+ *
+ * `mode: "auth"` — si Supabase est configuré mais la RPC est indisponible,
+ * refuse la requête (fail-closed) plutôt qu’un fallback silencieux.
+ * `mode: "public"` — conserve le fallback mémoire (formulaire contact, etc.).
  */
 export async function enforceRateLimit(opts: {
   request: Request;
@@ -106,10 +133,24 @@ export async function enforceRateLimit(opts: {
   limit: number;
   windowMs: number;
   extra?: string;
+  mode?: RateLimitMode;
 }): Promise<RateLimitResult> {
+  const mode = opts.mode ?? "public";
   const key = rateLimitKey(opts.request, opts.scope, opts.extra);
+  const remoteConfigured = supabaseRateLimitConfigured();
   const remote = await checkSupabase(key, opts.limit, opts.windowMs);
+
   if (remote) return remote;
+
+  if (mode === "auth" && remoteConfigured) {
+    // Infrastructure rate-limit distante en panne : ne pas ouvrir un chemin permissif.
+    return {
+      ok: false,
+      remaining: 0,
+      resetAt: Date.now() + opts.windowMs,
+    };
+  }
+
   return checkMemory(key, opts.limit, opts.windowMs);
 }
 
@@ -117,5 +158,3 @@ export async function enforceRateLimit(opts: {
 export function __resetMemoryRateLimitsForTests(): void {
   memory.clear();
 }
-
-export { getTrustedIp };

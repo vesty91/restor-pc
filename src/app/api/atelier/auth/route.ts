@@ -13,6 +13,7 @@ export async function POST(request: Request) {
     scope: "atelier-auth",
     limit: 8,
     windowMs: 15 * 60 * 1000,
+    mode: "auth",
   });
   if (!limited.ok) {
     await sendAlert({

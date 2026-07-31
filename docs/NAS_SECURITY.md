@@ -35,3 +35,31 @@ Si activé (atelier local uniquement) :
 ## Variables
 
 Voir `.env.example` section NAS.
+
+## Reverse proxy et rate-limit (TRUST_PROXY_HEADERS)
+
+Par défaut, l’application **ignore** `X-Forwarded-For` / `X-Real-IP` pour le
+rate-limit (`TRUST_PROXY_HEADERS` non défini ou `false`). Un client ne peut
+donc pas contourner les limites en forgeant ces en-têtes.
+
+Sur le NAS Synology, activer explicitement :
+
+```env
+TRUST_PROXY_HEADERS=true
+```
+
+**uniquement** si le reverse proxy écrase les en-têtes (ne pas propager la
+valeur envoyée par le navigateur) :
+
+```nginx
+# Exemple — à adapter dans la conf Synology / Nginx
+# NE PAS appliquer sans vérifier la conf réelle du reverse proxy DSM.
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $remote_addr;
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-Proto $scheme;
+```
+
+Sans cette écrasement, laisser `TRUST_PROXY_HEADERS=false` : le rate-limit
+utilise alors une clé partagée (`unknown`), ce qui reste sûr contre le spoofing
+(mais moins précis par IP réelle).
