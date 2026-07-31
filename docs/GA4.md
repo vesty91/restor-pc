@@ -49,6 +49,12 @@ Dans GA4 → Admin → Événements → Marquer comme événement clé :
 
 > Important : en CSP, `*.analytics.google.com` **ne couvre pas** `analytics.google.com` (apex). Les deux sont requis.
 
+## Implémentation gtag
+
+Le stub `gtag` **doit** faire `dataLayer.push(arguments)` (objet Arguments),
+jamais `dataLayer.push([...args])`. Un Array empêche GA4 d’initialiser la
+destination : pas de `client_id`, aucun `g/collect`.
+
 ## Vérification
 
 1. Ouvrir le site en navigation privée

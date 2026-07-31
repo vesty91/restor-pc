@@ -1,10 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { getGaMeasurementId, isGaConfigured } from "@/lib/analytics/config";
 import {
   classifyOutboundHref,
   contactLeadEvents,
   GA_EVENTS,
 } from "@/lib/analytics";
+import {
+  __resetGtagForTests,
+  loadGoogleAnalytics,
+} from "@/lib/analytics/gtag";
 
 describe("analytics config", () => {
   const prev = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
@@ -61,5 +65,45 @@ describe("outbound href classification", () => {
       classifyOutboundHref("https://wa.me/33767282365?text=Bonjour")
     ).toBe("whatsapp");
     expect(classifyOutboundHref("/contact")).toBeNull();
+  });
+});
+
+describe("gtag dataLayer stub", () => {
+  const prev = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
+  afterEach(() => {
+    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = prev;
+    __resetGtagForTests();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("pousse des Arguments (pas un Array) — requis pour GA4", () => {
+    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = "G-61YXXVVVYX";
+
+    const dataLayer: unknown[] = [];
+    const head = {
+      appendChild: vi.fn((node: unknown) => node),
+    };
+    const win = {
+      dataLayer,
+      gtag: undefined as undefined | ((...args: unknown[]) => void),
+    };
+
+    vi.stubGlobal("window", win);
+    vi.stubGlobal("document", {
+      head,
+      createElement: vi.fn(() => ({ async: false, src: "" })),
+    });
+
+    loadGoogleAnalytics(true);
+
+    expect(dataLayer.length).toBeGreaterThan(0);
+    const first = dataLayer[0];
+    expect(Array.isArray(first), "Array cassé GA4 — il faut Arguments").toBe(
+      false
+    );
+    expect(first && typeof first === "object" && "length" in first).toBe(true);
+    expect(head.appendChild).toHaveBeenCalled();
   });
 });

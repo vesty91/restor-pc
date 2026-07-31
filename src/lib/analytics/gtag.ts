@@ -10,7 +10,7 @@ type GtagConsent = {
 
 declare global {
   interface Window {
-    dataLayer?: unknown[];
+    dataLayer?: Array<IArguments | Record<string, unknown> | unknown>;
     gtag?: (...args: unknown[]) => void;
   }
 }
@@ -20,8 +20,12 @@ let scriptLoaded = false;
 function ensureDataLayer() {
   window.dataLayer = window.dataLayer || [];
   if (!window.gtag) {
-    window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer!.push(args);
+    // Obligatoire : pousser l’objet `arguments`, pas un Array.
+    // dataLayer.push([...args]) empêche GA4 d’initialiser la destination
+    // (pas de client_id, aucun g/collect).
+    window.gtag = function gtag() {
+      // eslint-disable-next-line prefer-rest-params
+      window.dataLayer!.push(arguments as unknown as IArguments);
     };
   }
 }
