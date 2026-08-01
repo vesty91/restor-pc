@@ -5,7 +5,8 @@ L’hébergement cible est le **NAS Synology** (Docker), pas Vercel.
 ## Prérequis
 
 - Container Manager (Docker) sur le NAS
-- Domaine / reverse proxy HTTPS vers le conteneur (ex. domaine public → port 3000)
+- Domaine / reverse proxy HTTPS vers le conteneur via **loopback** (`127.0.0.1:3000`)
+- Le compose publie `127.0.0.1:3000:3000` (pas `0.0.0.0`) — voir `docs/NAS_SECURITY.md`
 - Fichier `.env` avec les secrets (jamais dans Git)
 
 ## Variables critiques

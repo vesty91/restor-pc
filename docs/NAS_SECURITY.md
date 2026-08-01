@@ -63,3 +63,52 @@ proxy_set_header X-Forwarded-Proto $scheme;
 Sans cette écrasement, laisser `TRUST_PROXY_HEADERS=false` : le rate-limit
 utilise alors une clé partagée (`unknown`), ce qui reste sûr contre le spoofing
 (mais moins précis par IP réelle).
+
+## Exposition du port Docker (Phase 5)
+
+### Diagnostic production (2026-08-01)
+
+| Élément | Valeur observée |
+|---|---|
+| Conteneur | `restor-pc`, network `restor-pc_default`, IP `172.20.0.2` |
+| Publish actuel (avant changement) | `0.0.0.0:3000->3000` et `[::]:3000` |
+| Healthcheck | `wget http://127.0.0.1:3000/api/health` (dans le conteneur) |
+| Curl NAS loopback | `http://127.0.0.1:3000/api/health` → 200 |
+| Curl NAS LAN | `http://192.168.1.5:3000/api/health` → 200 |
+| Nginx `www` | `proxy_pass http://192.168.1.5:3000;` (`http.restor-pc-www-migration.conf`) |
+| Reverse Proxy DSM `atelier` | backend `192.168.1.5:3000` (overridden en 301 vers www par la conf migration) |
+
+### Cible
+
+```yaml
+ports:
+  - "127.0.0.1:3000:3000"
+```
+
+Le loopback est **atteignable** depuis nginx sur le NAS (`curl 127.0.0.1:3000` OK).
+En revanche, publier uniquement sur `127.0.0.1` **casse** le site si nginx
+continue de cibler `192.168.1.5:3000`.
+
+### Déploiement coordonné (obligatoire)
+
+1. Mettre à jour nginx **avant** ou **dans la même fenêtre** que le recreate Docker :
+   - `proxy_pass http://127.0.0.1:3000;`
+   - (recommandé) `proxy_set_header X-Forwarded-For $remote_addr;` au lieu de `$proxy_add_x_forwarded_for`
+2. `docker compose up -d` avec le nouveau `ports`
+3. Vérifier :
+   - conteneur healthy
+   - `curl -s http://127.0.0.1:3000/api/health` → 200
+   - `https://www.restor-pc.fr/api/health` → 200
+   - `https://www.restor-pc.fr/robots.txt` et `/sitemap.xml` → 200
+   - depuis un PC LAN : `http://192.168.1.5:3000` doit **échouer** (connexion refusée)
+4. Ne pas appliquer nginx / DSM sans validation explicite (règle production).
+
+Snippet nginx attendu (emplacement : `conf.d/http.restor-pc-www-migration.conf`) :
+
+```nginx
+proxy_pass http://127.0.0.1:3000;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $remote_addr;
+proxy_set_header X-Forwarded-Proto https;
+proxy_set_header Host $http_host;
+```

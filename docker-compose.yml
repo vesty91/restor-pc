@@ -13,7 +13,9 @@ services:
     container_name: restor-pc
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      # Loopback only — le reverse proxy Synology (même hôte) doit cibler 127.0.0.1:3000.
+      # Ne pas republier 0.0.0.0:3000 (exposition LAN / Internet si le routeur forward).
+      - "127.0.0.1:3000:3000"
     env_file:
       - .env
     environment:
