@@ -11,6 +11,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "coverage/**",
     "next-env.d.ts",
     // Scripts Node CJS one-shot (hors App Router)
     "scripts/generate-outils-details.js",

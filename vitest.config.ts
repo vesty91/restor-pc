@@ -8,8 +8,10 @@ export default defineConfig({
     exclude: ["node_modules", ".next", "tests/e2e/**"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "html"],
-      include: ["src/lib/**/*.ts"],
+      reporter: ["text", "html", "json-summary"],
+      // Inclure largement pour les rapports ; les seuils critiques
+      // sont appliqués via `npm run test:coverage:critical` (config dédiée).
+      include: ["src/lib/**/*.ts", "src/app/api/stripe/**/*.ts"],
     },
   },
   resolve: {

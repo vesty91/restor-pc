@@ -42,6 +42,9 @@ jobs:
       - name: npm audit (production, informational)
         continue-on-error: true
         run: npm audit --omit=dev
+      - name: Critical coverage (informational)
+        continue-on-error: true
+        run: npm run test:coverage:critical
       - run: npm run typecheck
       - name: Lint (global)
         run: npm run lint
