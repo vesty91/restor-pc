@@ -39,6 +39,9 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - name: npm audit (production, informational)
+        continue-on-error: true
+        run: npm audit --omit=dev
       - run: npm run typecheck
       - name: Lint (global)
         run: npm run lint

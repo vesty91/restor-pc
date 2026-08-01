@@ -30,3 +30,15 @@ Ne publiez pas d’exploit public avant correction.
 - `RESEND_API_KEY`
 
 Voir aussi : `docs/SECRET_ROTATION.md`, `docs/PRODUCTION_CHECKLIST.md`.
+
+## Dépendances npm (Phase 3 — 2026-08-01)
+
+Politique : pas de `npm audit fix --force`, pas de rétrogradation Next.js.
+
+| Paquet | Statut | Classe | Notes |
+|---|---|---|---|
+| `brace-expansion` | Corrigé (≥1.1.17) | Dev (eslint) | `npm audit fix` sans `--force` |
+| `postcss` | Corrigé (override `8.5.25`) | Build (Next + Tailwind) | Override documenté ; XSS/sourcemap non exploitable en runtime Next (CSS non utilisateur) — [discussion Vercel](https://github.com/vercel/next.js/discussions/93718) |
+| `sharp` (`0.34.5` via Next) | **Conservé** | Runtime image (`next/image`) | Override `≥0.35` casse le tracing standalone (`ERR_DLOPEN_FAILED` / `@vercel/nft`). Attendre le pin officiel Next. Ne pas `--force` (propose Next 14). |
+
+Contrôle CI : `npm audit --omit=dev` en **informational** (`continue-on-error`) tant que `sharp` reste signalé.
