@@ -73,17 +73,22 @@ Ne pas supprimer :
 
 - `src/lib/atelier-auth.ts`
 - `src/app/api/atelier/auth/route.ts`
-- le fallback dans `requireTechnician` / `requireAdmin`
+- le fallback HMAC dans `requireTechnician` (tant que `ATELIER_HMAC_FALLBACK` ≠ false)
+
+**Important (Phase 2 code) :** `requireAdmin()` n’accepte **plus** la session HMAC.
+Seul un utilisateur Supabase avec `user_roles.role = 'admin'` convient.
 
 ### 6. Variable de désactivation du fallback
 
 Proposer (sans l’activer en prod tant que non validé) :
 
 ```bash
-# false = HMAC encore accepté (défaut transition)
-# true  = seules les sessions Supabase + user_roles
-ATELIER_HMAC_FALLBACK=true|false
+# true (défaut) = HMAC encore accepté pour requireTechnician
+# false = seules les sessions Supabase + user_roles (technician/admin)
+ATELIER_HMAC_FALLBACK=true
 ```
+
+`requireAdmin` ignore toujours HMAC (rôles Supabase uniquement).
 
 À brancher dans `src/lib/auth/roles.ts` et éventuellement masquer le formulaire secret.
 

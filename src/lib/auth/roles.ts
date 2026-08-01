@@ -6,6 +6,18 @@ import { AppError } from "@/lib/errors";
 
 export type AppRole = "customer" | "technician" | "admin";
 
+/**
+ * Transition HMAC atelier → Supabase roles.
+ * Défaut : true (HMAC encore accepté pour requireTechnician uniquement).
+ * Mettre ATELIER_HMAC_FALLBACK=false seulement après attribution d’un admin
+ * dans user_roles (voir docs/ADMIN_AUTH.md).
+ */
+export function isAtelierHmacFallbackEnabled(): boolean {
+  const raw = process.env.ATELIER_HMAC_FALLBACK?.trim().toLowerCase();
+  if (raw === "false" || raw === "0" || raw === "no") return false;
+  return true;
+}
+
 export async function requireAuthenticatedUser(): Promise<User> {
   const supabase = await createClient();
   const {
@@ -21,28 +33,48 @@ export async function requireAuthenticatedUser(): Promise<User> {
   return user;
 }
 
+/**
+ * Lit le rôle via service role. Toute erreur / absence Supabase → null (refus).
+ */
 export async function getUserRole(userId: string): Promise<AppRole | null> {
-  const sb = getSupabaseAdmin();
-  const { data } = await sb
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId)
-    .maybeSingle();
-  return (data?.role as AppRole | undefined) ?? null;
+  try {
+    const sb = getSupabaseAdmin();
+    const { data, error } = await sb
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (error) return null;
+    const role = data?.role;
+    if (role === "customer" || role === "technician" || role === "admin") {
+      return role;
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
+function atelierTechnicianStub(): User {
+  return {
+    id: "atelier-session",
+    email: "atelier@restor-pc.local",
+    app_metadata: { role: "technician" },
+    user_metadata: {},
+    aud: "authenticated",
+    created_at: new Date().toISOString(),
+  } as User;
+}
+
+/**
+ * Technicien : session HMAC atelier (si fallback actif) OU rôle Supabase
+ * technician|admin.
+ */
 export async function requireTechnician(): Promise<User> {
-  // Transition : session atelier HMAC OU rôle Supabase technician/admin
-  if (await isAtelierAuthed()) {
-    return {
-      id: "atelier-session",
-      email: "atelier@restor-pc.local",
-      app_metadata: { role: "technician" },
-      user_metadata: {},
-      aud: "authenticated",
-      created_at: new Date().toISOString(),
-    } as User;
+  if (isAtelierHmacFallbackEnabled() && (await isAtelierAuthed())) {
+    return atelierTechnicianStub();
   }
+
   const user = await requireAuthenticatedUser();
   const role = await getUserRole(user.id);
   if (role !== "technician" && role !== "admin") {
@@ -55,10 +87,11 @@ export async function requireTechnician(): Promise<User> {
   return user;
 }
 
+/**
+ * Administrateur : uniquement un utilisateur Supabase avec rôle `admin`.
+ * La session HMAC atelier n’accorde JAMAIS ce privilège.
+ */
 export async function requireAdmin(): Promise<User> {
-  if (await isAtelierAuthed()) {
-    return requireTechnician();
-  }
   const user = await requireAuthenticatedUser();
   const role = await getUserRole(user.id);
   if (role !== "admin") {
