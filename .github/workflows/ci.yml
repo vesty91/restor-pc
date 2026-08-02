@@ -126,6 +126,11 @@ jobs:
         run: npm run test:e2e:ci
         env:
           PLAYWRIGHT_PORT: "3010"
+          # Serveur prod en HTTP local : cookies Secure bloqueraient la session atelier.
+          COOKIE_SECURE: "false"
+          # Pas d’infra Supabase réelle en CI — rate-limit auth en mémoire.
+          SUPABASE_URL: ""
+          SUPABASE_SERVICE_ROLE_KEY: ""
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v4

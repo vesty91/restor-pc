@@ -82,10 +82,16 @@ export async function isAtelierAuthed(): Promise<boolean> {
 }
 
 export function atelierCookieOptions(maxAge = SESSION_TTL_SEC) {
+  // COOKIE_SECURE=false : E2E / next start en HTTP local (Secure sinon non stocké).
+  const forceInsecure = process.env.COOKIE_SECURE?.trim().toLowerCase() === "false";
+  const forceSecure = process.env.COOKIE_SECURE?.trim().toLowerCase() === "true";
+  const secure =
+    forceSecure ||
+    (!forceInsecure && process.env.NODE_ENV === "production");
   return {
     httpOnly: true as const,
     sameSite: "strict" as const,
-    secure: process.env.NODE_ENV === "production",
+    secure,
     path: "/",
     maxAge,
   };

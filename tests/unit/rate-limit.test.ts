@@ -152,7 +152,7 @@ describe("enforceRateLimit mode auth fail-closed", () => {
   });
 
   it("mode public : fallback mémoire si Supabase indisponible", async () => {
-    process.env.SUPABASE_URL = "https://example.supabase.co";
+    process.env.SUPABASE_URL = "https://proj.supabase.co";
     process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-test";
     vi.doMock("@/lib/fulfillment/supabase", () => ({
       getSupabaseAdmin: () => ({
@@ -172,8 +172,8 @@ describe("enforceRateLimit mode auth fail-closed", () => {
     expect(r.ok).toBe(true);
   });
 
-  it("mode auth : refuse si Supabase configuré mais RPC indisponible", async () => {
-    process.env.SUPABASE_URL = "https://example.supabase.co";
+  it("mode auth : refuse si Supabase réel configuré mais RPC indisponible", async () => {
+    process.env.SUPABASE_URL = "https://proj.supabase.co";
     process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-test";
     vi.doMock("@/lib/fulfillment/supabase", () => ({
       getSupabaseAdmin: () => ({
@@ -191,6 +191,21 @@ describe("enforceRateLimit mode auth fail-closed", () => {
     });
     expect(r.ok).toBe(false);
     expect(r.remaining).toBe(0);
+  });
+
+  it("mode auth : placeholder CI example.supabase.co → mémoire (pas fail-closed)", async () => {
+    process.env.SUPABASE_URL = "https://example.supabase.co";
+    process.env.SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ci-service";
+    const mod = await import("@/lib/security/rate-limit");
+    mod.__resetMemoryRateLimitsForTests();
+    const r = await mod.enforceRateLimit({
+      request: requestWith({}),
+      scope: "atelier-auth-ci",
+      limit: 8,
+      windowMs: 60_000,
+      mode: "auth",
+    });
+    expect(r.ok).toBe(true);
   });
 
   it("mode auth : mémoire OK si Supabase non configuré", async () => {

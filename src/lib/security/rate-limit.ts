@@ -23,10 +23,12 @@ export function isTrustProxyHeadersEnabled(): boolean {
 }
 
 function supabaseRateLimitConfigured(): boolean {
-  return Boolean(
-    process.env.SUPABASE_URL?.trim() &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
-  );
+  const url = process.env.SUPABASE_URL?.trim();
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  if (!url || !key) return false;
+  // Placeholders CI (example.supabase.co) : pas une infra rate-limit réelle.
+  if (/example\.supabase\.co/i.test(url)) return false;
+  return true;
 }
 
 /**
