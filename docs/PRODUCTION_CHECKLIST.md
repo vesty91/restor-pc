@@ -2,21 +2,22 @@
 
 ## Avant Live Stripe
 
-- [ ] Stripe **Test** validé (checkout, webhook, double event, refund)
+- [x] Stripe **Test** validé (checkout → webhook → email → licence + lien NAS) — testé 2026-08-02
 - [ ] `ALLOW_STRIPE_LIVE=false` jusqu’à validation finale
-- [ ] Migrations Supabase wave1–wave3 appliquées
+- [x] Migrations Supabase wave1–wave3 appliquées
 - [ ] Compte `admin` / `technician` créé dans `user_roles`
 - [ ] `ATELIER_SESSION_SECRET` défini (≠ `ATELIER_SECRET`)
 - [ ] RLS vérifié (client ne lit que ses `user_id`)
 - [ ] Backfill `user_id` exécuté (dry-run puis `--apply`)
 - [ ] Webhook Stripe pointant vers `/api/stripe/webhook`
 - [ ] Double webhook testé (idempotent)
-- [ ] Remboursement / litige testés (licence `revoked` + lien NAS supprimé ; refund hors-ordre OK)
-- [ ] Migration `20260802120000_stripe_revocation_races.sql` appliquée
-- [ ] Harness SQL local OK (`node scripts/sql-harness-validate.mjs`)
-- [ ] NAS one-time share testé
+- [x] Remboursement / litige testés (licence `revoked` + lien NAS supprimé) — testé 2026-08-02
+- [ ] Refund hors-ordre testé en conditions réelles (refund avant fulfill)
+- [x] Migration `20260802120000_stripe_revocation_races.sql` appliquée (Supabase + NAS)
+- [x] Harness SQL local OK (`node scripts/sql-harness-validate.mjs`)
+- [x] NAS one-time share testé
 - [ ] Email Resend testé (échec email ne recrée pas licence)
-- [ ] CI verte sur `master`
+- [x] CI verte sur `master`
 - [ ] Branch protection : quality, unit-tests, integration-tests, build, e2e
 - [ ] Mentions légales / CGV / médiateur à jour
 - [ ] Sauvegarde base + secrets hors git
