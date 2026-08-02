@@ -1,4 +1,5 @@
 import { fulfillToolOrder } from "@/lib/fulfillment";
+import { revokeAccessByPaymentIntent } from "@/lib/fulfillment/revoke";
 import { createRequestId, jsonError, publicErrorResponse } from "@/lib/errors";
 import { logEvent } from "@/lib/logging/logger";
 import { getStripe } from "@/lib/stripe";
@@ -126,7 +127,6 @@ async function fulfillFromSession(
 async function handleRefundOrDispute(
   event: Stripe.Event
 ): Promise<void> {
-  const sb = getSupabaseAdmin();
   const obj = event.data.object as {
     payment_intent?: string | { id?: string };
     charge?: string;
@@ -149,12 +149,17 @@ async function handleRefundOrDispute(
       ? "disputed"
       : "refunded";
 
-  await sb
-    .from("tool_orders")
-    .update({ status })
-    .eq("stripe_payment_intent_id", pi);
+  const result = await revokeAccessByPaymentIntent({
+    paymentIntentId: pi,
+    reason: status,
+    stripeEventId: event.id,
+  });
 
-  await markEvent(event.id, status);
+  await markEvent(
+    event.id,
+    status,
+    result.orders.length === 0 ? "REVOKED_PI_ONLY" : undefined
+  );
 }
 
 export async function POST(request: Request) {

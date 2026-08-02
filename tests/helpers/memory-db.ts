@@ -9,7 +9,8 @@ export type MemoryRow = Record<string, unknown>;
 type Filter =
   | { kind: "eq"; col: string; val: unknown }
   | { kind: "in"; col: string; val: unknown[] }
-  | { kind: "is"; col: string; val: null };
+  | { kind: "is"; col: string; val: null }
+  | { kind: "neq"; col: string; val: unknown };
 
 function applyFilters(rows: MemoryRow[], filters: Filter[]): MemoryRow[] {
   return rows.filter((row) =>
@@ -17,6 +18,7 @@ function applyFilters(rows: MemoryRow[], filters: Filter[]): MemoryRow[] {
       if (f.kind === "eq") return row[f.col] === f.val;
       if (f.kind === "in") return f.val.includes(row[f.col]);
       if (f.kind === "is") return row[f.col] == null;
+      if (f.kind === "neq") return row[f.col] !== f.val;
       return true;
     })
   );
@@ -36,6 +38,7 @@ export type MemoryDb = {
     stripe_events: MemoryRow[];
     tool_orders: MemoryRow[];
     script_licenses: MemoryRow[];
+    stripe_payment_revocations: MemoryRow[];
   };
   client: ReturnType<typeof buildClient>;
   reset: () => void;
@@ -85,6 +88,99 @@ function buildClient(tables: MemoryDb["tables"]) {
         return { data: true, error: null };
       }
       return { data: false, error: null };
+    }
+
+    if (name === "claim_order_revocation") {
+      const pi = String(args.p_payment_intent_id);
+      let reason = String(args.p_reason) as "refunded" | "disputed";
+      const eventId = args.p_stripe_event_id
+        ? String(args.p_stripe_event_id)
+        : null;
+      const existing = tables.stripe_payment_revocations.find(
+        (r) => r.payment_intent_id === pi
+      );
+      if (existing) {
+        if (existing.reason === "refunded" || reason === "refunded") {
+          reason = "refunded";
+        }
+        existing.reason = reason;
+        existing.stripe_event_id = eventId ?? existing.stripe_event_id;
+        existing.updated_at = new Date().toISOString();
+      } else {
+        tables.stripe_payment_revocations.push({
+          payment_intent_id: pi,
+          reason,
+          stripe_event_id: eventId,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+      }
+
+      const orders = tables.tool_orders.filter(
+        (o) => o.stripe_payment_intent_id === pi
+      );
+      const out = [];
+      for (const o of orders) {
+        const nextStatus =
+          o.status === "refunded"
+            ? "refunded"
+            : reason === "refunded"
+              ? "refunded"
+              : reason;
+        o.status = nextStatus;
+        o.error_code = o.error_code ?? "STRIPE_REVOKED";
+        if (o.license_key) {
+          const lic = tables.script_licenses.find(
+            (l) => l.license_key === o.license_key
+          );
+          if (lic) lic.status = "revoked";
+        }
+        out.push({
+          order_id: o.id,
+          license_key: o.license_key ?? null,
+          share_id: o.share_id ?? null,
+          already_revoked: o.assets_revoked_at != null,
+        });
+      }
+      return {
+        data: {
+          reason,
+          payment_intent_id: pi,
+          orders: out,
+        },
+        error: null,
+      };
+    }
+
+    if (name === "mark_order_assets_revoked") {
+      const orderId = String(args.p_order_id);
+      const order = tables.tool_orders.find((o) => o.id === orderId);
+      if (!order) return { data: false, error: null };
+      order.assets_revoked_at =
+        order.assets_revoked_at ?? new Date().toISOString();
+      order.revoke_error = args.p_revoke_error ?? null;
+      order.share_url = null;
+      order.share_password = null;
+      return { data: true, error: null };
+    }
+
+    if (name === "finalize_tool_order_fulfillment") {
+      const orderId = String(args.p_order_id);
+      const order = tables.tool_orders.find((o) => o.id === orderId);
+      if (!order || order.status !== "processing") {
+        return { data: false, error: null };
+      }
+      order.license_key = args.p_license_key;
+      order.share_id = args.p_share_id;
+      order.share_url = args.p_share_url;
+      order.share_password = args.p_share_password;
+      order.expire_times = args.p_expire_times;
+      order.status = "fulfilled";
+      order.fulfilled_at = new Date().toISOString();
+      order.error_code = null;
+      order.email_status = "pending";
+      if (args.p_user_id) order.user_id = args.p_user_id;
+      return { data: true, error: null };
     }
 
     return { data: null, error: { message: `rpc_unknown:${name}` } };
@@ -238,12 +334,37 @@ function buildClient(tables: MemoryDb["tables"]) {
       state.filters.push({ kind: "eq", col, val });
       return Object.assign(chain(), thenable);
     };
+    api.neq = (col: string, val: unknown) => {
+      state.filters.push({ kind: "neq", col, val });
+      return Object.assign(chain(), thenable);
+    };
     api.in = (col: string, val: unknown[]) => {
       state.filters.push({ kind: "in", col, val });
       return Object.assign(chain(), thenable);
     };
     api.is = (col: string, val: null) => {
       state.filters.push({ kind: "is", col, val });
+      return Object.assign(chain(), thenable);
+    };
+    api.upsert = (
+      row: MemoryRow | MemoryRow[],
+      _opts?: { onConflict?: string }
+    ) => {
+      const rows = Array.isArray(row) ? row : [row];
+      for (const r of rows) {
+        if (key === "stripe_payment_revocations") {
+          const existing = tables.stripe_payment_revocations.find(
+            (x) => x.payment_intent_id === r.payment_intent_id
+          );
+          if (existing) {
+            Object.assign(existing, r);
+          } else {
+            tables.stripe_payment_revocations.push({ ...r });
+          }
+        } else {
+          tables[key].push({ ...r });
+        }
+      }
       return Object.assign(chain(), thenable);
     };
     api.order = (col: string, opts?: { ascending?: boolean }) => {
@@ -267,6 +388,7 @@ export function createMemoryDb(): MemoryDb {
     stripe_events: [],
     tool_orders: [],
     script_licenses: [],
+    stripe_payment_revocations: [],
   };
 
   return {
@@ -276,6 +398,7 @@ export function createMemoryDb(): MemoryDb {
       tables.stripe_events.length = 0;
       tables.tool_orders.length = 0;
       tables.script_licenses.length = 0;
+      tables.stripe_payment_revocations.length = 0;
     },
   };
 }

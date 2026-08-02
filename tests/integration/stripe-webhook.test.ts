@@ -13,6 +13,7 @@ import {
 import { clearServerEnvCache } from "@/lib/env";
 
 const nasMock = vi.fn();
+const nasRevokeMock = vi.fn();
 const emailMock = vi.fn();
 
 let db: MemoryDb;
@@ -23,6 +24,7 @@ vi.mock("@/lib/fulfillment/supabase", () => ({
 
 vi.mock("@/lib/fulfillment/nas", () => ({
   createNasOneTimeShare: (...args: unknown[]) => nasMock(...args),
+  revokeNasShare: (...args: unknown[]) => nasRevokeMock(...args),
 }));
 
 vi.mock("@/lib/fulfillment/email", () => ({
@@ -67,12 +69,14 @@ describe("stripe webhook — signatures et fulfillment", () => {
     vi.resetModules();
     db = createMemoryDb();
     nasMock.mockReset();
+    nasRevokeMock.mockReset();
     emailMock.mockReset();
     nasMock.mockResolvedValue({
       id: "share-1",
       url: "https://nas.example/share/one",
       password: "PwTest123!",
     });
+    nasRevokeMock.mockResolvedValue(undefined);
     emailMock.mockResolvedValue({ id: "email_test_1" });
     process.env.STRIPE_PRICE_CHANGER_DNS = PRICE;
     process.env.STRIPE_SECRET_KEY = "sk_test_phase4_restor_pc_not_real";
@@ -232,7 +236,7 @@ describe("stripe webhook — signatures et fulfillment", () => {
     ).toBe("MISSING_USER_ID");
   });
 
-  it("15. remboursement → statut refunded", async () => {
+  it("15. remboursement → statut refunded + licence/NAS révoqués", async () => {
     const pi = "pi_refund_test_1";
     db.tables.tool_orders.push({
       id: crypto.randomUUID(),
@@ -242,6 +246,15 @@ describe("stripe webhook — signatures et fulfillment", () => {
       user_id: USER_A,
       email: "buyer@example.com",
       license_key: "RPC-TEST-KEY",
+      share_id: "share-refund-1",
+      share_url: "https://nas.example/share/refund",
+      share_password: "Pw1!",
+    });
+    db.tables.script_licenses.push({
+      id: crypto.randomUUID(),
+      license_key: "RPC-TEST-KEY",
+      script_id: "changer-dns",
+      status: "active",
     });
     const { payload, event } = buildRefundEvent({
       paymentIntent: pi,
@@ -250,9 +263,58 @@ describe("stripe webhook — signatures et fulfillment", () => {
     const res = await postWebhook({ payload });
     expect(res.status).toBe(200);
     expect(db.tables.tool_orders[0]?.status).toBe("refunded");
+    expect(db.tables.script_licenses[0]?.status).toBe("revoked");
+    expect(nasRevokeMock).toHaveBeenCalledWith("share-refund-1");
+    expect(db.tables.tool_orders[0]?.assets_revoked_at).toBeTruthy();
+    expect(db.tables.tool_orders[0]?.share_url).toBeNull();
+    expect(
+      db.tables.stripe_payment_revocations.find((r) => r.payment_intent_id === pi)
+        ?.reason
+    ).toBe("refunded");
     expect(
       db.tables.stripe_events.find((e) => e.id === event.id)?.result
     ).toBe("refunded");
+  });
+
+  it("15b. refund avant commande → marque PI (hors-ordre) idempotent", async () => {
+    const pi = "pi_early_refund";
+    const { payload } = buildRefundEvent({
+      paymentIntent: pi,
+      type: "charge.refunded",
+    });
+    const res1 = await postWebhook({ payload });
+    expect(res1.status).toBe(200);
+    expect(db.tables.stripe_payment_revocations).toHaveLength(1);
+
+    // Second refund event (autre id) — même PI
+    const { payload: payload2 } = buildRefundEvent({
+      paymentIntent: pi,
+      type: "charge.refunded",
+      eventId: "evt_refund_again",
+    });
+    const res2 = await postWebhook({ payload: payload2 });
+    expect(res2.status).toBe(200);
+    expect(db.tables.stripe_payment_revocations).toHaveLength(1);
+    expect(nasRevokeMock).not.toHaveBeenCalled();
+  });
+
+  it("15c. fulfill après refund PI → pas de licence", async () => {
+    const pi = "pi_revoke_then_fulfill";
+    db.tables.stripe_payment_revocations.push({
+      payment_intent_id: pi,
+      reason: "refunded",
+      created_at: new Date().toISOString(),
+    });
+    const { payload } = buildCheckoutSessionEvent({
+      userId: USER_A,
+      priceId: PRICE,
+      paymentIntent: pi,
+      sessionId: "cs_after_refund",
+    });
+    const res = await postWebhook({ payload });
+    expect(res.status).toBeGreaterThanOrEqual(400);
+    expect(db.tables.script_licenses).toHaveLength(0);
+    expect(nasMock).not.toHaveBeenCalled();
   });
 
   it("16. litige → statut disputed", async () => {
@@ -265,6 +327,13 @@ describe("stripe webhook — signatures et fulfillment", () => {
       user_id: USER_B,
       email: "b@example.com",
       license_key: "RPC-TEST-KEY-2",
+      share_id: "share-dispute-1",
+    });
+    db.tables.script_licenses.push({
+      id: crypto.randomUUID(),
+      license_key: "RPC-TEST-KEY-2",
+      script_id: "changer-dns",
+      status: "active",
     });
     const { payload } = buildRefundEvent({
       paymentIntent: pi,
@@ -273,5 +342,7 @@ describe("stripe webhook — signatures et fulfillment", () => {
     const res = await postWebhook({ payload });
     expect(res.status).toBe(200);
     expect(db.tables.tool_orders[0]?.status).toBe("disputed");
+    expect(db.tables.script_licenses[0]?.status).toBe("revoked");
+    expect(nasRevokeMock).toHaveBeenCalledWith("share-dispute-1");
   });
 });

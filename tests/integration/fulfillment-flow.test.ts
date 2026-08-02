@@ -19,6 +19,7 @@ vi.mock("@/lib/fulfillment/supabase", () => ({
 
 vi.mock("@/lib/fulfillment/nas", () => ({
   createNasOneTimeShare: (...args: unknown[]) => nasMock(...args),
+  revokeNasShare: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("@/lib/fulfillment/email", () => ({

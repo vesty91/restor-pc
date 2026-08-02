@@ -11,6 +11,10 @@ import {
   FULFILLABLE_STATUSES,
   type OrderStatus,
 } from "@/lib/fulfillment/order-status";
+import {
+  cleanupOrphanFulfillmentAssets,
+  isPaymentIntentRevoked,
+} from "@/lib/fulfillment/revoke";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
 import { getTermsVersion } from "@/lib/env";
 import { logEvent } from "@/lib/logging/logger";
@@ -247,6 +251,27 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
   const sb = getSupabaseAdmin();
   const order = await reserveOrder(input);
 
+  // Refund/dispute arrivé avant ou pendant la livraison (hors-ordre Stripe)
+  const revokedReason = await isPaymentIntentRevoked(
+    input.stripePaymentIntentId
+  );
+  if (revokedReason) {
+    await sb
+      .from("tool_orders")
+      .update({
+        status: revokedReason,
+        error_code: "STRIPE_REVOKED",
+        user_id: input.userId ?? order.user_id,
+      })
+      .eq("id", order.id)
+      .in("status", ["pending", "processing", "failed"]);
+    throw new AppError({
+      code: "ORDER_NOT_FULFILLABLE",
+      status: 409,
+      publicMessage: "Cette commande ne peut plus être livrée.",
+    });
+  }
+
   // Déjà livré → idempotent (email seulement si besoin)
   if (
     order.status === "fulfilled" &&
@@ -402,10 +427,32 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
 
   // Si assets déjà présents (retry après échec email uniquement)
   if (order.license_key && order.share_url && order.share_password) {
-    await sb
+    const { data: fulfilledOk } = await sb
       .from("tool_orders")
       .update({ status: "fulfilled" })
-      .eq("id", order.id);
+      .eq("id", order.id)
+      .eq("status", "processing")
+      .select("id")
+      .maybeSingle();
+
+    if (!fulfilledOk) {
+      const { data: current } = await sb
+        .from("tool_orders")
+        .select("status")
+        .eq("id", order.id)
+        .maybeSingle();
+      if (
+        current?.status === "refunded" ||
+        current?.status === "disputed" ||
+        current?.status === "cancelled"
+      ) {
+        throw new AppError({
+          code: "ORDER_NOT_FULFILLABLE",
+          status: 409,
+          publicMessage: "Cette commande ne peut plus être livrée.",
+        });
+      }
+    }
 
     let emailId = order.email_id;
     let emailError = order.email_error;
@@ -484,29 +531,78 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
     });
   }
 
-  const { error: updErr } = await sb
-    .from("tool_orders")
-    .update({
-      license_key: licenseKey,
-      share_id: share.id,
-      share_url: share.url,
-      share_password: share.password,
-      expire_times: expireTimes,
-      status: "fulfilled",
-      fulfilled_at: new Date().toISOString(),
-      error_code: null,
-      email_status: "pending",
-      user_id: input.userId ?? order.user_id,
-    })
-    .eq("id", order.id);
+  const { data: finalized, error: updErr } = await sb.rpc(
+    "finalize_tool_order_fulfillment",
+    {
+      p_order_id: order.id,
+      p_license_key: licenseKey,
+      p_share_id: share.id,
+      p_share_url: share.url,
+      p_share_password: share.password,
+      p_expire_times: expireTimes,
+      p_user_id: input.userId ?? order.user_id,
+    }
+  );
 
   if (updErr) {
-    await markFailed(order.id, "ORDER_UPDATE_FAILED");
+    // Fallback : update conditionnel status=processing uniquement
+    const { data: updated, error: fallbackErr } = await sb
+      .from("tool_orders")
+      .update({
+        license_key: licenseKey,
+        share_id: share.id,
+        share_url: share.url,
+        share_password: share.password,
+        expire_times: expireTimes,
+        status: "fulfilled",
+        fulfilled_at: new Date().toISOString(),
+        error_code: null,
+        email_status: "pending",
+        user_id: input.userId ?? order.user_id,
+      })
+      .eq("id", order.id)
+      .eq("status", "processing")
+      .select("id")
+      .maybeSingle();
+
+    if (fallbackErr) {
+      await markFailed(order.id, "ORDER_UPDATE_FAILED");
+      throw new AppError({
+        code: "ORDER_UPDATE_FAILED",
+        status: 500,
+        publicMessage: "Échec d'enregistrement de la commande.",
+        message: fallbackErr.message,
+      });
+    }
+    if (!updated) {
+      const reason =
+        (await isPaymentIntentRevoked(input.stripePaymentIntentId)) ??
+        "refunded";
+      await cleanupOrphanFulfillmentAssets({
+        orderId: order.id,
+        licenseKey,
+        shareId: share.id,
+        reason,
+      });
+      throw new AppError({
+        code: "ORDER_NOT_FULFILLABLE",
+        status: 409,
+        publicMessage: "Cette commande ne peut plus être livrée.",
+      });
+    }
+  } else if (finalized !== true) {
+    const reason =
+      (await isPaymentIntentRevoked(input.stripePaymentIntentId)) ?? "refunded";
+    await cleanupOrphanFulfillmentAssets({
+      orderId: order.id,
+      licenseKey,
+      shareId: share.id,
+      reason,
+    });
     throw new AppError({
-      code: "ORDER_UPDATE_FAILED",
-      status: 500,
-      publicMessage: "Échec d'enregistrement de la commande.",
-      message: updErr.message,
+      code: "ORDER_NOT_FULFILLABLE",
+      status: 409,
+      publicMessage: "Cette commande ne peut plus être livrée.",
     });
   }
 

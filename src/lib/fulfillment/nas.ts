@@ -263,6 +263,203 @@ async function createViaHttp(opts: {
   }
 }
 
+/**
+ * Supprime un lien de partage FileStation.
+ * Idempotent : lien déjà absent / invalide → succès silencieux.
+ * Utilise les mêmes credentials que createNasOneTimeShare (NAS_DSM_URL / NAS_USER / NAS_PASS).
+ */
+export async function revokeNasShare(shareId: string): Promise<void> {
+  const id = shareId?.trim();
+  if (!id) return;
+
+  const dsmUrl = process.env.NAS_DSM_URL?.trim();
+  const user = process.env.NAS_USER?.trim();
+  const pass = process.env.NAS_PASS?.trim();
+  if (dsmUrl && user && pass) {
+    await revokeViaHttp(id);
+    return;
+  }
+
+  // Sans credentials DSM : best-effort via SSH synowebapi si dispo
+  if (process.env.NAS_SSH_HOST?.trim() && process.env.NAS_SSH_PASS?.trim()) {
+    await revokeViaSsh(id);
+    return;
+  }
+
+  throw new Error("NAS_REVOKE_NOT_CONFIGURED");
+}
+
+async function revokeViaHttp(shareId: string): Promise<void> {
+  const base = requireEnv("NAS_DSM_URL").replace(/\/$/, "");
+  if (!base.startsWith("https://")) {
+    throw new Error("NAS_DSM_URL doit utiliser HTTPS");
+  }
+  const user = requireEnv("NAS_USER");
+  const pass = requireEnv("NAS_PASS");
+
+  const loginBody = new URLSearchParams({
+    api: "SYNO.API.Auth",
+    version: "6",
+    method: "login",
+    account: user,
+    passwd: pass,
+    session: "FileStation",
+    format: "sid",
+  });
+
+  const loginRes = await fetchWithTimeout(`${base}/webapi/auth.cgi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: loginBody,
+    cache: "no-store",
+  });
+  const loginJson = (await loginRes.json()) as {
+    success?: boolean;
+    data?: { sid?: string };
+    error?: { code?: number };
+  };
+  if (!loginJson.success || !loginJson.data?.sid) {
+    throw new Error(
+      `NAS revoke login echoue (code ${loginJson.error?.code ?? "?"})`
+    );
+  }
+  const sid = loginJson.data.sid;
+
+  try {
+    const deleteBody = new URLSearchParams({
+      api: "SYNO.FileStation.Sharing",
+      version: "3",
+      method: "delete",
+      id: JSON.stringify([shareId]),
+      _sid: sid,
+    });
+
+    const deleteRes = await fetchWithTimeout(`${base}/webapi/entry.cgi`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: deleteBody,
+      cache: "no-store",
+    });
+    const deleteJson = (await deleteRes.json()) as {
+      success?: boolean;
+      error?: { code?: number };
+    };
+
+    if (deleteJson.success) return;
+
+    // Codes DSM courants : lien inexistant / déjà supprimé → idempotent OK
+    const code = deleteJson.error?.code;
+    if (code === 404 || code === 105 || code === 2201 || code === 408) {
+      return;
+    }
+    throw new Error(`NAS share delete echoue (code ${code ?? "?"})`);
+  } finally {
+    try {
+      const logoutBody = new URLSearchParams({
+        api: "SYNO.API.Auth",
+        version: "6",
+        method: "logout",
+        session: "FileStation",
+        _sid: sid,
+      });
+      try {
+        await fetchWithTimeout(
+          `${base}/webapi/auth.cgi`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: logoutBody,
+            cache: "no-store",
+          },
+          2000
+        );
+      } catch {
+        /* best-effort */
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+async function revokeViaSsh(shareId: string): Promise<void> {
+  const { Client } = await import("ssh2");
+  const host = requireEnv("NAS_SSH_HOST");
+  const user = process.env.NAS_SSH_USER?.trim() || "vesty";
+  const pass = requireEnv("NAS_SSH_PASS");
+  const safeId = shareId.replace(/'/g, "");
+
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+    const timeout = setTimeout(() => {
+      conn.end();
+      reject(new Error("NAS SSH revoke timeout"));
+    }, 60000);
+
+    conn
+      .on("ready", () => {
+        const idJson = JSON.stringify([safeId]).replace(/'/g, "");
+        const inner = `/usr/syno/bin/synowebapi --exec api=SYNO.FileStation.Sharing method=delete version=3 id='${idJson}'`;
+        const sudoPw = pass.replace(/'/g, `'\"'\"'`);
+        const cmd = `echo '${sudoPw}' | sudo -S -p '' sh -c '${inner}'`;
+
+        conn.exec(cmd, { pty: true }, (err, stream) => {
+          if (err) {
+            clearTimeout(timeout);
+            conn.end();
+            reject(err);
+            return;
+          }
+          let out = "";
+          stream
+            .on("close", () => {
+              clearTimeout(timeout);
+              conn.end();
+              try {
+                const j = extractJson(out) as {
+                  success?: boolean;
+                  error?: { code?: number };
+                } | null;
+                if (j?.success) {
+                  resolve();
+                  return;
+                }
+                const code = j?.error?.code;
+                if (code === 404 || code === 105 || code === 2201 || code === 408) {
+                  resolve();
+                  return;
+                }
+                reject(
+                  new Error(
+                    `NAS SSH share delete fail (code ${code ?? "?"}): ${out.slice(-500)}`
+                  )
+                );
+              } catch (e) {
+                reject(e);
+              }
+            })
+            .on("data", (d: Buffer) => {
+              out += d.toString("utf8");
+            });
+          stream.stderr?.on("data", (d: Buffer) => {
+            out += d.toString("utf8");
+          });
+        });
+      })
+      .on("error", (e) => {
+        clearTimeout(timeout);
+        reject(e);
+      })
+      .connect({
+        host,
+        port: Number(process.env.NAS_SSH_PORT || 22),
+        username: user,
+        password: pass,
+        readyTimeout: 20000,
+      });
+  });
+}
+
 async function createViaSsh(opts: {
   filePath: string;
   password: string;

@@ -11,7 +11,9 @@
 - [ ] Backfill `user_id` exécuté (dry-run puis `--apply`)
 - [ ] Webhook Stripe pointant vers `/api/stripe/webhook`
 - [ ] Double webhook testé (idempotent)
-- [ ] Remboursement / litige testés
+- [ ] Remboursement / litige testés (licence `revoked` + lien NAS supprimé ; refund hors-ordre OK)
+- [ ] Migration `20260802120000_stripe_revocation_races.sql` appliquée
+- [ ] Harness SQL local OK (`node scripts/sql-harness-validate.mjs`)
 - [ ] NAS one-time share testé
 - [ ] Email Resend testé (échec email ne recrée pas licence)
 - [ ] CI verte sur `master`
