@@ -20,7 +20,8 @@
     "stripe:setup-prices": "node scripts/setup-stripe-prices.mjs",
     "stripe:listen": "scripts/stripe-listen.cmd",
     "fulfill:session": "tsx scripts/fulfill-session.mjs",
-    "stripe:update-webhook": "node scripts/create-boutique-webhook.mjs"
+    "stripe:update-webhook": "node scripts/create-boutique-webhook.mjs",
+    "backup:db": "node scripts/backup-db.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

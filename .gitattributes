@@ -1,0 +1,6 @@
+# Scripts destinés à s'exécuter sur le NAS (Linux/busybox) : forcer LF
+# pour éviter les erreurs "no such file or directory" (\r dans le shebang)
+# quand ces fichiers sont édités/commités depuis Windows.
+nas/**/*.sh text eol=lf
+nas/**/Dockerfile text eol=lf
+nas/**/crontab text eol=lf

@@ -1,0 +1,14 @@
+services:
+  restor-pc-backup-cron:
+    build: .
+    container_name: restor-pc-backup-cron
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./backups:/backups
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
