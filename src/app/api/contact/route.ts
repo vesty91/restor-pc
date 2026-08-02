@@ -49,7 +49,7 @@ function buildMailParts(
   name: string,
   email: string,
   phone: string,
-  message: string
+  message: string,
 ) {
   const typeKey = body.type ?? "devis";
   const urgencyKey = body.urgency ?? "normal";
@@ -57,9 +57,7 @@ function buildMailParts(
   const urgencyLabel = urgencyLabels[urgencyKey] ?? urgencyKey;
   const urgent = isUrgentRequest(typeKey, urgencyKey);
 
-  const subject = urgent
-    ? `[Restor-PC] ⚠ URGENCE — ${name}`
-    : `[Restor-PC] ${typeLabel} — ${name}`;
+  const subject = urgent ? `[Restor-PC] ⚠ URGENCE — ${name}` : `[Restor-PC] ${typeLabel} — ${name}`;
 
   const rows: { label: string; value: string; highlight?: boolean }[] = [
     { label: "Nom", value: name },
@@ -76,11 +74,7 @@ function buildMailParts(
     },
   ];
 
-  const text = [
-    ...rows.map((r) => `${r.label} : ${r.value}`),
-    "",
-    message,
-  ].join("\n");
+  const text = [...rows.map((r) => `${r.label} : ${r.value}`), "", message].join("\n");
 
   const htmlRows = rows
     .map((r) => {
@@ -161,7 +155,7 @@ export async function POST(request: Request) {
   if (!limited.ok) {
     return NextResponse.json(
       { ok: false, error: "Trop de demandes. Réessayez dans quelques minutes." },
-      { status: 429 }
+      { status: 429 },
     );
   }
 
@@ -169,10 +163,7 @@ export async function POST(request: Request) {
   try {
     raw = await request.json();
   } catch {
-    return NextResponse.json(
-      { ok: false, error: "Requête invalide." },
-      { status: 400 }
-    );
+    return NextResponse.json({ ok: false, error: "Requête invalide." }, { status: 400 });
   }
 
   // Honeypot : réponse neutre sans envoi
@@ -193,7 +184,7 @@ export async function POST(request: Request) {
         ok: false,
         error: publicZodMessage(parsed.error, "Champs invalides."),
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -205,13 +196,7 @@ export async function POST(request: Request) {
   const message = body.message;
 
   const payload: ContactPayload = { ...body };
-  const { subject, text, html } = buildMailParts(
-    payload,
-    name,
-    email,
-    phone,
-    message
-  );
+  const { subject, text, html } = buildMailParts(payload, name, email, phone, message);
 
   // Logs sans données personnelles
   console.info("[Restor-PC] Contact request", {
@@ -246,7 +231,7 @@ export async function POST(request: Request) {
           "L’envoi automatique a échoué. Utilisez le lien ci-dessous, WhatsApp ou le téléphone.",
         mailto,
       },
-      { status: 503 }
+      { status: 503 },
     );
   }
 

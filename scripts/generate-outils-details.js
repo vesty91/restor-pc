@@ -134,12 +134,12 @@ function accentFix(s) {
 function sectionLis(html, titlePartial) {
   const re = new RegExp(
     `<h2>[^<]*${titlePartial}[^<]*</h2>([\\s\\S]*?)(?=<h2>|</section>|<div class="grid2")`,
-    "i"
+    "i",
   );
   const m = html.match(re);
   if (!m) return [];
   return [...m[1].matchAll(/<li>([\s\S]*?)<\/li>/g)].map((x) =>
-    accentFix(decode(x[1].replace(/<[^>]+>/g, "")))
+    accentFix(decode(x[1].replace(/<[^>]+>/g, ""))),
   );
 }
 
@@ -155,12 +155,19 @@ function exe(html) {
 
 function previewKind(slug) {
   if (slug.includes("dns")) return "dns";
-  if (slug.includes("reseau") || slug.includes("wifi") || slug.includes("partages")) return "network";
+  if (slug.includes("reseau") || slug.includes("wifi") || slug.includes("partages"))
+    return "network";
   if (slug.includes("batterie")) return "battery";
   if (slug.includes("iso") || slug.includes("usb") || slug.includes("pilotes")) return "storage";
-  if (slug.includes("nettoyage") || slug.includes("integrite") || slug.includes("telemetrie") || slug.includes("services"))
+  if (
+    slug.includes("nettoyage") ||
+    slug.includes("integrite") ||
+    slug.includes("telemetrie") ||
+    slug.includes("services")
+  )
     return "system";
-  if (slug.includes("navigateur") || slug.includes("logiciels") || slug.includes("identifiants")) return "data";
+  if (slug.includes("navigateur") || slug.includes("logiciels") || slug.includes("identifiants"))
+    return "data";
   if (slug.includes("installateur")) return "install";
   if (slug.includes("test-reseau")) return "speed";
   return "generic";
@@ -177,7 +184,9 @@ for (const [folder, slug] of Object.entries(folderToSlug)) {
   const tips = sectionLis(html, "Conseils");
   details[slug] = {
     when: callout(html),
-    features: features.length ? features : ["Interface graphique Restor-PC.", "Guide HTML / PDF inclus."],
+    features: features.length
+      ? features
+      : ["Interface graphique Restor-PC.", "Guide HTML / PDF inclus."],
     steps: steps.length ? steps : ["Lancer l'EXE.", "Valider la licence.", "Suivre l'assistant."],
     tips: tips.length ? tips : ["Conservez le ZIP et la clé de licence."],
     exe: exe(html) || `${folder}-GUI.exe`,
@@ -245,9 +254,21 @@ export function getOutilDetails(slug: string): OutilDetails {
 }
 `;
 
-fs.writeFileSync(outTs, body.replace(/"preview":/g, "preview:").replace(/"when":/g, "when:").replace(/"features":/g, "features:").replace(/"steps":/g, "steps:").replace(/"tips":/g, "tips:").replace(/"exe":/g, "exe:"), "utf8");
+fs.writeFileSync(
+  outTs,
+  body
+    .replace(/"preview":/g, "preview:")
+    .replace(/"when":/g, "when:")
+    .replace(/"features":/g, "features:")
+    .replace(/"steps":/g, "steps:")
+    .replace(/"tips":/g, "tips:")
+    .replace(/"exe":/g, "exe:"),
+  "utf8",
+);
 // Actually JSON.stringify already quoted keys which is fine in TS
-fs.writeFileSync(outTs, `/** Fiches boutique enrichies (extraites des GUIDE.html LIVRAISON). */
+fs.writeFileSync(
+  outTs,
+  `/** Fiches boutique enrichies (extraites des GUIDE.html LIVRAISON). */
 export type OutilPreviewKind =
   | "dns"
   | "network"
@@ -283,5 +304,7 @@ export function getOutilDetails(slug: string): OutilDetails {
     }
   );
 }
-`, "utf8");
+`,
+  "utf8",
+);
 console.log("wrote", Object.keys(details).length, "details");

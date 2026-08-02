@@ -13,20 +13,14 @@ export type StorageSection = {
   stretch?: boolean;
 };
 
-function Section({
-  label,
-  value,
-  color,
-  total,
-  stretch,
-}: StorageSection & { total: number }) {
+function Section({ label, value, color, total, stretch }: StorageSection & { total: number }) {
   const pct = total > 0 ? (value / total) * 100 : 0;
   return (
     <div
       className={cn(
         "relative w-full rounded-md transition-[height] duration-500 motion-reduce:transition-none",
         color,
-        stretch && "flex-1 text-ink-muted"
+        stretch && "flex-1 text-ink-muted",
       )}
       style={{ height: `${Math.max(pct, 8)}%` }}
       title={`${label} : ${value} Go`}
@@ -34,7 +28,7 @@ function Section({
       <div
         className={cn(
           "flex h-full w-full items-center justify-center px-1 text-center text-xs font-semibold",
-          stretch ? "text-ink" : "text-white"
+          stretch ? "text-ink" : "text-white",
         )}
       >
         {label}
@@ -77,9 +71,7 @@ export function StorageStatus({
           <Section key={item.label} {...item} total={totalGb} />
         ))}
       </div>
-      <figcaption className="mt-2 text-[11px] leading-snug text-ink-muted">
-        {caption}
-      </figcaption>
+      <figcaption className="mt-2 text-[11px] leading-snug text-ink-muted">{caption}</figcaption>
     </figure>
   );
 }

@@ -65,7 +65,7 @@ export function QuickDiagnostic() {
     const service = getService(primary.service);
     const isBuild = selected.includes("build") && picked.length === 1;
     const summary = encodeURIComponent(
-      `Diagnostic express : ${picked.map((p) => p.label).join(", ")}`
+      `Diagnostic express : ${picked.map((p) => p.label).join(", ")}`,
     );
     const type = isBuild ? "config" : "urgence";
     const urgency = isBuild ? "normal" : "asap";
@@ -81,7 +81,7 @@ export function QuickDiagnostic() {
 
   function toggle(id: string) {
     setSelected((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id].slice(0, 3)
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id].slice(0, 3),
     );
   }
 
@@ -105,13 +105,13 @@ export function QuickDiagnostic() {
                   "flex w-full items-start gap-3 rounded-[18px] border p-4 text-left transition-all",
                   active
                     ? "border-teal bg-teal-soft/60 shadow-[var(--shadow-soft)]"
-                    : "border-line bg-paper hover:border-line-strong"
+                    : "border-line bg-paper hover:border-line-strong",
                 )}
               >
                 <span
                   className={cn(
                     "mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md border",
-                    active ? "border-teal bg-teal text-white" : "border-line"
+                    active ? "border-teal bg-teal text-white" : "border-line",
                   )}
                 >
                   {active ? <Check className="h-3 w-3" /> : null}

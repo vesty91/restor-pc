@@ -23,22 +23,22 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXX
 
 Dans GA4 → Admin → Événements → Marquer comme événement clé :
 
-| Event | Déclencheur |
-|---|---|
-| `click_phone` | Clic `tel:` |
-| `click_email` | Clic `mailto:` |
-| `contact_submit` | Formulaire contact envoyé (API OK) |
-| `request_appointment` | Contact type `urgence` |
-| `create_quote` | Contact type `devis` / `config` / `serenite` / `maintenance` |
-| `purchase` | Page `/boutique/succes` avec `session_id` |
+| Event                 | Déclencheur                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| `click_phone`         | Clic `tel:`                                                  |
+| `click_email`         | Clic `mailto:`                                               |
+| `contact_submit`      | Formulaire contact envoyé (API OK)                           |
+| `request_appointment` | Contact type `urgence`                                       |
+| `create_quote`        | Contact type `devis` / `config` / `serenite` / `maintenance` |
+| `purchase`            | Page `/boutique/succes` avec `session_id`                    |
 
 Événements utiles (optionnels, non clés) :
 
-| Event | Déclencheur |
-|---|---|
-| `begin_quote` | CTA configurateur → contact |
-| `begin_checkout` | Redirect Stripe Checkout |
-| `click_whatsapp` | Clic WhatsApp |
+| Event            | Déclencheur                 |
+| ---------------- | --------------------------- |
+| `begin_quote`    | CTA configurateur → contact |
+| `begin_checkout` | Redirect Stripe Checkout    |
+| `click_whatsapp` | Clic WhatsApp               |
 
 ## CSP
 

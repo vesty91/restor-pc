@@ -17,21 +17,10 @@ export const GA_EVENTS = {
 export type GaEventName = (typeof GA_EVENTS)[keyof typeof GA_EVENTS];
 
 export type ContactLeadType =
-  | "devis"
-  | "urgence"
-  | "config"
-  | "serenite"
-  | "maintenance"
-  | "autre"
-  | string;
+  "devis" | "urgence" | "config" | "serenite" | "maintenance" | "autre" | string;
 
 /** Types formulaire = devis / config / packs → create_quote */
-const QUOTE_TYPES = new Set([
-  "devis",
-  "config",
-  "serenite",
-  "maintenance",
-]);
+const QUOTE_TYPES = new Set(["devis", "config", "serenite", "maintenance"]);
 
 /** Types formulaire = prise de RDV / rappel urgent */
 const APPOINTMENT_TYPES = new Set(["urgence"]);

@@ -37,13 +37,13 @@ Exclu : assets `_next`, favicon, pages publiques, `/api/health`, webhook Stripe,
 
 ## Changement requis
 
-| Élément | Avant | Après |
-|---|---|---|
-| Fichier | `src/middleware.ts` | `src/proxy.ts` |
-| Fonction exportée | `middleware` | `proxy` |
-| Helper Supabase | `src/lib/supabase/middleware.ts` | inchangé |
-| `config.matcher` | identique | identique |
-| Logique | `updateSession(request)` | identique |
+| Élément           | Avant                            | Après          |
+| ----------------- | -------------------------------- | -------------- |
+| Fichier           | `src/middleware.ts`              | `src/proxy.ts` |
+| Fonction exportée | `middleware`                     | `proxy`        |
+| Helper Supabase   | `src/lib/supabase/middleware.ts` | inchangé       |
+| `config.matcher`  | identique                        | identique      |
+| Logique           | `updateSession(request)`         | identique      |
 
 Documentation Next.js 16.2 : [proxy file convention](https://nextjs.org/docs/app/api-reference/file-conventions/proxy).
 
@@ -60,13 +60,13 @@ Documentation Next.js 16.2 : [proxy file convention](https://nextjs.org/docs/app
 
 ## Risques
 
-| Risque | Mitigation |
-|---|---|
-| Cookies non rafraîchis | Tests unitaires `updateSession` + E2E compte/boutique |
-| Boucle de redirection | E2E pages publiques + callback |
-| Assets 404 | E2E `/_next/static`, favicon, CSS |
-| Régression HMAC admin | E2E `admin.spec.ts` inchangé |
-| Runtime Node vs Edge | Next 16 proxy = Node par défaut ; `@supabase/ssr` compatible |
+| Risque                 | Mitigation                                                   |
+| ---------------------- | ------------------------------------------------------------ |
+| Cookies non rafraîchis | Tests unitaires `updateSession` + E2E compte/boutique        |
+| Boucle de redirection  | E2E pages publiques + callback                               |
+| Assets 404             | E2E `/_next/static`, favicon, CSS                            |
+| Régression HMAC admin  | E2E `admin.spec.ts` inchangé                                 |
+| Runtime Node vs Edge   | Next 16 proxy = Node par défaut ; `@supabase/ssr` compatible |
 
 ## Tests nécessaires
 

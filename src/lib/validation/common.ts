@@ -1,10 +1,7 @@
 import { z } from "zod";
 
 /** Message public sûr (jamais de détail technique Zod brut côté UI). */
-export function publicZodMessage(
-  error: z.ZodError,
-  fallback = "Données invalides."
-): string {
+export function publicZodMessage(error: z.ZodError, fallback = "Données invalides."): string {
   const msg = error.issues[0]?.message?.trim();
   if (!msg) return fallback;
   // Évite de remonter des chemins internes ou dumps techniques
@@ -14,7 +11,7 @@ export function publicZodMessage(
 
 export function parseOrNull<T>(
   schema: z.ZodType<T>,
-  data: unknown
+  data: unknown,
 ): { ok: true; data: T } | { ok: false; error: z.ZodError } {
   const parsed = schema.safeParse(data);
   if (parsed.success) return { ok: true, data: parsed.data };

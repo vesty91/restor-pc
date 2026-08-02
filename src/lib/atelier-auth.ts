@@ -38,9 +38,7 @@ function safeEqual(a: string, b: string): boolean {
 export function createAtelierSessionToken(): string {
   const key = sessionSigningKey();
   if (!key) {
-    throw new Error(
-      "ATELIER_SESSION_SECRET manquant (obligatoire en production)"
-    );
+    throw new Error("ATELIER_SESSION_SECRET manquant (obligatoire en production)");
   }
   const exp = Math.floor(Date.now() / 1000) + SESSION_TTL_SEC;
   const nonce = randomBytes(16).toString("base64url");
@@ -85,9 +83,7 @@ export function atelierCookieOptions(maxAge = SESSION_TTL_SEC) {
   // COOKIE_SECURE=false : E2E / next start en HTTP local (Secure sinon non stocké).
   const forceInsecure = process.env.COOKIE_SECURE?.trim().toLowerCase() === "false";
   const forceSecure = process.env.COOKIE_SECURE?.trim().toLowerCase() === "true";
-  const secure =
-    forceSecure ||
-    (!forceInsecure && process.env.NODE_ENV === "production");
+  const secure = forceSecure || (!forceInsecure && process.env.NODE_ENV === "production");
   return {
     httpOnly: true as const,
     sameSite: "strict" as const,

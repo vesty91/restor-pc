@@ -33,8 +33,7 @@ if (key.startsWith("sk_live_") && process.env.ALLOW_STRIPE_LIVE !== "true") {
 
 const stripe = new Stripe(key);
 const session = await stripe.checkout.sessions.retrieve(sid);
-const email =
-  session.customer_details?.email || session.customer_email || undefined;
+const email = session.customer_details?.email || session.customer_email || undefined;
 const slug = session.metadata?.tool_slug;
 const userId = session.metadata?.user_id ?? null;
 
@@ -67,8 +66,7 @@ const result = await fulfillToolOrder({
   termsVersion: session.metadata?.terms_version ?? null,
   termsAcceptedAt: session.metadata?.terms_accepted_at ?? null,
   withdrawalConsentAt: session.metadata?.withdrawal_consent_at ?? null,
-  digitalDeliveryRequestedAt:
-    session.metadata?.digital_delivery_requested_at ?? null,
+  digitalDeliveryRequestedAt: session.metadata?.digital_delivery_requested_at ?? null,
 });
 
 console.log("OK", {

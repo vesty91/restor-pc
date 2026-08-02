@@ -9,7 +9,8 @@ import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Mon compte",
-  description: "Espace client Restor-PC à Yerres : suivez vos commandes boutique, téléchargez vos outils logiciels et gérez vos licences.",
+  description:
+    "Espace client Restor-PC à Yerres : suivez vos commandes boutique, téléchargez vos outils logiciels et gérez vos licences.",
   path: "/compte",
   robots: { index: false, follow: false },
 });
@@ -55,11 +56,7 @@ export default async function ComptePage({
       {user?.email ? (
         <CompteDashboard email={user.email} firstName={firstName} />
       ) : (
-        <CompteAuthForm
-          initialMode={mode}
-          nextPath={nextPath}
-          oauthError={oauthError}
-        />
+        <CompteAuthForm initialMode={mode} nextPath={nextPath} oauthError={oauthError} />
       )}
     </Section>
   );

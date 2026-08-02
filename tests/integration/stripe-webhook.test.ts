@@ -52,15 +52,14 @@ async function postWebhook(opts: {
     "content-type": "application/json",
   };
   if (opts.signature !== null) {
-    headers["stripe-signature"] =
-      opts.signature ?? signStripePayload(opts.payload);
+    headers["stripe-signature"] = opts.signature ?? signStripePayload(opts.payload);
   }
   return POST(
     new Request("http://localhost/api/stripe/webhook", {
       method: "POST",
       headers,
       body: opts.payload,
-    })
+    }),
   );
 }
 
@@ -101,9 +100,7 @@ describe("stripe webhook — signatures et fulfillment", () => {
     expect(db.tables.script_licenses).toHaveLength(1);
     expect(db.tables.tool_orders).toHaveLength(1);
     expect(db.tables.tool_orders[0]?.status).toBe("fulfilled");
-    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.result).toBe(
-      "fulfilled"
-    );
+    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.result).toBe("fulfilled");
     expect(nasMock).toHaveBeenCalledTimes(1);
     expect(emailMock).toHaveBeenCalledTimes(1);
   });
@@ -164,9 +161,7 @@ describe("stripe webhook — signatures et fulfillment", () => {
     const res = await postWebhook({ payload });
     expect(res.status).toBe(200);
     expect(db.tables.script_licenses).toHaveLength(1);
-    expect(
-      db.tables.stripe_events.find((e) => e.id === event.id)?.result
-    ).toBe("fulfilled");
+    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.result).toBe("fulfilled");
   });
 
   it("5. paiement non payé → skipped, pas de licence", async () => {
@@ -178,9 +173,7 @@ describe("stripe webhook — signatures et fulfillment", () => {
     const res = await postWebhook({ payload });
     expect(res.status).toBe(200);
     expect(db.tables.script_licenses).toHaveLength(0);
-    expect(
-      db.tables.stripe_events.find((e) => e.id === event.id)?.result
-    ).toBe("skipped_unpaid");
+    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.result).toBe("skipped_unpaid");
   });
 
   it("6. produit inconnu → failed", async () => {
@@ -191,9 +184,9 @@ describe("stripe webhook — signatures et fulfillment", () => {
     });
     const res = await postWebhook({ payload });
     expect(res.status).toBeGreaterThanOrEqual(400);
-    expect(
-      db.tables.stripe_events.find((e) => e.id === event.id)?.error_code
-    ).toBe("HANDLER_ERROR");
+    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.error_code).toBe(
+      "HANDLER_ERROR",
+    );
   });
 
   it("7. price ID incorrect → failed PRICE_MISMATCH", async () => {
@@ -203,9 +196,9 @@ describe("stripe webhook — signatures et fulfillment", () => {
     });
     const res = await postWebhook({ payload });
     expect(res.status).toBeGreaterThanOrEqual(400);
-    expect(
-      db.tables.stripe_events.find((e) => e.id === event.id)?.error_code
-    ).toBe("HANDLER_ERROR");
+    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.error_code).toBe(
+      "HANDLER_ERROR",
+    );
   });
 
   it("8. user_id absent → failed MISSING_USER_ID sans licence", async () => {
@@ -216,12 +209,10 @@ describe("stripe webhook — signatures et fulfillment", () => {
     const res = await postWebhook({ payload });
     expect(res.status).toBe(200);
     expect(db.tables.script_licenses).toHaveLength(0);
-    expect(
-      db.tables.stripe_events.find((e) => e.id === event.id)?.result
-    ).toBe("failed");
-    expect(
-      db.tables.stripe_events.find((e) => e.id === event.id)?.error_code
-    ).toBe("MISSING_USER_ID");
+    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.result).toBe("failed");
+    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.error_code).toBe(
+      "MISSING_USER_ID",
+    );
   });
 
   it("8b. user_id invalide → failed MISSING_USER_ID", async () => {
@@ -231,9 +222,9 @@ describe("stripe webhook — signatures et fulfillment", () => {
     });
     const res = await postWebhook({ payload });
     expect(res.status).toBe(200);
-    expect(
-      db.tables.stripe_events.find((e) => e.id === event.id)?.error_code
-    ).toBe("MISSING_USER_ID");
+    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.error_code).toBe(
+      "MISSING_USER_ID",
+    );
   });
 
   it("15. remboursement → statut refunded + licence/NAS révoqués", async () => {
@@ -268,12 +259,9 @@ describe("stripe webhook — signatures et fulfillment", () => {
     expect(db.tables.tool_orders[0]?.assets_revoked_at).toBeTruthy();
     expect(db.tables.tool_orders[0]?.share_url).toBeNull();
     expect(
-      db.tables.stripe_payment_revocations.find((r) => r.payment_intent_id === pi)
-        ?.reason
+      db.tables.stripe_payment_revocations.find((r) => r.payment_intent_id === pi)?.reason,
     ).toBe("refunded");
-    expect(
-      db.tables.stripe_events.find((e) => e.id === event.id)?.result
-    ).toBe("refunded");
+    expect(db.tables.stripe_events.find((e) => e.id === event.id)?.result).toBe("refunded");
   });
 
   it("15b. refund avant commande → marque PI (hors-ordre) idempotent", async () => {

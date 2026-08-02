@@ -2,11 +2,11 @@
 
 ## Responsabilités
 
-| Élément | Responsable |
-|---------|-------------|
-| Projet Supabase `restor-pc-licences` | Propriétaire Restor-PC |
-| Secrets (service role, etc.) | Hors Git — Vercel / coffre-fort |
-| Migrations SQL | Repo `supabase/migrations/` |
+| Élément                              | Responsable                     |
+| ------------------------------------ | ------------------------------- |
+| Projet Supabase `restor-pc-licences` | Propriétaire Restor-PC          |
+| Secrets (service role, etc.)         | Hors Git — Vercel / coffre-fort |
+| Migrations SQL                       | Repo `supabase/migrations/`     |
 
 ## ⚠️ État réel du plan Supabase (vérifié 2026-08-02)
 

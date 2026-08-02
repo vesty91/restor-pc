@@ -45,9 +45,7 @@ export function TrustSection() {
                   </span>
                   <div>
                     <h3 className="text-lg leading-snug">{item.title}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-ink-muted">
-                      {item.text}
-                    </p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-ink-muted">{item.text}</p>
                   </div>
                 </div>
               </Reveal>

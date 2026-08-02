@@ -85,11 +85,7 @@ export default function ZonePage() {
   return (
     <>
       <Section className="noise-bg pt-20 md:pt-28">
-        <Breadcrumbs
-          items={[
-            { label: "Zone d’intervention", href: "/zone-intervention" },
-          ]}
-        />
+        <Breadcrumbs items={[{ label: "Zone d’intervention", href: "/zone-intervention" }]} />
         <SectionHeader
           as="h1"
           eyebrow="Zone d’intervention"
@@ -109,17 +105,12 @@ export default function ZonePage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           {modes.map((m) => (
-            <div
-              key={m.title}
-              className="rounded-[22px] border border-line bg-paper p-6"
-            >
+            <div key={m.title} className="rounded-[22px] border border-line bg-paper p-6">
               <span className="grid h-11 w-11 place-items-center rounded-xl bg-teal-soft text-teal">
                 <m.icon className="h-5 w-5" />
               </span>
               <h2 className="mt-4 text-xl">{m.title}</h2>
-              <p className="mt-2 text-sm text-ink-muted leading-relaxed">
-                {m.text}
-              </p>
+              <p className="mt-2 text-sm text-ink-muted leading-relaxed">{m.text}</p>
             </div>
           ))}
         </div>
@@ -127,21 +118,15 @@ export default function ZonePage() {
         <div className="mt-14">
           <h2 className="text-2xl md:text-3xl">Communes desservies</h2>
           <p className="mt-3 max-w-2xl text-ink-muted leading-relaxed">
-            Yerres est la zone principale. Les communes ci-dessous sont
-            couvertes pour l’assistance à domicile ou le dépôt en atelier.
-            Votre commune n’apparaît pas ? Contactez-nous pour confirmer
-            disponibilité, délai et mode d’intervention.
+            Yerres est la zone principale. Les communes ci-dessous sont couvertes pour l’assistance
+            à domicile ou le dépôt en atelier. Votre commune n’apparaît pas ? Contactez-nous pour
+            confirmer disponibilité, délai et mode d’intervention.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {communeDetails.map((c) => (
-              <article
-                key={c.name}
-                className="rounded-[20px] border border-line bg-paper p-5"
-              >
+              <article key={c.name} className="rounded-[20px] border border-line bg-paper p-5">
                 <h3 className="text-lg">{c.name}</h3>
-                <p className="mt-2 text-sm text-ink-muted leading-relaxed">
-                  {c.text}
-                </p>
+                <p className="mt-2 text-sm text-ink-muted leading-relaxed">{c.text}</p>
                 <Link
                   href={`/contact?mode=domicile&type=devis&city=${encodeURIComponent(c.name)}`}
                   className="mt-4 inline-block text-sm font-semibold text-teal hover:text-teal-deep"

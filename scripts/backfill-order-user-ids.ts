@@ -55,9 +55,7 @@ async function main() {
       perPage: 200,
     });
     if (uErr) throw uErr;
-    const matches = (users.users ?? []).filter(
-      (u) => (u.email || "").toLowerCase() === email
-    );
+    const matches = (users.users ?? []).filter((u) => (u.email || "").toLowerCase() === email);
 
     if (matches.length === 0) {
       report.missing += rows.length;

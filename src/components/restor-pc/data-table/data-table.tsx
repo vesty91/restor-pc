@@ -111,8 +111,7 @@ export function DataTable<TData>({
     onRowSelectionChange,
     onGlobalFilterChange: onGlobalFilterChange
       ? (updater) => {
-          const next =
-            typeof updater === "function" ? updater(globalFilter ?? "") : updater;
+          const next = typeof updater === "function" ? updater(globalFilter ?? "") : updater;
           onGlobalFilterChange(String(next ?? ""));
         }
       : undefined,
@@ -123,9 +122,7 @@ export function DataTable<TData>({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: manualSorting ? undefined : getSortedRowModel(),
     getFilteredRowModel:
-      manualPagination || onGlobalFilterChange === undefined
-        ? undefined
-        : getFilteredRowModel(),
+      manualPagination || onGlobalFilterChange === undefined ? undefined : getFilteredRowModel(),
     getPaginationRowModel: manualPagination ? undefined : getPaginationRowModel(),
   });
 
@@ -141,7 +138,10 @@ export function DataTable<TData>({
       {toolbar ? <div className="flex flex-wrap items-end gap-3">{toolbar}</div> : null}
 
       {error ? (
-        <p role="alert" className="rounded-[12px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+        <p
+          role="alert"
+          className="rounded-[12px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
+        >
           {error}
         </p>
       ) : null}
@@ -155,14 +155,13 @@ export function DataTable<TData>({
                 {hg.headers.map((header) => {
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted();
-                  const ariaSort =
-                    !canSort
-                      ? undefined
-                      : sorted === "asc"
-                        ? ("ascending" as const)
-                        : sorted === "desc"
-                          ? ("descending" as const)
-                          : ("none" as const);
+                  const ariaSort = !canSort
+                    ? undefined
+                    : sorted === "asc"
+                      ? ("ascending" as const)
+                      : sorted === "desc"
+                        ? ("descending" as const)
+                        : ("none" as const);
                   return (
                     <TableHead
                       key={header.id}
@@ -229,9 +228,7 @@ export function DataTable<TData>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className={cn(
-                        cell.column.id === "actions" && "whitespace-normal"
-                      )}
+                      className={cn(cell.column.id === "actions" && "whitespace-normal")}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -295,9 +292,7 @@ export function DataTable<TData>({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-ink-muted">
           Page {pageIndex + 1}
-          {manualPagination && pageCount != null
-            ? ` / ${Math.max(pageCount, 1)}`
-            : ""}
+          {manualPagination && pageCount != null ? ` / ${Math.max(pageCount, 1)}` : ""}
           {" · "}
           {pageSize} / page
         </p>

@@ -33,22 +33,13 @@ export function AboutHero() {
 
       <div className="relative">
         <div className="flex flex-wrap gap-2">
-          <Badge
-            variant="info"
-            className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
-          >
+          <Badge variant="info" className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]">
             À propos
           </Badge>
-          <Badge
-            variant="outline"
-            className="border-white/20 bg-white/5 text-white/80"
-          >
+          <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
             Atelier · {siteConfig.city}
           </Badge>
-          <Badge
-            variant="outline"
-            className="border-white/20 bg-white/5 text-white/80"
-          >
+          <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
             {siteConfig.googleRating.toFixed(1).replace(".", ",")}/5 Google
           </Badge>
         </div>
@@ -58,8 +49,8 @@ export function AboutHero() {
           <span className="text-[#4ba3ff]"> pas comme un ticket anonyme</span>
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/65 md:text-lg">
-          Basé au {siteConfig.address}. Diagnostic méthodique, explications
-          claires, finitions soignées — la rigueur d’un atelier de précision.
+          Basé au {siteConfig.address}. Diagnostic méthodique, explications claires, finitions
+          soignées — la rigueur d’un atelier de précision.
         </p>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">

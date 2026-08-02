@@ -1,0 +1,25 @@
+node_modules
+.next
+out
+dist
+build
+coverage
+
+# Fichiers générés
+next-env.d.ts
+package-lock.json
+playwright-report
+test-results
+.serpiq/
+
+# Modèles 3D binaires (jamais reformatés)
+*.glb
+*.gltf
+*.bin
+*.fbx
+*.obj
+
+# Sauvegardes locales / secrets
+backups
+.env
+.env.*

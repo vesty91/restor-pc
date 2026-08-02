@@ -8,8 +8,7 @@ type Size = "sm" | "md" | "lg";
 const variants: Record<Variant, string> = {
   primary:
     "btn-glow-primary bg-teal !text-white hover:bg-teal-deep shadow-[0_10px_24px_rgb(0_96_203/28%)] dark:!text-white dark:hover:bg-teal dark:shadow-[0_10px_28px_rgb(75_163_255/22%)]",
-  secondary:
-    "bg-paper text-ink border border-line hover:border-line-strong hover:bg-surface",
+  secondary: "bg-paper text-ink border border-line hover:border-line-strong hover:bg-surface",
   ghost: "bg-transparent text-ink hover:bg-surface-2",
   dark: "bg-panel text-panel-fg hover:opacity-90",
 };
@@ -62,16 +61,14 @@ export function Button({
     "disabled:pointer-events-none disabled:opacity-50",
     variants[variant],
     sizes[size],
-    className
+    className,
   );
 
   if (href) {
     const linkProps = props as LinkProps;
     const external = isExternalHref(href);
     const target = linkProps.target ?? (external && href.startsWith("http") ? "_blank" : undefined);
-    const rel =
-      linkProps.rel ??
-      (target === "_blank" ? "noopener noreferrer" : undefined);
+    const rel = linkProps.rel ?? (target === "_blank" ? "noopener noreferrer" : undefined);
 
     if (external) {
       return (

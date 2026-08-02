@@ -28,15 +28,7 @@ type NormalizedReport = {
 function sanitizeBlockedSource(input: unknown): string | undefined {
   if (typeof input !== "string" || input.length === 0) return undefined;
 
-  const specials = [
-    "inline",
-    "eval",
-    "data",
-    "data:",
-    "blob",
-    "blob:",
-    "wasm-eval",
-  ];
+  const specials = ["inline", "eval", "data", "data:", "blob", "blob:", "wasm-eval"];
   const lower = input.toLowerCase().trim();
   if (specials.includes(lower)) return lower;
 
@@ -63,32 +55,23 @@ function safePath(input: unknown): string | undefined {
   }
 }
 
-function extractUsefulFields(
-  report: unknown,
-  fallbackUrl?: string
-): UsefulCspFields | undefined {
+function extractUsefulFields(report: unknown, fallbackUrl?: string): UsefulCspFields | undefined {
   if (!report || typeof report !== "object") return undefined;
   const r = report as Record<string, unknown>;
 
   let directive: string | undefined =
     (typeof r.effectiveDirective === "string" && r.effectiveDirective) ||
-    (typeof r["effective-directive"] === "string" &&
-      r["effective-directive"]) ||
+    (typeof r["effective-directive"] === "string" && r["effective-directive"]) ||
     (typeof r["violated-directive"] === "string" && r["violated-directive"]) ||
     undefined;
   if (directive) directive = directive.slice(0, 128);
 
-  const blockedSource = sanitizeBlockedSource(
-    r.blockedURL ?? r["blocked-uri"]
-  );
+  const blockedSource = sanitizeBlockedSource(r.blockedURL ?? r["blocked-uri"]);
 
-  const pagePath = safePath(
-    r.documentURL ?? r["document-uri"] ?? fallbackUrl
-  );
+  const pagePath = safePath(r.documentURL ?? r["document-uri"] ?? fallbackUrl);
 
   const rawDisp = r.disposition;
-  const disposition =
-    rawDisp === "report" || rawDisp === "enforce" ? rawDisp : undefined;
+  const disposition = rawDisp === "report" || rawDisp === "enforce" ? rawDisp : undefined;
 
   const rawStatus = r.statusCode ?? r["status-code"];
   let statusCode: number | undefined;
@@ -104,12 +87,7 @@ function extractUsefulFields(
     if (Number.isInteger(n) && n >= 0 && n <= 599) statusCode = n;
   }
 
-  const hasAny =
-    directive ||
-    blockedSource ||
-    pagePath ||
-    disposition ||
-    statusCode != null;
+  const hasAny = directive || blockedSource || pagePath || disposition || statusCode != null;
   return hasAny
     ? {
         effectiveDirective: directive,
@@ -149,9 +127,7 @@ function normalizeReports(payload: unknown): NormalizedReport[] {
   return [];
 }
 
-async function readBodyLimited(
-  request: Request
-): Promise<{ text: string; tooLarge: boolean }> {
+async function readBodyLimited(request: Request): Promise<{ text: string; tooLarge: boolean }> {
   if (!request.body) return { text: "", tooLarge: false };
 
   const reader = request.body.getReader();
@@ -203,9 +179,7 @@ export async function POST(request: Request) {
     });
     if (!limited.ok) return new NextResponse(null, { status: 204 });
 
-    const ct =
-      request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() ??
-      "";
+    const ct = request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() ?? "";
     if (!ACCEPTED_CONTENT_TYPES.has(ct)) {
       return new NextResponse(null, { status: 204 });
     }

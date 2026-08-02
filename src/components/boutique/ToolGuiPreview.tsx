@@ -105,7 +105,7 @@ export function ToolGuiPreview({
     <div
       className={cn(
         "overflow-hidden rounded-[18px] border border-line bg-[#0b1220] shadow-[var(--shadow-lift)]",
-        className
+        className,
       )}
       aria-hidden
     >

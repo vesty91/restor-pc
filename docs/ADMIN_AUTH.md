@@ -2,12 +2,12 @@
 
 ## Modèle de rôles
 
-| Identité | Privilège |
-|---|---|
-| Client Supabase (`customer` ou sans ligne) | Compte boutique uniquement |
-| Session atelier HMAC | **Technicien transitoire** (si `ATELIER_HMAC_FALLBACK` actif) |
-| Rôle Supabase `technician` | Opérations atelier / licences |
-| Rôle Supabase `admin` | Administration (jamais via HMAC seul) |
+| Identité                                   | Privilège                                                     |
+| ------------------------------------------ | ------------------------------------------------------------- |
+| Client Supabase (`customer` ou sans ligne) | Compte boutique uniquement                                    |
+| Session atelier HMAC                       | **Technicien transitoire** (si `ATELIER_HMAC_FALLBACK` actif) |
+| Rôle Supabase `technician`                 | Opérations atelier / licences                                 |
+| Rôle Supabase `admin`                      | Administration (jamais via HMAC seul)                         |
 
 Table `user_roles` (`customer` | `technician` | `admin`), RLS : lecture du
 propre rôle ; écriture **service role uniquement** (pas de self-promotion).

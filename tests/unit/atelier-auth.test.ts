@@ -40,9 +40,7 @@ describe("atelier session HMAC", () => {
   });
 
   it("vérifie le mot de passe atelier", () => {
-    expect(verifyAtelierPassword("unit-test-atelier-secret-32chars!!")).toBe(
-      true
-    );
+    expect(verifyAtelierPassword("unit-test-atelier-secret-32chars!!")).toBe(true);
     expect(verifyAtelierPassword("wrong")).toBe(false);
   });
 });

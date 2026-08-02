@@ -70,7 +70,7 @@ describe("fulfillToolOrder — flux critiques", () => {
         toolSlug: "nope",
         orderRef: "atelier-unknown",
         source: "atelier",
-      })
+      }),
     ).rejects.toMatchObject({ code: "UNKNOWN_PRODUCT" } satisfies Partial<AppError>);
   });
 
@@ -83,7 +83,7 @@ describe("fulfillToolOrder — flux critiques", () => {
         orderRef: "atelier-bad-user",
         source: "atelier",
         userId: "bad",
-      })
+      }),
     ).rejects.toMatchObject({ code: "INVALID_USER_ID" } satisfies Partial<AppError>);
   });
 
@@ -98,10 +98,7 @@ describe("fulfillToolOrder — flux critiques", () => {
       sendEmail: true,
     };
 
-    const results = await Promise.allSettled([
-      fulfillToolOrder(input),
-      fulfillToolOrder(input),
-    ]);
+    const results = await Promise.allSettled([fulfillToolOrder(input), fulfillToolOrder(input)]);
 
     const fulfilled = results.filter((r) => r.status === "fulfilled");
     expect(fulfilled.length).toBeGreaterThanOrEqual(1);
@@ -120,7 +117,7 @@ describe("fulfillToolOrder — flux critiques", () => {
         orderRef: "cs_nas_fail",
         source: "stripe",
         userId: USER_A,
-      })
+      }),
     ).rejects.toMatchObject({ code: "NAS_LINK_FAILED" } satisfies Partial<AppError>);
 
     expect(db.tables.tool_orders[0]?.status).toBe("failed");
@@ -277,7 +274,7 @@ describe("isolation commandes client (user_id)", () => {
         email_retry_needed: false,
         terms_version: "2026-07-01",
         withdrawal_consent_at: null,
-      }
+      },
     );
 
     const { GET } = await import("@/app/api/compte/orders/route");
@@ -287,8 +284,6 @@ describe("isolation commandes client (user_id)", () => {
     expect(body.orders).toHaveLength(1);
     expect(body.orders[0].id).toBe("o1");
     expect(body.orders[0].license_key).toBe("RPC-AAA");
-    expect(
-      body.orders.every((o: { user_id: string }) => o.user_id === USER_A)
-    ).toBe(true);
+    expect(body.orders.every((o: { user_id: string }) => o.user_id === USER_A)).toBe(true);
   });
 });

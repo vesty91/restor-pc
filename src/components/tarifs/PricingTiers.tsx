@@ -17,30 +17,23 @@ export function PricingTiers() {
             "relative flex flex-col overflow-hidden rounded-[24px] p-6 md:p-7",
             tier.highlight
               ? "border border-teal/50 bg-panel text-panel-fg shadow-[var(--shadow-lift)] lg:-translate-y-2 lg:scale-[1.02]"
-              : "tile-wow"
+              : "tile-wow",
           )}
         >
-          {tier.highlight ? (
-            <BorderBeam size={100} duration={8} borderWidth={1.5} />
-          ) : null}
+          {tier.highlight ? <BorderBeam size={100} duration={8} borderWidth={1.5} /> : null}
 
           <div className="relative flex flex-1 flex-col">
             <div className="flex flex-wrap items-center gap-2">
               <Badge
                 variant={tier.highlight ? "info" : "muted"}
                 className={
-                  tier.highlight
-                    ? "border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
-                    : undefined
+                  tier.highlight ? "border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]" : undefined
                 }
               >
                 {tier.name}
               </Badge>
               {tier.highlight ? (
-                <Badge
-                  variant="outline"
-                  className="gap-1 border-white/20 bg-white/5 text-white/85"
-                >
+                <Badge variant="outline" className="gap-1 border-white/20 bg-white/5 text-white/85">
                   <Sparkles className="size-3" aria-hidden />
                   Le plus demandé
                 </Badge>
@@ -50,7 +43,7 @@ export function PricingTiers() {
             <p
               className={cn(
                 "mt-4 text-xs font-medium",
-                tier.highlight ? "text-white/45" : "text-ink-muted"
+                tier.highlight ? "text-white/45" : "text-ink-muted",
               )}
             >
               {tier.id === "atelier" ? "À partir de" : "Minimum"}
@@ -60,7 +53,7 @@ export function PricingTiers() {
               <span
                 className={cn(
                   "ml-1.5 text-sm font-sans font-medium",
-                  tier.highlight ? "text-white/50" : "text-ink-muted"
+                  tier.highlight ? "text-white/50" : "text-ink-muted",
                 )}
               >
                 {tier.unitLabel}
@@ -69,7 +62,7 @@ export function PricingTiers() {
             <p
               className={cn(
                 "mt-3 text-sm leading-relaxed",
-                tier.highlight ? "text-white/65" : "text-ink-muted"
+                tier.highlight ? "text-white/65" : "text-ink-muted",
               )}
             >
               {tier.description}

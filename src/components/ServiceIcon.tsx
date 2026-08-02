@@ -23,13 +23,7 @@ const map: Record<string, LucideIcon> = {
   Sparkles,
 };
 
-export function ServiceIcon({
-  name,
-  className,
-}: {
-  name: string;
-  className?: string;
-}) {
+export function ServiceIcon({ name, className }: { name: string; className?: string }) {
   const Icon = map[name] ?? Wrench;
   return <Icon className={className} aria-hidden />;
 }

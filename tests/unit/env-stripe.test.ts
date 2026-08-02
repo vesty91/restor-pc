@@ -24,7 +24,7 @@ describe("Stripe live lock", () => {
         STRIPE_SECRET_KEY: "sk_live_xxx",
         ALLOW_STRIPE_LIVE: "false",
         NODE_ENV: "production",
-      })
+      }),
     ).toThrow(/ALLOW_STRIPE_LIVE/);
   });
 
@@ -34,7 +34,7 @@ describe("Stripe live lock", () => {
         STRIPE_SECRET_KEY: "sk_live_xxx",
         ALLOW_STRIPE_LIVE: "true",
         NODE_ENV: "production",
-      })
+      }),
     ).not.toThrow();
   });
 
@@ -44,7 +44,7 @@ describe("Stripe live lock", () => {
         STRIPE_SECRET_KEY: "sk_test_xxx",
         ALLOW_STRIPE_LIVE: "false",
         NODE_ENV: "development",
-      })
+      }),
     ).not.toThrow();
   });
 });

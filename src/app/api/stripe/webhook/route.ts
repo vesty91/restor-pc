@@ -31,11 +31,7 @@ async function claimEvent(event: Stripe.Event): Promise<boolean> {
   return data === true;
 }
 
-async function markEvent(
-  eventId: string,
-  result: string,
-  errorCode?: string
-): Promise<void> {
+async function markEvent(eventId: string, result: string, errorCode?: string): Promise<void> {
   const sb = getSupabaseAdmin();
   await sb
     .from("stripe_events")
@@ -49,7 +45,7 @@ async function markEvent(
 
 async function fulfillFromSession(
   session: Stripe.Checkout.Session,
-  eventId: string
+  eventId: string,
 ): Promise<void> {
   if (session.payment_status !== "paid" && session.payment_status !== "no_payment_required") {
     logEvent("warn", "stripe.webhook.unpaid", {
@@ -62,10 +58,7 @@ async function fulfillFromSession(
 
   const slug = session.metadata?.tool_slug;
   const userId = session.metadata?.user_id ?? null;
-  const email =
-    session.customer_details?.email ||
-    session.customer_email ||
-    undefined;
+  const email = session.customer_details?.email || session.customer_email || undefined;
 
   if (!slug || !email) {
     logEvent("error", "stripe.webhook.missing_meta", { stripeEventId: eventId });
@@ -73,8 +66,7 @@ async function fulfillFromSession(
     return;
   }
 
-  const uuidRe =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   if (!userId || !uuidRe.test(userId)) {
     logEvent("error", "stripe.webhook.missing_user", { stripeEventId: eventId });
     await markEvent(eventId, "failed", "MISSING_USER_ID");
@@ -89,9 +81,7 @@ async function fulfillFromSession(
 
   const expectedPrice = getStripePriceId(product);
   const linePrice =
-    typeof session.metadata?.stripe_price_id === "string"
-      ? session.metadata.stripe_price_id
-      : null;
+    typeof session.metadata?.stripe_price_id === "string" ? session.metadata.stripe_price_id : null;
 
   // Vérifie le price id passé au checkout (metadata) si présent
   if (expectedPrice && linePrice && linePrice !== expectedPrice) {
@@ -110,23 +100,20 @@ async function fulfillFromSession(
     stripePaymentIntentId:
       typeof session.payment_intent === "string"
         ? session.payment_intent
-        : session.payment_intent?.id ?? null,
+        : (session.payment_intent?.id ?? null),
     stripePriceId: expectedPrice || linePrice,
     amountTotal: session.amount_total,
     currency: session.currency,
     termsVersion: session.metadata?.terms_version ?? null,
     termsAcceptedAt: session.metadata?.terms_accepted_at ?? null,
     withdrawalConsentAt: session.metadata?.withdrawal_consent_at ?? null,
-    digitalDeliveryRequestedAt:
-      session.metadata?.digital_delivery_requested_at ?? null,
+    digitalDeliveryRequestedAt: session.metadata?.digital_delivery_requested_at ?? null,
   });
 
   await markEvent(eventId, "fulfilled");
 }
 
-async function handleRefundOrDispute(
-  event: Stripe.Event
-): Promise<void> {
+async function handleRefundOrDispute(event: Stripe.Event): Promise<void> {
   const obj = event.data.object as {
     payment_intent?: string | { id?: string };
     charge?: string;
@@ -144,10 +131,7 @@ async function handleRefundOrDispute(
     return;
   }
 
-  const status =
-    event.type.startsWith("charge.dispute")
-      ? "disputed"
-      : "refunded";
+  const status = event.type.startsWith("charge.dispute") ? "disputed" : "refunded";
 
   const result = await revokeAccessByPaymentIntent({
     paymentIntentId: pi,
@@ -155,23 +139,14 @@ async function handleRefundOrDispute(
     stripeEventId: event.id,
   });
 
-  await markEvent(
-    event.id,
-    status,
-    result.orders.length === 0 ? "REVOKED_PI_ONLY" : undefined
-  );
+  await markEvent(event.id, status, result.orders.length === 0 ? "REVOKED_PI_ONLY" : undefined);
 }
 
 export async function POST(request: Request) {
   const requestId = createRequestId();
   const secret = process.env.STRIPE_WEBHOOK_SECRET?.trim();
   if (!secret) {
-    return jsonError(
-      "WEBHOOK_NOT_CONFIGURED",
-      "Webhook non configure.",
-      500,
-      requestId
-    );
+    return jsonError("WEBHOOK_NOT_CONFIGURED", "Webhook non configure.", 500, requestId);
   }
 
   const signature = request.headers.get("stripe-signature");

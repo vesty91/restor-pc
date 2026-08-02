@@ -14,13 +14,13 @@ Le système HMAC **reste actif** jusqu’à la fin de l’étape 8.
 
 ## État actuel (post PR #23)
 
-| Couche | Mécanisme |
-|---|---|
-| Pages `/admin`, `/admin/licences`, `/admin/livraison` | `isAtelierAuthed()` (cookie HMAC) |
-| Pages `/atelier/*` | idem |
-| API `/api/atelier/*` | `requireTechnician()` = HMAC **ou** rôle `technician`/`admin` |
-| Cookie | `restorpc_atelier_session` = token opaque `v1.exp.nonce.sig` |
-| Prod | `ATELIER_SESSION_SECRET` obligatoire (pas de fallback sur le mot de passe) |
+| Couche                                                | Mécanisme                                                                  |
+| ----------------------------------------------------- | -------------------------------------------------------------------------- |
+| Pages `/admin`, `/admin/licences`, `/admin/livraison` | `isAtelierAuthed()` (cookie HMAC)                                          |
+| Pages `/atelier/*`                                    | idem                                                                       |
+| API `/api/atelier/*`                                  | `requireTechnician()` = HMAC **ou** rôle `technician`/`admin`              |
+| Cookie                                                | `restorpc_atelier_session` = token opaque `v1.exp.nonce.sig`               |
+| Prod                                                  | `ATELIER_SESSION_SECRET` obligatoire (pas de fallback sur le mot de passe) |
 
 Helpers déjà présents : `src/lib/auth/roles.ts` (`requireAuthenticatedUser`, `getUserRole`, `requireTechnician`, `requireAdmin`).
 
@@ -122,28 +122,28 @@ Après validation explicite :
 
 ## Routes concernées
 
-| Route | Auth aujourd’hui | Cible |
-|---|---|---|
-| `/admin` | HMAC page | Supabase (+ HMAC secours) |
-| `/admin/licences` | HMAC redirect | idem |
-| `/admin/livraison` | HMAC redirect | idem |
-| `/atelier/*` | HMAC | idem |
-| `/api/atelier/auth` | secret → cookie | déprécié puis retiré |
-| `/api/atelier/licenses` | `requireTechnician` | Supabase roles only |
-| `/api/atelier/fulfill` | `requireTechnician` | idem |
-| `/auth/callback` | OAuth code exchange | inchangé (déjà requis) |
+| Route                   | Auth aujourd’hui    | Cible                     |
+| ----------------------- | ------------------- | ------------------------- |
+| `/admin`                | HMAC page           | Supabase (+ HMAC secours) |
+| `/admin/licences`       | HMAC redirect       | idem                      |
+| `/admin/livraison`      | HMAC redirect       | idem                      |
+| `/atelier/*`            | HMAC                | idem                      |
+| `/api/atelier/auth`     | secret → cookie     | déprécié puis retiré      |
+| `/api/atelier/licenses` | `requireTechnician` | Supabase roles only       |
+| `/api/atelier/fulfill`  | `requireTechnician` | idem                      |
+| `/auth/callback`        | OAuth code exchange | inchangé (déjà requis)    |
 
 ---
 
 ## Risques de verrouillage administrateur
 
-| Risque | Mitigation |
-|---|---|
-| UUID / rôle mal saisi | Tester API avant de couper HMAC |
-| Session Supabase expirée | Middleware sur `/admin` + `/compte` |
-| Perte accès email OAuth | Second compte admin + HMAC secours |
-| `ATELIER_HMAC_FALLBACK=false` trop tôt | Rollback env immédiat |
-| Suppression code trop tôt | PR séparée après observation |
+| Risque                                 | Mitigation                          |
+| -------------------------------------- | ----------------------------------- |
+| UUID / rôle mal saisi                  | Tester API avant de couper HMAC     |
+| Session Supabase expirée               | Middleware sur `/admin` + `/compte` |
+| Perte accès email OAuth                | Second compte admin + HMAC secours  |
+| `ATELIER_HMAC_FALLBACK=false` trop tôt | Rollback env immédiat               |
+| Suppression code trop tôt              | PR séparée après observation        |
 
 ---
 

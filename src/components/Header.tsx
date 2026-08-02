@@ -80,7 +80,7 @@ export function Header() {
       wasOpen.current = true;
       const panel = panelRef.current;
       const focusables = panel?.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
       focusables?.[0]?.focus();
 
@@ -122,14 +122,14 @@ export function Header() {
         : "border-white/20 bg-transparent text-white/85 hover:bg-white/10 hover:text-white"
       : compteActive
         ? "border-teal/40 bg-teal-soft text-teal"
-        : "border-line bg-paper text-ink-soft hover:border-line-strong hover:text-ink"
+        : "border-line bg-paper text-ink-soft hover:border-line-strong hover:text-ink",
   );
 
   const logoutClass = cn(
     "inline-flex h-10 items-center gap-2 rounded-[12px] border px-3 text-sm font-semibold transition-colors",
     lightNav
       ? "border-white/20 bg-transparent text-white/85 hover:bg-white/10 hover:text-white"
-      : "border-line bg-paper text-ink-soft hover:border-line-strong hover:text-ink"
+      : "border-line bg-paper text-ink-soft hover:border-line-strong hover:text-ink",
   );
 
   return (
@@ -138,7 +138,7 @@ export function Header() {
         "sticky top-0 z-50 border-b transition-[background,border,box-shadow,color] duration-300",
         scrolled || open
           ? "border-line/80 bg-paper/90 backdrop-blur-xl shadow-[var(--shadow-soft)]"
-          : "border-transparent bg-transparent"
+          : "border-transparent bg-transparent",
       )}
     >
       <div className="container-wide flex h-[74px] items-center gap-3 sm:h-[82px] md:h-[90px]">
@@ -166,7 +166,7 @@ export function Header() {
                       : "text-teal"
                     : lightNav
                       ? "text-white/75 hover:text-white"
-                      : "text-ink-soft hover:text-ink"
+                      : "text-ink-soft hover:text-ink",
                 )}
               >
                 {link.label}
@@ -211,9 +211,7 @@ export function Header() {
             type="button"
             className={cn(
               "grid h-11 w-11 place-items-center rounded-xl border lg:hidden",
-              lightNav
-                ? "border-white/20 bg-white/10 text-white"
-                : "border-line bg-paper text-ink"
+              lightNav ? "border-white/20 bg-white/10 text-white" : "border-line bg-paper text-ink",
             )}
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={open}

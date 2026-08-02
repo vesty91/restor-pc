@@ -43,8 +43,7 @@ export function buildPageMetadata({
 }: PageMetadataInput): Metadata {
   const canonical = path.startsWith("/") ? path : `/${path}`;
   const ogTitle =
-    openGraphTitle ??
-    (typeof title === "string" ? `${title} | ${siteConfig.name}` : undefined);
+    openGraphTitle ?? (typeof title === "string" ? `${title} | ${siteConfig.name}` : undefined);
 
   return {
     ...(title !== undefined ? { title } : {}),

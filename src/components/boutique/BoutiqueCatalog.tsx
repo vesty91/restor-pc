@@ -3,10 +3,7 @@
 import { ToolGuiPreview } from "@/components/boutique/ToolGuiPreview";
 import { Badge } from "@/components/ui/badge";
 import { getOutilDetails } from "@/lib/data/outils-details";
-import {
-  formatOutilPrice,
-  type OutilProduct,
-} from "@/lib/data/outils";
+import { formatOutilPrice, type OutilProduct } from "@/lib/data/outils";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight, Search } from "lucide-react";
 import Link from "next/link";
@@ -35,9 +32,7 @@ export function BoutiqueCatalog({ tools }: { tools: OutilProduct[] }) {
     if (query.trim()) {
       const q = query.toLowerCase();
       items = items.filter(
-        (t) =>
-          t.title.toLowerCase().includes(q) ||
-          t.tagline.toLowerCase().includes(q)
+        (t) => t.title.toLowerCase().includes(q) || t.tagline.toLowerCase().includes(q),
       );
     }
     return items;
@@ -46,11 +41,7 @@ export function BoutiqueCatalog({ tools }: { tools: OutilProduct[] }) {
   return (
     <div className="mt-10">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div
-          className="flex flex-wrap gap-2"
-          role="group"
-          aria-label="Filtrer les outils"
-        >
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrer les outils">
           {filters.map((f) => {
             const active = filter === f.id;
             return (
@@ -65,7 +56,7 @@ export function BoutiqueCatalog({ tools }: { tools: OutilProduct[] }) {
                   variant={active ? "default" : "outline"}
                   className={cn(
                     "cursor-pointer px-3.5 py-1.5 text-sm",
-                    active && "bg-panel text-panel-fg hover:bg-panel"
+                    active && "bg-panel text-panel-fg hover:bg-panel",
                   )}
                 >
                   {f.label}
@@ -127,9 +118,7 @@ export function BoutiqueCatalog({ tools }: { tools: OutilProduct[] }) {
                     {tool.tagline}
                   </p>
                   <div className="mt-5 flex items-center justify-between gap-3 border-t border-line pt-4">
-                    <p className="text-base font-semibold">
-                      {formatOutilPrice(tool.priceCents)}
-                    </p>
+                    <p className="text-base font-semibold">{formatOutilPrice(tool.priceCents)}</p>
                     <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal">
                       Détail
                       <ArrowUpRight

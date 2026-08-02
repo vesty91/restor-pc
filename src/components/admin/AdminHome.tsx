@@ -93,7 +93,13 @@ export function AdminDashboard() {
     <div className="mt-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-ink-muted">Session active · 12 h max</p>
-        <Button type="button" variant="ghost" size="sm" disabled={loading} onClick={() => void logout()}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={loading}
+          onClick={() => void logout()}
+        >
           Déconnexion
         </Button>
       </div>

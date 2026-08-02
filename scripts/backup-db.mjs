@@ -56,10 +56,7 @@ function loadDotEnvLocal() {
     const [, key, rawVal] = m;
     if (process.env[key] !== undefined) continue;
     let val = rawVal.trim();
-    if (
-      (val.startsWith('"') && val.endsWith('"')) ||
-      (val.startsWith("'") && val.endsWith("'"))
-    ) {
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
       val = val.slice(1, -1);
     }
     process.env[key] = val;
@@ -73,7 +70,7 @@ async function main() {
   if (!dbUrl) {
     console.error(
       "✗ SUPABASE_DB_URL manquant. Renseignez-le dans .env.local " +
-        "(Supabase Dashboard > Project Settings > Database > Connection string > URI)."
+        "(Supabase Dashboard > Project Settings > Database > Connection string > URI).",
     );
     process.exit(1);
   }
@@ -103,7 +100,7 @@ async function main() {
     nasStatus = "OK";
   } else {
     console.log(
-      "ℹ Copie NAS ignorée (BACKUP_NAS_REMOTE_DIR ou NAS_SSH_* non défini) — sauvegarde locale uniquement."
+      "ℹ Copie NAS ignorée (BACKUP_NAS_REMOTE_DIR ou NAS_SSH_* non défini) — sauvegarde locale uniquement.",
     );
   }
 
@@ -156,7 +153,7 @@ function runPgDump(dbUrl, filepath) {
         "--no-privileges",
         dbUrl,
       ],
-      { stdio: ["ignore", "pipe", "pipe"] }
+      { stdio: ["ignore", "pipe", "pipe"] },
     );
 
     const gzip = createGzip();

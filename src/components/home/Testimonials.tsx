@@ -18,9 +18,9 @@ export function Testimonials() {
 
       <div className="mb-8 flex flex-wrap items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.04] px-5 py-4">
         <div className="flex items-center gap-2">
-            <p className="font-display text-3xl tracking-tight text-white">
-              <AnimatedStat value="4,6/5" />
-            </p>
+          <p className="font-display text-3xl tracking-tight text-white">
+            <AnimatedStat value="4,6/5" />
+          </p>
           <div className="flex gap-0.5 text-teal" aria-hidden>
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
@@ -41,11 +41,7 @@ export function Testimonials() {
           <Reveal key={`${t.name}-${i}`} delay={i * 60}>
             <figure className="h-full rounded-[22px] border border-white/10 bg-white/[0.04] p-6 md:p-7">
               <div className="flex items-center justify-between gap-3">
-                <div
-                  className="flex gap-1 text-teal"
-                  role="img"
-                  aria-label={`${t.rating} sur 5`}
-                >
+                <div className="flex gap-1 text-teal" role="img" aria-label={`${t.rating} sur 5`}>
                   {Array.from({ length: t.rating }).map((_, idx) => (
                     <Star key={idx} className="h-4 w-4 fill-current" />
                   ))}
@@ -98,9 +94,9 @@ export function ConfiguratorTeaser() {
             Construisez votre PC idéal en quelques minutes
           </h2>
           <p className="mt-4 text-ink-muted leading-relaxed max-w-md">
-            Choisissez un usage, un budget et vos préférences. Notre moteur
-            propose une configuration équilibrée, compatible, avec estimation
-            de prix — prête à transformer en devis.
+            Choisissez un usage, un budget et vos préférences. Notre moteur propose une
+            configuration équilibrée, compatible, avec estimation de prix — prête à transformer en
+            devis.
           </p>
           <div className="mt-7">
             <Button href="/configurateur" size="lg">

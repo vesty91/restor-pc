@@ -2,20 +2,9 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-export function BentoGrid({
-  className,
-  children,
-}: {
-  className?: string;
-  children?: ReactNode;
-}) {
+export function BentoGrid({ className, children }: { className?: string; children?: ReactNode }) {
   return (
-    <div
-      className={cn(
-        "mx-auto grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4",
-        className
-      )}
-    >
+    <div className={cn("mx-auto grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
       {children}
     </div>
   );
@@ -63,7 +52,7 @@ export function BentoGridItem({
   const classes = cn(
     "tile-wow group/bento flex h-full flex-col rounded-2xl p-5",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
-    className
+    className,
   );
 
   if (href) {

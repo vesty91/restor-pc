@@ -20,10 +20,7 @@ function readReducedMotion(): boolean {
  * Parallax souris + scroll + reduced-motion + visibilité (onglet + IntersectionObserver).
  * Coords souris/scroll : refs mutées hors rendu (lues dans useFrame R3F).
  */
-export function useHeroMotion(
-  enabled: boolean,
-  root: HTMLElement | null
-): HeroMotionState {
+export function useHeroMotion(enabled: boolean, root: HTMLElement | null): HeroMotionState {
   const coords = useRef({ mouseX: 0, mouseY: 0, scrollY: 0 });
   const [reducedMotion] = useState(readReducedMotion);
   const [visible, setVisible] = useState(true);
@@ -87,10 +84,10 @@ export function useHeroMotion(
       return () => document.removeEventListener("visibilitychange", onDocVisibility);
     }
 
-    const obs = new IntersectionObserver(
-      ([entry]) => syncVisibility(entry.isIntersecting),
-      { root: null, threshold: 0.05 }
-    );
+    const obs = new IntersectionObserver(([entry]) => syncVisibility(entry.isIntersecting), {
+      root: null,
+      threshold: 0.05,
+    });
     obs.observe(root);
     onDocVisibility();
 
@@ -114,6 +111,6 @@ export function useHeroMotion(
       reducedMotion,
       visible,
     }),
-    [reducedMotion, visible]
+    [reducedMotion, visible],
   );
 }

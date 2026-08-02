@@ -20,7 +20,7 @@ export function MobileCtaBar() {
   if (pathname.startsWith("/contact")) return null;
 
   const urgentWhatsApp = buildWhatsAppUrl(
-    "Bonjour Restor-PC, j’ai une panne urgente sur mon PC et j’aimerais un rappel."
+    "Bonjour Restor-PC, j’ai une panne urgente sur mon PC et j’aimerais un rappel.",
   );
 
   return (

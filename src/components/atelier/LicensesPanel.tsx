@@ -163,7 +163,11 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, ...body }),
       });
-      const data = (await res.json()) as { license?: LicenseRow; error?: string; requestId?: string };
+      const data = (await res.json()) as {
+        license?: LicenseRow;
+        error?: string;
+        requestId?: string;
+      };
       if (!res.ok) {
         const msg = data.error || "Modification échouée";
         setError(msg);
@@ -242,9 +246,8 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
         {
           loading: "Création de la licence…",
           success: "Licence créée.",
-          error: (err) =>
-            err instanceof Error ? err.message : "Création échouée",
-        }
+          error: (err) => (err instanceof Error ? err.message : "Création échouée"),
+        },
       );
     } catch {
       /* toast déjà affiché */
@@ -261,9 +264,7 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
         cell: ({ row }) => (
           <div className="whitespace-normal">
             <code className="text-xs font-semibold text-ink">{row.original.license_key}</code>
-            <p className="mt-1 text-[11px] text-ink-muted">
-              {formatDate(row.original.created_at)}
-            </p>
+            <p className="mt-1 text-[11px] text-ink-muted">{formatDate(row.original.created_at)}</p>
           </div>
         ),
       },
@@ -274,7 +275,7 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
           <div className="whitespace-normal">
             <code className="text-xs">{row.original.script_id}</code>
             <p className="mt-1 text-[11px] text-ink-muted">
-              max {row.original.max_machines === 0 ? "∞" : row.original.max_machines ?? 1}
+              max {row.original.max_machines === 0 ? "∞" : (row.original.max_machines ?? 1)}
             </p>
           </div>
         ),
@@ -361,7 +362,7 @@ export function LicensesPanel({ authed }: { authed: boolean }) {
         },
       },
     ],
-    [busyId]
+    [busyId],
   );
 
   if (!authed) {

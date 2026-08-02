@@ -21,12 +21,10 @@ export default function NotFound() {
     <section className="noise-bg flex min-h-[70vh] items-center py-20">
       <div className="container-site max-w-2xl text-center">
         <p className="font-mono text-sm text-teal">Erreur 404</p>
-        <h1 className="mt-3 font-display text-4xl md:text-6xl tracking-tight">
-          Page introuvable
-        </h1>
+        <h1 className="mt-3 font-display text-4xl md:text-6xl tracking-tight">Page introuvable</h1>
         <p className="mx-auto mt-4 max-w-md text-ink-muted leading-relaxed">
-          Cette page n’existe pas (ou plus). Restor-PC reste joignable à{" "}
-          {siteConfig.city} — choisissez une destination ci-dessous.
+          Cette page n’existe pas (ou plus). Restor-PC reste joignable à {siteConfig.city} —
+          choisissez une destination ci-dessous.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <Button href="/" size="lg">

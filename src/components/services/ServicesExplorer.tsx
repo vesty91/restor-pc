@@ -19,12 +19,7 @@ const filters = [
 
 const filterMap: Record<string, string[]> = {
   panne: ["depannage-informatique", "reparation-pc", "maintenance"],
-  logiciel: [
-    "virus-optimisation",
-    "reinstallation-windows",
-    "sauvegarde-securite",
-    "maintenance",
-  ],
+  logiciel: ["virus-optimisation", "reinstallation-windows", "sauvegarde-securite", "maintenance"],
   data: ["recuperation-donnees", "sauvegarde-securite"],
   pc: ["montage-pc"],
 };
@@ -55,7 +50,7 @@ export function ServicesExplorer() {
         (s) =>
           s.title.toLowerCase().includes(q) ||
           s.excerpt.toLowerCase().includes(q) ||
-          s.features.some((f) => f.toLowerCase().includes(q))
+          s.features.some((f) => f.toLowerCase().includes(q)),
       );
     }
     return items;
@@ -64,11 +59,7 @@ export function ServicesExplorer() {
   return (
     <div>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div
-          className="flex flex-wrap gap-2"
-          role="group"
-          aria-label="Filtrer les services"
-        >
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrer les services">
           {filters.map((f) => {
             const active = filter === f.id;
             return (
@@ -79,14 +70,14 @@ export function ServicesExplorer() {
                 aria-pressed={active}
                 className={cn(
                   "rounded-full outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
-                  active ? "" : "hover:opacity-90"
+                  active ? "" : "hover:opacity-90",
                 )}
               >
                 <Badge
                   variant={active ? "default" : "outline"}
                   className={cn(
                     "cursor-pointer px-3.5 py-1.5 text-sm",
-                    active && "bg-panel text-panel-fg hover:bg-panel"
+                    active && "bg-panel text-panel-fg hover:bg-panel",
                   )}
                 >
                   {f.label}
@@ -123,11 +114,7 @@ export function ServicesExplorer() {
             <BentoGridItem
               key={service.slug}
               href={`/services/${service.slug}`}
-              header={
-                <Badge variant="info">
-                  {serviceBadge[service.slug] ?? "Service"}
-                </Badge>
-              }
+              header={<Badge variant="info">{serviceBadge[service.slug] ?? "Service"}</Badge>}
               icon={
                 <span className="grid h-10 w-10 place-items-center rounded-xl border border-line bg-teal-soft text-teal transition-transform duration-300 group-hover/bento:scale-110 group-hover/bento:border-teal/40 motion-reduce:transition-none">
                   <ServiceIcon name={service.icon} className="h-5 w-5" />
@@ -139,10 +126,7 @@ export function ServicesExplorer() {
                 <span className="inline-flex w-full items-center justify-between gap-2">
                   <span>
                     À partir de {formatPrice(service.priceFrom)}
-                    <span className="font-normal text-ink-muted">
-                      {" "}
-                      · {service.duration}
-                    </span>
+                    <span className="font-normal text-ink-muted"> · {service.duration}</span>
                   </span>
                   <ArrowUpRight className="h-4 w-4 text-ink-muted transition-transform duration-300 group-hover/bento:translate-x-1 group-hover/bento:-translate-y-1 group-hover/bento:scale-110 group-hover/bento:text-teal motion-reduce:transition-none" />
                 </span>
@@ -157,7 +141,10 @@ export function ServicesExplorer() {
           </Badge>
           <p className="text-ink-muted">
             Aucun service ne correspond à votre recherche.{" "}
-            <Link href="/contact" className="font-semibold text-teal underline-offset-2 hover:underline">
+            <Link
+              href="/contact"
+              className="font-semibold text-teal underline-offset-2 hover:underline"
+            >
               Décrivez votre problème
             </Link>{" "}
             — on vous oriente.

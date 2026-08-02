@@ -9,7 +9,8 @@ import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "FAQ — Dépannage informatique Yerres",
-  description: "FAQ Restor-PC Yerres : délais d’intervention, devis, garantie 90 jours, dépôt en atelier, domicile et montage PC sur mesure.",
+  description:
+    "FAQ Restor-PC Yerres : délais d’intervention, devis, garantie 90 jours, dépôt en atelier, domicile et montage PC sur mesure.",
   path: "/faq",
 });
 

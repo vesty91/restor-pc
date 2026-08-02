@@ -7,7 +7,7 @@ const MAX_LEN = 180;
  */
 export function sanitizeToastMessage(
   message: string,
-  fallback = "Une erreur est survenue."
+  fallback = "Une erreur est survenue.",
 ): string {
   const raw = (message || "").trim();
   if (!raw) return fallback;
@@ -17,13 +17,10 @@ export function sanitizeToastMessage(
     .replace(/\b(Bearer\s+[A-Za-z0-9._-]+)\b/gi, "[masqué]")
     .replace(
       /\b(ATELIER_SECRET|ATELIER_SESSION_SECRET|SUPABASE_SERVICE_ROLE_KEY|STRIPE_SECRET_KEY|STRIPE_WEBHOOK_SECRET|RESEND_API_KEY|NAS_PASS|NAS_SSH_PASS)\b/gi,
-      "[masqué]"
+      "[masqué]",
     )
     .replace(/\bwhsec_[A-Za-z0-9]+/gi, "[masqué]")
-    .replace(
-      /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi,
-      "[id]"
-    )
+    .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, "[id]")
     .replace(/at\s+\S+\s+\(\S+:\d+:\d+\)/gi, "")
     .replace(/\s+/g, " ")
     .trim();
@@ -38,10 +35,7 @@ export function formatPublicApiError(opts: {
   requestId?: string | null;
   fallback?: string;
 }): string {
-  const base = sanitizeToastMessage(
-    opts.error || "",
-    opts.fallback || "Une erreur est survenue."
-  );
+  const base = sanitizeToastMessage(opts.error || "", opts.fallback || "Une erreur est survenue.");
   if (!opts.requestId?.trim()) return base;
   const short = opts.requestId.replace(/[^a-zA-Z0-9]/g, "").slice(-8);
   if (!short) return base;
@@ -68,11 +62,7 @@ export const notify = {
     return toast.error(sanitizeToastMessage(message));
   },
   /** Erreur API : message FR + réf. support optionnelle. */
-  apiError(opts: {
-    error?: string | null;
-    requestId?: string | null;
-    fallback?: string;
-  }) {
+  apiError(opts: { error?: string | null; requestId?: string | null; fallback?: string }) {
     return toast.error(formatPublicApiError(opts));
   },
   /**
@@ -84,10 +74,8 @@ export const notify = {
       loading: sanitizeToastMessage(messages.loading, "Chargement…"),
       success: (data) =>
         sanitizeToastMessage(
-          typeof messages.success === "function"
-            ? messages.success(data)
-            : messages.success,
-          "Terminé."
+          typeof messages.success === "function" ? messages.success(data) : messages.success,
+          "Terminé.",
         ),
       error: (err) => {
         if (typeof messages.error === "function") {

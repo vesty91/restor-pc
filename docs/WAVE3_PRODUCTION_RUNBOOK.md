@@ -188,13 +188,13 @@ npx tsx scripts/backfill-order-user-ids.ts --apply
 
 ### Cas particuliers
 
-| Cas | Comportement |
-|---|---|
-| Email sans utilisateur Auth | `missing` — pas d’update |
-| Plusieurs utilisateurs pour un email | `ambiguous` — pas d’update |
-| Email changé côté Auth | peut rester `missing` — correction manuelle |
-| Commande déjà associée | non sélectionnée (`user_id is null`) |
-| Utilisateur Auth supprimé | `missing` — conserver l’historique |
+| Cas                                  | Comportement                                |
+| ------------------------------------ | ------------------------------------------- |
+| Email sans utilisateur Auth          | `missing` — pas d’update                    |
+| Plusieurs utilisateurs pour un email | `ambiguous` — pas d’update                  |
+| Email changé côté Auth               | peut rester `missing` — correction manuelle |
+| Commande déjà associée               | non sélectionnée (`user_id is null`)        |
+| Utilisateur Auth supprimé            | `missing` — conserver l’historique          |
 
 Après apply, relancer le dry-run : `scanned` devrait tendre vers 0 (hors cas manuels).
 
@@ -202,13 +202,13 @@ Après apply, relancer le dry-run : `scanned` devrait tendre vers 0 (hors cas ma
 
 ## Retour arrière
 
-| Élément | Réversible ? | Notes |
-|---|---|---|
-| Backfill `user_id` | Partiel | Possible de remettre `null` au cas par cas ; pas de script automatique |
-| Nouvelles colonnes | Non trivial | `drop column` = perte de données d’audit |
-| Index unique | Oui si aucun conflit | `drop index` possible, risque de réintroduire des doublons |
-| RPC `claim_*` | Oui | Recréer l’ancienne fonction depuis une migration antérieure |
-| RLS | Attention | Restaurer la policy précédente depuis git / backup |
+| Élément            | Réversible ?         | Notes                                                                  |
+| ------------------ | -------------------- | ---------------------------------------------------------------------- |
+| Backfill `user_id` | Partiel              | Possible de remettre `null` au cas par cas ; pas de script automatique |
+| Nouvelles colonnes | Non trivial          | `drop column` = perte de données d’audit                               |
+| Index unique       | Oui si aucun conflit | `drop index` possible, risque de réintroduire des doublons             |
+| RPC `claim_*`      | Oui                  | Recréer l’ancienne fonction depuis une migration antérieure            |
+| RLS                | Attention            | Restaurer la policy précédente depuis git / backup                     |
 
 **Ne pas** prétendre qu’une suppression de colonne ou de contrainte est sans risque.
 

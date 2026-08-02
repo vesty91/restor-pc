@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  type KeyboardEvent,
-} from "react";
+import { useState, useEffect, useRef, useCallback, type KeyboardEvent } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -78,7 +72,7 @@ export function Compare({
       applyPercent(percent);
       setSliderXPercent(percentRef.current);
     },
-    [applyPercent]
+    [applyPercent],
   );
 
   useEffect(() => {
@@ -103,7 +97,7 @@ export function Compare({
       void clientX;
       if (slideMode === "drag") setIsDragging(true);
     },
-    [slideMode]
+    [slideMode],
   );
 
   const handleEnd = useCallback(() => {
@@ -120,7 +114,7 @@ export function Compare({
         applyPercent((x / rect.width) * 100);
       }
     },
-    [slideMode, isDragging, applyPercent]
+    [slideMode, isDragging, applyPercent],
   );
 
   const onKeyDown = useCallback(
@@ -140,7 +134,7 @@ export function Compare({
         commitPercent(100);
       }
     },
-    [commitPercent]
+    [commitPercent],
   );
 
   return (
@@ -154,7 +148,7 @@ export function Compare({
       aria-label="Comparaison avant / après"
       className={cn(
         "relative w-full overflow-hidden rounded-2xl border border-line outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-surface",
-        className
+        className,
       )}
       style={{
         cursor: slideMode === "drag" ? "grab" : "col-resize",
@@ -214,7 +208,7 @@ export function Compare({
             ref={firstClipRef}
             className={cn(
               "absolute inset-0 z-20 h-full w-full shrink-0 overflow-hidden rounded-2xl select-none",
-              firstImageClassName
+              firstImageClassName,
             )}
             style={{ clipPath: `inset(0 ${100 - sliderXPercent}% 0 0)` }}
           >
@@ -227,7 +221,7 @@ export function Compare({
               unoptimized
               className={cn(
                 "absolute inset-0 z-20 h-full w-full shrink-0 rounded-2xl object-cover select-none",
-                firstImageClassName
+                firstImageClassName,
               )}
               draggable={false}
             />
@@ -239,7 +233,7 @@ export function Compare({
         <Image
           className={cn(
             "absolute top-0 left-0 z-[19] h-full w-full rounded-2xl object-cover select-none",
-            secondImageClassname
+            secondImageClassname,
           )}
           alt={secondAlt}
           src={secondImage}

@@ -1,4 +1,10 @@
-import { ATELIER_COOKIE, atelierCookieOptions, createAtelierSessionToken, logAtelierAuth, verifyAtelierPassword } from "@/lib/atelier-auth";
+import {
+  ATELIER_COOKIE,
+  atelierCookieOptions,
+  createAtelierSessionToken,
+  logAtelierAuth,
+  verifyAtelierPassword,
+} from "@/lib/atelier-auth";
 import { createRequestId, jsonError } from "@/lib/errors";
 import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { sendAlert } from "@/lib/logging/alerts";
@@ -22,22 +28,12 @@ export async function POST(request: Request) {
       message: "Trop de tentatives de connexion atelier",
       fields: { requestId },
     });
-    return jsonError(
-      "RATE_LIMITED",
-      "Trop de tentatives. Reessayez plus tard.",
-      429,
-      requestId
-    );
+    return jsonError("RATE_LIMITED", "Trop de tentatives. Reessayez plus tard.", 429, requestId);
   }
 
   const expected = process.env.ATELIER_SECRET?.trim();
   if (!expected) {
-    return jsonError(
-      "ATELIER_NOT_CONFIGURED",
-      "Espace atelier non configure.",
-      503,
-      requestId
-    );
+    return jsonError("ATELIER_NOT_CONFIGURED", "Espace atelier non configure.", 503, requestId);
   }
 
   let json: unknown;
@@ -53,7 +49,7 @@ export async function POST(request: Request) {
       "INVALID_BODY",
       publicZodMessage(parsed.error, "Requete invalide."),
       400,
-      requestId
+      requestId,
     );
   }
 
@@ -71,7 +67,7 @@ export async function POST(request: Request) {
       "ATELIER_NOT_CONFIGURED",
       "Espace atelier non configure (session).",
       503,
-      requestId
+      requestId,
     );
   }
   const res = NextResponse.json({ ok: true, requestId });

@@ -32,22 +32,13 @@ export function ContactHero() {
 
       <div className="relative">
         <div className="flex flex-wrap gap-2">
-          <Badge
-            variant="info"
-            className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
-          >
+          <Badge variant="info" className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]">
             Contact
           </Badge>
-          <Badge
-            variant="outline"
-            className="border-white/20 bg-white/5 text-white/80"
-          >
+          <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
             {siteConfig.city}
           </Badge>
-          <Badge
-            variant="outline"
-            className="border-white/20 bg-white/5 text-white/80"
-          >
+          <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
             {siteConfig.responseTime}
           </Badge>
         </div>
@@ -56,8 +47,8 @@ export function ContactHero() {
           <span className="text-[#4ba3ff]"> ou de votre projet</span>
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/65 md:text-lg">
-          Atelier à Yerres · devis clair · pas de jargon inutile. Formulaire,
-          appel ou WhatsApp — on vous répond rapidement.
+          Atelier à Yerres · devis clair · pas de jargon inutile. Formulaire, appel ou WhatsApp — on
+          vous répond rapidement.
         </p>
         <div className="mt-6">
           <OpenStatusBadge tone="dark" />

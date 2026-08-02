@@ -1,34 +1,14 @@
 import { ASSEMBLY_FEE } from "@/lib/data/pricing";
 
-export type UsageId =
-  | "office"
-  | "gaming"
-  | "creation"
-  | "streaming"
-  | "pro"
-  | "polyvalent";
+export type UsageId = "office" | "gaming" | "creation" | "streaming" | "pro" | "polyvalent";
 
 export type BudgetId = "eco" | "equilibre" | "performance" | "ultime";
 
 export type PrefId =
-  | "quiet"
-  | "rgb"
-  | "upgrade"
-  | "compact"
-  | "amd"
-  | "intel"
-  | "nvidia"
-  | "storage";
+  "quiet" | "rgb" | "upgrade" | "compact" | "amd" | "intel" | "nvidia" | "storage";
 
 export type ComponentCategory =
-  | "cpu"
-  | "gpu"
-  | "ram"
-  | "storage"
-  | "motherboard"
-  | "psu"
-  | "case"
-  | "cooling";
+  "cpu" | "gpu" | "ram" | "storage" | "motherboard" | "psu" | "case" | "cooling";
 
 export type ComponentOption = {
   id: string;
@@ -140,54 +120,394 @@ export const preferences: {
 
 export const catalog: ComponentOption[] = [
   // CPU
-  { id: "cpu-r5-7600", category: "cpu", name: "Ryzen 5 7600", brand: "AMD", price: 199, score: 78, power: 65, tags: ["amd", "gaming", "polyvalent", "equilibre"], note: "Excellent rapport perf/prix, idéal gaming & polyvalent." },
-  { id: "cpu-r7-7700", category: "cpu", name: "Ryzen 7 7700", brand: "AMD", price: 299, score: 88, power: 65, tags: ["amd", "creation", "streaming", "pro", "performance"], note: "8 cœurs : parfait création, streaming et multitâche." },
-  { id: "cpu-r9-7900", category: "cpu", name: "Ryzen 9 7900", brand: "AMD", price: 389, score: 95, power: 65, tags: ["amd", "creation", "pro", "ultime"], note: "Puissance serveur pour exports et calculs lourds." },
-  { id: "cpu-i5-14400f", category: "cpu", name: "Core i5-14400F", brand: "Intel", price: 179, score: 74, power: 65, tags: ["intel", "office", "gaming", "eco"], note: "Solide en bureautique et gaming entrée/milieu de gamme." },
-  { id: "cpu-i7-14700f", category: "cpu", name: "Core i7-14700F", brand: "Intel", price: 349, score: 90, power: 65, tags: ["intel", "creation", "streaming", "performance"], note: "Très fort en multitâche et création grâce aux E-cores." },
-  { id: "cpu-r5-5600", category: "cpu", name: "Ryzen 5 5600", brand: "AMD", price: 119, score: 62, power: 65, tags: ["amd", "office", "eco", "polyvalent"], note: "Économique et largement suffisant en bureautique." },
+  {
+    id: "cpu-r5-7600",
+    category: "cpu",
+    name: "Ryzen 5 7600",
+    brand: "AMD",
+    price: 199,
+    score: 78,
+    power: 65,
+    tags: ["amd", "gaming", "polyvalent", "equilibre"],
+    note: "Excellent rapport perf/prix, idéal gaming & polyvalent.",
+  },
+  {
+    id: "cpu-r7-7700",
+    category: "cpu",
+    name: "Ryzen 7 7700",
+    brand: "AMD",
+    price: 299,
+    score: 88,
+    power: 65,
+    tags: ["amd", "creation", "streaming", "pro", "performance"],
+    note: "8 cœurs : parfait création, streaming et multitâche.",
+  },
+  {
+    id: "cpu-r9-7900",
+    category: "cpu",
+    name: "Ryzen 9 7900",
+    brand: "AMD",
+    price: 389,
+    score: 95,
+    power: 65,
+    tags: ["amd", "creation", "pro", "ultime"],
+    note: "Puissance serveur pour exports et calculs lourds.",
+  },
+  {
+    id: "cpu-i5-14400f",
+    category: "cpu",
+    name: "Core i5-14400F",
+    brand: "Intel",
+    price: 179,
+    score: 74,
+    power: 65,
+    tags: ["intel", "office", "gaming", "eco"],
+    note: "Solide en bureautique et gaming entrée/milieu de gamme.",
+  },
+  {
+    id: "cpu-i7-14700f",
+    category: "cpu",
+    name: "Core i7-14700F",
+    brand: "Intel",
+    price: 349,
+    score: 90,
+    power: 65,
+    tags: ["intel", "creation", "streaming", "performance"],
+    note: "Très fort en multitâche et création grâce aux E-cores.",
+  },
+  {
+    id: "cpu-r5-5600",
+    category: "cpu",
+    name: "Ryzen 5 5600",
+    brand: "AMD",
+    price: 119,
+    score: 62,
+    power: 65,
+    tags: ["amd", "office", "eco", "polyvalent"],
+    note: "Économique et largement suffisant en bureautique.",
+  },
 
   // GPU
-  { id: "gpu-none", category: "gpu", name: "Graphiques intégrés", brand: "iGPU", price: 0, score: 25, power: 0, tags: ["office", "pro", "eco", "quiet"], note: "Suffisant pour bureautique et navigation. Pas de jeux lourds." },
-  { id: "gpu-4060", category: "gpu", name: "GeForce RTX 4060 8 Go", brand: "NVIDIA", price: 299, score: 72, power: 115, tags: ["nvidia", "gaming", "equilibre", "streaming"], note: "1080p/1440p fluide, DLSS et encodeur excellent." },
-  { id: "gpu-4070s", category: "gpu", name: "GeForce RTX 4070 Super", brand: "NVIDIA", price: 599, score: 88, power: 220, tags: ["nvidia", "gaming", "creation", "performance", "streaming"], note: "Sweet spot 1440p haut niveau et création GPU." },
-  { id: "gpu-4080s", category: "gpu", name: "GeForce RTX 4080 Super", brand: "NVIDIA", price: 1049, score: 96, power: 320, tags: ["nvidia", "gaming", "creation", "ultime", "streaming"], note: "4K / création lourde sans compromis." },
-  { id: "gpu-7800xt", category: "gpu", name: "Radeon RX 7800 XT", brand: "AMD", price: 479, score: 86, power: 263, tags: ["amd", "gaming", "performance"], note: "Excellent rapport VRAM / prix en 1440p." },
-  { id: "gpu-7600", category: "gpu", name: "Radeon RX 7600", brand: "AMD", price: 269, score: 68, power: 165, tags: ["amd", "gaming", "equilibre", "eco"], note: "Bon choix gaming 1080p ultra / 1440p medium." },
+  {
+    id: "gpu-none",
+    category: "gpu",
+    name: "Graphiques intégrés",
+    brand: "iGPU",
+    price: 0,
+    score: 25,
+    power: 0,
+    tags: ["office", "pro", "eco", "quiet"],
+    note: "Suffisant pour bureautique et navigation. Pas de jeux lourds.",
+  },
+  {
+    id: "gpu-4060",
+    category: "gpu",
+    name: "GeForce RTX 4060 8 Go",
+    brand: "NVIDIA",
+    price: 299,
+    score: 72,
+    power: 115,
+    tags: ["nvidia", "gaming", "equilibre", "streaming"],
+    note: "1080p/1440p fluide, DLSS et encodeur excellent.",
+  },
+  {
+    id: "gpu-4070s",
+    category: "gpu",
+    name: "GeForce RTX 4070 Super",
+    brand: "NVIDIA",
+    price: 599,
+    score: 88,
+    power: 220,
+    tags: ["nvidia", "gaming", "creation", "performance", "streaming"],
+    note: "Sweet spot 1440p haut niveau et création GPU.",
+  },
+  {
+    id: "gpu-4080s",
+    category: "gpu",
+    name: "GeForce RTX 4080 Super",
+    brand: "NVIDIA",
+    price: 1049,
+    score: 96,
+    power: 320,
+    tags: ["nvidia", "gaming", "creation", "ultime", "streaming"],
+    note: "4K / création lourde sans compromis.",
+  },
+  {
+    id: "gpu-7800xt",
+    category: "gpu",
+    name: "Radeon RX 7800 XT",
+    brand: "AMD",
+    price: 479,
+    score: 86,
+    power: 263,
+    tags: ["amd", "gaming", "performance"],
+    note: "Excellent rapport VRAM / prix en 1440p.",
+  },
+  {
+    id: "gpu-7600",
+    category: "gpu",
+    name: "Radeon RX 7600",
+    brand: "AMD",
+    price: 269,
+    score: 68,
+    power: 165,
+    tags: ["amd", "gaming", "equilibre", "eco"],
+    note: "Bon choix gaming 1080p ultra / 1440p medium.",
+  },
 
   // RAM
-  { id: "ram-16", category: "ram", name: "16 Go DDR5 6000", brand: "Corsair", price: 79, score: 65, power: 5, tags: ["office", "gaming", "eco", "equilibre"], note: "Base saine pour la plupart des usages 2026." },
-  { id: "ram-32", category: "ram", name: "32 Go DDR5 6000", brand: "Kingston", price: 129, score: 85, power: 8, tags: ["gaming", "creation", "streaming", "pro", "polyvalent", "performance"], note: "Recommandé création, streaming et multitâche." },
-  { id: "ram-64", category: "ram", name: "64 Go DDR5 6000", brand: "G.Skill", price: 239, score: 95, power: 12, tags: ["creation", "pro", "ultime"], note: "Indispensable 3D lourde, timelines 4K, VMs." },
+  {
+    id: "ram-16",
+    category: "ram",
+    name: "16 Go DDR5 6000",
+    brand: "Corsair",
+    price: 79,
+    score: 65,
+    power: 5,
+    tags: ["office", "gaming", "eco", "equilibre"],
+    note: "Base saine pour la plupart des usages 2026.",
+  },
+  {
+    id: "ram-32",
+    category: "ram",
+    name: "32 Go DDR5 6000",
+    brand: "Kingston",
+    price: 129,
+    score: 85,
+    power: 8,
+    tags: ["gaming", "creation", "streaming", "pro", "polyvalent", "performance"],
+    note: "Recommandé création, streaming et multitâche.",
+  },
+  {
+    id: "ram-64",
+    category: "ram",
+    name: "64 Go DDR5 6000",
+    brand: "G.Skill",
+    price: 239,
+    score: 95,
+    power: 12,
+    tags: ["creation", "pro", "ultime"],
+    note: "Indispensable 3D lourde, timelines 4K, VMs.",
+  },
 
   // Storage
-  { id: "ssd-1to", category: "storage", name: "SSD NVMe 1 To Gen4", brand: "Samsung", price: 89, score: 70, power: 5, tags: ["office", "gaming", "eco", "equilibre"], note: "Rapide et suffisant pour OS + jeux principaux." },
-  { id: "ssd-2to", category: "storage", name: "SSD NVMe 2 To Gen4", brand: "WD", price: 149, score: 85, power: 6, tags: ["gaming", "creation", "streaming", "performance", "storage"], note: "Confortable pour bibliothèque jeux / projets." },
-  { id: "ssd-4to", category: "storage", name: "SSD NVMe 4 To Gen4", brand: "Crucial", price: 279, score: 95, power: 8, tags: ["creation", "pro", "ultime", "storage"], note: "Stockage pro pour médias lourds sans externe." },
+  {
+    id: "ssd-1to",
+    category: "storage",
+    name: "SSD NVMe 1 To Gen4",
+    brand: "Samsung",
+    price: 89,
+    score: 70,
+    power: 5,
+    tags: ["office", "gaming", "eco", "equilibre"],
+    note: "Rapide et suffisant pour OS + jeux principaux.",
+  },
+  {
+    id: "ssd-2to",
+    category: "storage",
+    name: "SSD NVMe 2 To Gen4",
+    brand: "WD",
+    price: 149,
+    score: 85,
+    power: 6,
+    tags: ["gaming", "creation", "streaming", "performance", "storage"],
+    note: "Confortable pour bibliothèque jeux / projets.",
+  },
+  {
+    id: "ssd-4to",
+    category: "storage",
+    name: "SSD NVMe 4 To Gen4",
+    brand: "Crucial",
+    price: 279,
+    score: 95,
+    power: 8,
+    tags: ["creation", "pro", "ultime", "storage"],
+    note: "Stockage pro pour médias lourds sans externe.",
+  },
 
   // Motherboard
-  { id: "mb-b650", category: "motherboard", name: "B650 ATX Wi-Fi", brand: "MSI", price: 169, score: 80, power: 40, tags: ["amd", "equilibre", "performance", "upgrade"], note: "VRM solides, PCIe 5.0, bonne évolutivité." },
-  { id: "mb-b760", category: "motherboard", name: "B760 ATX Wi-Fi", brand: "Gigabyte", price: 159, score: 78, power: 40, tags: ["intel", "equilibre", "performance", "upgrade"], note: "Plateforme Intel fiable avec Wi-Fi 6E." },
-  { id: "mb-a620", category: "motherboard", name: "A620 mATX", brand: "ASRock", price: 109, score: 60, power: 35, tags: ["amd", "eco", "office", "compact"], note: "Compact et économique pour configs essentielles." },
-  { id: "mb-x670", category: "motherboard", name: "X670E ATX", brand: "ASUS", price: 289, score: 92, power: 50, tags: ["amd", "ultime", "creation", "upgrade"], note: "Haut de gamme : connectique et VRM premium." },
+  {
+    id: "mb-b650",
+    category: "motherboard",
+    name: "B650 ATX Wi-Fi",
+    brand: "MSI",
+    price: 169,
+    score: 80,
+    power: 40,
+    tags: ["amd", "equilibre", "performance", "upgrade"],
+    note: "VRM solides, PCIe 5.0, bonne évolutivité.",
+  },
+  {
+    id: "mb-b760",
+    category: "motherboard",
+    name: "B760 ATX Wi-Fi",
+    brand: "Gigabyte",
+    price: 159,
+    score: 78,
+    power: 40,
+    tags: ["intel", "equilibre", "performance", "upgrade"],
+    note: "Plateforme Intel fiable avec Wi-Fi 6E.",
+  },
+  {
+    id: "mb-a620",
+    category: "motherboard",
+    name: "A620 mATX",
+    brand: "ASRock",
+    price: 109,
+    score: 60,
+    power: 35,
+    tags: ["amd", "eco", "office", "compact"],
+    note: "Compact et économique pour configs essentielles.",
+  },
+  {
+    id: "mb-x670",
+    category: "motherboard",
+    name: "X670E ATX",
+    brand: "ASUS",
+    price: 289,
+    score: 92,
+    power: 50,
+    tags: ["amd", "ultime", "creation", "upgrade"],
+    note: "Haut de gamme : connectique et VRM premium.",
+  },
 
   // PSU
-  { id: "psu-650", category: "psu", name: "650W 80+ Gold", brand: "be quiet!", price: 99, score: 75, power: 0, tags: ["eco", "equilibre", "quiet"], note: "Silencieuse et largement dimensionnée milieu de gamme." },
-  { id: "psu-750", category: "psu", name: "750W 80+ Gold", brand: "Seasonic", price: 129, score: 85, power: 0, tags: ["performance", "gaming", "upgrade"], note: "Marge saine pour GPU milieu/haut de gamme." },
-  { id: "psu-850", category: "psu", name: "850W 80+ Platinum", brand: "Corsair", price: 169, score: 92, power: 0, tags: ["ultime", "creation", "performance"], note: "Tête haute pour configs gourmandes et upgrades." },
-  { id: "psu-550", category: "psu", name: "550W 80+ Bronze", brand: "Cooler Master", price: 69, score: 60, power: 0, tags: ["eco", "office"], note: "Suffisant pour configs sans gros GPU." },
+  {
+    id: "psu-650",
+    category: "psu",
+    name: "650W 80+ Gold",
+    brand: "be quiet!",
+    price: 99,
+    score: 75,
+    power: 0,
+    tags: ["eco", "equilibre", "quiet"],
+    note: "Silencieuse et largement dimensionnée milieu de gamme.",
+  },
+  {
+    id: "psu-750",
+    category: "psu",
+    name: "750W 80+ Gold",
+    brand: "Seasonic",
+    price: 129,
+    score: 85,
+    power: 0,
+    tags: ["performance", "gaming", "upgrade"],
+    note: "Marge saine pour GPU milieu/haut de gamme.",
+  },
+  {
+    id: "psu-850",
+    category: "psu",
+    name: "850W 80+ Platinum",
+    brand: "Corsair",
+    price: 169,
+    score: 92,
+    power: 0,
+    tags: ["ultime", "creation", "performance"],
+    note: "Tête haute pour configs gourmandes et upgrades.",
+  },
+  {
+    id: "psu-550",
+    category: "psu",
+    name: "550W 80+ Bronze",
+    brand: "Cooler Master",
+    price: 69,
+    score: 60,
+    power: 0,
+    tags: ["eco", "office"],
+    note: "Suffisant pour configs sans gros GPU.",
+  },
 
   // Case
-  { id: "case-mesh", category: "case", name: "Boîtier Mesh ATX", brand: "Fractal", price: 99, score: 80, power: 0, tags: ["equilibre", "performance", "gaming", "quiet"], note: "Airflow excellent, look sobre et premium." },
-  { id: "case-rgb", category: "case", name: "Boîtier ATX RGB", brand: "Lian Li", price: 129, score: 82, power: 0, tags: ["rgb", "gaming", "performance"], note: "Esthétique soignée, verre trempé, bon airflow." },
-  { id: "case-compact", category: "case", name: "Boîtier mATX compact", brand: "Cooler Master", price: 79, score: 70, power: 0, tags: ["compact", "office", "pro", "eco"], note: "Format bureau discret, idéal espace réduit." },
-  { id: "case-premium", category: "case", name: "Boîtier premium silencieux", brand: "be quiet!", price: 149, score: 90, power: 0, tags: ["quiet", "pro", "ultime", "creation"], note: "Isolation phonique et finitions haut de gamme." },
+  {
+    id: "case-mesh",
+    category: "case",
+    name: "Boîtier Mesh ATX",
+    brand: "Fractal",
+    price: 99,
+    score: 80,
+    power: 0,
+    tags: ["equilibre", "performance", "gaming", "quiet"],
+    note: "Airflow excellent, look sobre et premium.",
+  },
+  {
+    id: "case-rgb",
+    category: "case",
+    name: "Boîtier ATX RGB",
+    brand: "Lian Li",
+    price: 129,
+    score: 82,
+    power: 0,
+    tags: ["rgb", "gaming", "performance"],
+    note: "Esthétique soignée, verre trempé, bon airflow.",
+  },
+  {
+    id: "case-compact",
+    category: "case",
+    name: "Boîtier mATX compact",
+    brand: "Cooler Master",
+    price: 79,
+    score: 70,
+    power: 0,
+    tags: ["compact", "office", "pro", "eco"],
+    note: "Format bureau discret, idéal espace réduit.",
+  },
+  {
+    id: "case-premium",
+    category: "case",
+    name: "Boîtier premium silencieux",
+    brand: "be quiet!",
+    price: 149,
+    score: 90,
+    power: 0,
+    tags: ["quiet", "pro", "ultime", "creation"],
+    note: "Isolation phonique et finitions haut de gamme.",
+  },
 
   // Cooling
-  { id: "cool-air", category: "cooling", name: "Ventirad tour dual tower", brand: "Noctua", price: 89, score: 85, power: 0, tags: ["quiet", "equilibre", "performance", "pro"], note: "Silence + efficacité, sans risque de fuite." },
-  { id: "cool-aio240", category: "cooling", name: "AIO 240 mm", brand: "Arctic", price: 99, score: 82, power: 0, tags: ["gaming", "rgb", "performance"], note: "Bon compromis esthétique / thermiques." },
-  { id: "cool-stock", category: "cooling", name: "Ventirad stock / basique", brand: "OEM", price: 25, score: 50, power: 0, tags: ["eco", "office"], note: "OK en usage léger, limité sous charge." },
-  { id: "cool-aio360", category: "cooling", name: "AIO 360 mm", brand: "NZXT", price: 149, score: 92, power: 0, tags: ["ultime", "creation", "rgb"], note: "Marge thermique max pour CPU haut de gamme." },
+  {
+    id: "cool-air",
+    category: "cooling",
+    name: "Ventirad tour dual tower",
+    brand: "Noctua",
+    price: 89,
+    score: 85,
+    power: 0,
+    tags: ["quiet", "equilibre", "performance", "pro"],
+    note: "Silence + efficacité, sans risque de fuite.",
+  },
+  {
+    id: "cool-aio240",
+    category: "cooling",
+    name: "AIO 240 mm",
+    brand: "Arctic",
+    price: 99,
+    score: 82,
+    power: 0,
+    tags: ["gaming", "rgb", "performance"],
+    note: "Bon compromis esthétique / thermiques.",
+  },
+  {
+    id: "cool-stock",
+    category: "cooling",
+    name: "Ventirad stock / basique",
+    brand: "OEM",
+    price: 25,
+    score: 50,
+    power: 0,
+    tags: ["eco", "office"],
+    note: "OK en usage léger, limité sous charge.",
+  },
+  {
+    id: "cool-aio360",
+    category: "cooling",
+    name: "AIO 360 mm",
+    brand: "NZXT",
+    price: 149,
+    score: 92,
+    power: 0,
+    tags: ["ultime", "creation", "rgb"],
+    note: "Marge thermique max pour CPU haut de gamme.",
+  },
 ];
 
 export type BuildSelection = Record<ComponentCategory, ComponentOption>;
@@ -220,7 +540,7 @@ function scoreCandidate(
   usage: UsageId,
   budget: BudgetId,
   prefs: PrefId[],
-  targetMid: number
+  targetMid: number,
 ): number {
   let s = item.score;
 
@@ -250,7 +570,7 @@ function pickBest(
   prefs: PrefId[],
   budgetMax: number,
   remaining: number,
-  platform: "amd" | "intel" | null
+  platform: "amd" | "intel" | null,
 ): ComponentOption {
   const pool = catalog.filter((c) => {
     if (c.category !== category) return false;
@@ -269,7 +589,7 @@ function pickBest(
   const ranked = [...pool].sort(
     (a, b) =>
       scoreCandidate(b, usage, budget, prefs, budgetMax) -
-      scoreCandidate(a, usage, budget, prefs, budgetMax)
+      scoreCandidate(a, usage, budget, prefs, budgetMax),
   );
 
   return ranked[0] ?? catalog.find((c) => c.category === category)!;
@@ -301,17 +621,16 @@ export function generateBuild(
   usage: UsageId,
   budgetId: BudgetId,
   prefs: PrefId[],
-  overrides?: Partial<Record<ComponentCategory, string>>
+  overrides?: Partial<Record<ComponentCategory, string>>,
 ): BuildResult {
   const budget = budgets.find((b) => b.id === budgetId)!;
   const mid = (budget.min + budget.max) / 2;
   let remaining = budget.max - ASSEMBLY_FEE; // leave room for assembly
 
   // CPU first to determine platform
-  const cpu =
-    overrides?.cpu
-      ? catalog.find((c) => c.id === overrides.cpu)!
-      : pickBest("cpu", usage, budgetId, prefs, mid, remaining, null);
+  const cpu = overrides?.cpu
+    ? catalog.find((c) => c.id === overrides.cpu)!
+    : pickBest("cpu", usage, budgetId, prefs, mid, remaining, null);
 
   const platform: "amd" | "intel" = cpu.brand === "Intel" ? "intel" : "amd";
   remaining -= cpu.price;
@@ -402,15 +721,19 @@ export function generateBuild(
       gpuScore * (usage === "office" ? 0.1 : 0.35) +
       ramScore * 0.2 +
       storageScore * 0.15) /
-      (usage === "office" ? 0.75 : 1)
+      (usage === "office" ? 0.75 : 1),
   );
 
   const tips: string[] = [];
   if (gpu.id === "gpu-none") {
-    tips.push("Sans carte graphique dédiée : parfait en bureautique, limité pour le jeu et la vidéo GPU.");
+    tips.push(
+      "Sans carte graphique dédiée : parfait en bureautique, limité pour le jeu et la vidéo GPU.",
+    );
   }
   if (balanceScore < 70) {
-    tips.push("L’équilibre CPU/GPU peut être amélioré : un composant tire plus fort que les autres.");
+    tips.push(
+      "L’équilibre CPU/GPU peut être amélioré : un composant tire plus fort que les autres.",
+    );
   }
   if (prefs.includes("upgrade")) {
     tips.push("Carte mère et alimentation choisies avec une marge pour upgrader plus tard.");
@@ -418,12 +741,16 @@ export function generateBuild(
   if (grandTotal > budget.max) {
     tips.push("Config légèrement au-dessus du budget max : on pourra ajuster GPU ou stockage.");
   } else if (grandTotal < budget.min) {
-    tips.push("Budget non entièrement consommé : on peut renforcer le GPU ou passer à 32 Go de RAM.");
+    tips.push(
+      "Budget non entièrement consommé : on peut renforcer le GPU ou passer à 32 Go de RAM.",
+    );
   }
   if (prefs.includes("quiet")) {
     tips.push("Priorité silence : ventirad / boîtier orientés acoustique.");
   }
-  tips.push("Tous les composants sont vérifiés pour la compatibilité socket / chipset / alimentation.");
+  tips.push(
+    "Tous les composants sont vérifiés pour la compatibilité socket / chipset / alimentation.",
+  );
 
   const usageLabel = usages.find((u) => u.id === usage)!.label;
   const summary = `Configuration ${usageLabel.toLowerCase()} — budget ${budget.label.toLowerCase()} — estimation ${grandTotal} € TTC (pièces + montage).`;

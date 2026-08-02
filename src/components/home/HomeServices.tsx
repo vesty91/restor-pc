@@ -40,8 +40,7 @@ const SERVICE_CARDS: ServiceCard[] = [
   {
     slug: "sauvegarde-securite",
     titleOverride: "NAS & sauvegarde",
-    excerptOverride:
-      "Sauvegardes fiables, NAS et stratégie 3-2-1 adaptée à votre usage.",
+    excerptOverride: "Sauvegardes fiables, NAS et stratégie 3-2-1 adaptée à votre usage.",
     badge: "NAS",
   },
   {
@@ -99,9 +98,7 @@ export function HomeServices() {
               }
               meta={
                 <span className="inline-flex w-full items-center justify-between gap-2">
-                  <span className="text-ink">
-                    À partir de {formatPrice(service.priceFrom)}
-                  </span>
+                  <span className="text-ink">À partir de {formatPrice(service.priceFrom)}</span>
                   <ArrowUpRight
                     className="h-4 w-4 text-ink-muted transition-transform duration-300 group-hover/bento:translate-x-1 group-hover/bento:-translate-y-1 group-hover/bento:scale-110 group-hover/bento:text-teal motion-reduce:transition-none"
                     aria-hidden

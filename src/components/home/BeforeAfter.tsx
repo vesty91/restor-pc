@@ -4,17 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { ArrowRight } from "lucide-react";
 
-const Compare = dynamic(
-  () => import("@/components/aceternity/compare").then((m) => m.Compare),
-  {
-    loading: () => (
-      <div
-        className="h-48 w-full animate-pulse rounded-2xl border border-line bg-surface"
-        aria-hidden
-      />
-    ),
-  }
-);
+const Compare = dynamic(() => import("@/components/aceternity/compare").then((m) => m.Compare), {
+  loading: () => (
+    <div
+      className="h-48 w-full animate-pulse rounded-2xl border border-line bg-surface"
+      aria-hidden
+    />
+  ),
+});
 
 const cases = [
   {
@@ -59,10 +56,7 @@ function ExampleCompareVisual({ kind }: { kind: (typeof cases)[number]["kind"] }
         : "from-[#0a2748] to-[#163a58]";
 
   return (
-    <div
-      className="relative mb-5 h-28 overflow-hidden rounded-xl border border-line"
-      aria-hidden
-    >
+    <div className="relative mb-5 h-28 overflow-hidden rounded-xl border border-line" aria-hidden>
       <div className={`absolute inset-0 bg-gradient-to-br ${beforeTone}`} />
       <div className={`absolute inset-y-0 right-0 w-1/2 bg-gradient-to-br ${afterTone}`} />
       <div className="absolute inset-y-0 left-1/2 w-px bg-teal/70" />
@@ -143,9 +137,7 @@ export function BeforeAfter() {
                   <p className="mt-1 text-sm leading-relaxed text-ink-soft">{item.after}</p>
                 </div>
               </div>
-              <p className="mt-5 font-display text-xl tracking-tight text-ink">
-                {item.metric}
-              </p>
+              <p className="mt-5 font-display text-xl tracking-tight text-ink">{item.metric}</p>
             </article>
           </Reveal>
         ))}

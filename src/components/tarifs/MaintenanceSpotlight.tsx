@@ -16,16 +16,10 @@ export function MaintenanceSpotlight() {
       <div className="relative grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div>
           <div className="flex flex-wrap gap-2">
-            <Badge
-              variant="info"
-              className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
-            >
+            <Badge variant="info" className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]">
               Abonnement
             </Badge>
-            <Badge
-              variant="outline"
-              className="border-white/20 bg-white/5 text-white/80"
-            >
+            <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
               Indépendants & TPE
             </Badge>
           </div>
@@ -33,8 +27,8 @@ export function MaintenanceSpotlight() {
             Contrat maintenance — sérénité mensuelle
           </h2>
           <p className="mt-4 max-w-lg leading-relaxed text-white/65">
-            Check-up trimestriel, assistance prioritaire, mises à jour critiques
-            et suivi santé disque. Idéal si une panne n’est pas une option.
+            Check-up trimestriel, assistance prioritaire, mises à jour critiques et suivi santé
+            disque. Idéal si une panne n’est pas une option.
           </p>
           <ul className="mt-5 space-y-2 text-sm text-white/80">
             {[
@@ -54,12 +48,9 @@ export function MaintenanceSpotlight() {
             À partir de
           </Badge>
           <p className="font-display text-5xl tracking-tight">
-            29 €
-            <span className="text-lg text-white/45"> / mois</span>
+            29 €<span className="text-lg text-white/45"> / mois</span>
           </p>
-          <p className="mt-2 text-sm text-white/55">
-            Engagement 3 mois · résiliable ensuite
-          </p>
+          <p className="mt-2 text-sm text-white/55">Engagement 3 mois · résiliable ensuite</p>
           <Button href="/contact?type=maintenance" className="mt-6 w-full" size="lg">
             Demander une offre
           </Button>

@@ -25,19 +25,14 @@ export function OpenStatusBadge({
         tone === "dark"
           ? "bg-white/5 text-white/80"
           : "bg-surface text-ink-soft border border-line",
-        className
+        className,
       )}
     >
       <span
-        className={cn(
-          "relative h-2 w-2 rounded-full",
-          status.open ? "bg-teal" : "bg-ink-muted"
-        )}
+        className={cn("relative h-2 w-2 rounded-full", status.open ? "bg-teal" : "bg-ink-muted")}
         aria-hidden
       >
-        {status.open ? (
-          <span className="pulse-dot absolute inset-0 rounded-full" />
-        ) : null}
+        {status.open ? <span className="pulse-dot absolute inset-0 rounded-full" /> : null}
       </span>
       <span>
         <span className="font-semibold">{status.label}</span>

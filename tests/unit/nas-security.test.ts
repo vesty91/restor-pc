@@ -106,38 +106,36 @@ describe("NAS security — fetchWithTimeout() erreurs", () => {
 
   it("lève une erreur avec message NAS_DSM_HTTP_ERROR_401 sur réponse 401", async () => {
     global.fetch = vi.fn().mockResolvedValue(new Response("", { status: 401 }));
-    await expect(
-      fetchWithTimeout("https://nas.test/api", { method: "POST" })
-    ).rejects.toThrow("NAS_DSM_HTTP_ERROR_401");
+    await expect(fetchWithTimeout("https://nas.test/api", { method: "POST" })).rejects.toThrow(
+      "NAS_DSM_HTTP_ERROR_401",
+    );
   });
 
   it("lève une erreur avec message NAS_DSM_HTTP_ERROR_500 sur réponse 500", async () => {
     global.fetch = vi.fn().mockResolvedValue(new Response("", { status: 500 }));
-    await expect(
-      fetchWithTimeout("https://nas.test/api", { method: "POST" })
-    ).rejects.toThrow("NAS_DSM_HTTP_ERROR_500");
+    await expect(fetchWithTimeout("https://nas.test/api", { method: "POST" })).rejects.toThrow(
+      "NAS_DSM_HTTP_ERROR_500",
+    );
   });
 
   it("lève NAS_DSM_TIMEOUT sur AbortError", async () => {
-    global.fetch = vi.fn().mockRejectedValue(
-      Object.assign(new Error("aborted"), { name: "AbortError" })
+    global.fetch = vi
+      .fn()
+      .mockRejectedValue(Object.assign(new Error("aborted"), { name: "AbortError" }));
+    await expect(fetchWithTimeout("https://nas.test/api", { method: "POST" })).rejects.toThrow(
+      "NAS_DSM_TIMEOUT",
     );
-    await expect(
-      fetchWithTimeout("https://nas.test/api", { method: "POST" })
-    ).rejects.toThrow("NAS_DSM_TIMEOUT");
   });
 
   it("lève NAS_DSM_NETWORK_ERROR sur TypeError réseau", async () => {
     global.fetch = vi.fn().mockRejectedValue(new TypeError("fetch failed"));
-    await expect(
-      fetchWithTimeout("https://nas.test/api", { method: "POST" })
-    ).rejects.toThrow("NAS_DSM_NETWORK_ERROR");
+    await expect(fetchWithTimeout("https://nas.test/api", { method: "POST" })).rejects.toThrow(
+      "NAS_DSM_NETWORK_ERROR",
+    );
   });
 
   it("retourne la réponse sur succès (status 200)", async () => {
-    global.fetch = vi.fn().mockResolvedValue(
-      new Response('{"ok":true}', { status: 200 })
-    );
+    global.fetch = vi.fn().mockResolvedValue(new Response('{"ok":true}', { status: 200 }));
     const res = await fetchWithTimeout("https://nas.test/api", {
       method: "POST",
     });
@@ -154,13 +152,9 @@ describe("NAS security — fetchWithTimeout() erreurs", () => {
             aborted = true;
             reject(Object.assign(new Error("aborted"), { name: "AbortError" }));
           });
-        })
+        }),
     );
-    const promise = fetchWithTimeout(
-      "https://nas.test/api",
-      { method: "POST" },
-      200
-    );
+    const promise = fetchWithTimeout("https://nas.test/api", { method: "POST" }, 200);
     vi.advanceTimersByTime(200);
     await expect(promise).rejects.toThrow("NAS_DSM_TIMEOUT");
     expect(aborted).toBe(true);
@@ -195,10 +189,9 @@ describe("NAS security — createNasOneTimeShare (comportement observable)", () 
     global.fetch = vi.fn().mockImplementation(async (url: string) => {
       calls.push(url);
       if (url.includes("/webapi/auth.cgi") && calls.length === 1) {
-        return new Response(
-          JSON.stringify({ success: true, data: { sid: "fake-sid" } }),
-          { status: 200 }
-        );
+        return new Response(JSON.stringify({ success: true, data: { sid: "fake-sid" } }), {
+          status: 200,
+        });
       }
       if (url.includes("/webapi/entry.cgi")) {
         return new Response(
@@ -206,7 +199,7 @@ describe("NAS security — createNasOneTimeShare (comportement observable)", () 
             success: true,
             data: { links: [{ id: "share-id", url: "/sharing/ABC123" }] },
           }),
-          { status: 200 }
+          { status: 200 },
         );
       }
       // logout appel → échec

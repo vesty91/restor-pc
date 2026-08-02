@@ -15,16 +15,10 @@ export function ContactSidebar() {
         <BorderBeam size={80} duration={9} borderWidth={1.25} />
         <div className="relative">
           <div className="flex flex-wrap gap-2">
-            <Badge
-              variant="outline"
-              className="border-white/20 bg-white/5 text-white/80"
-            >
+            <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
               Coordonnées
             </Badge>
-            <Badge
-              variant="info"
-              className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
-            >
+            <Badge variant="info" className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]">
               Atelier Yerres
             </Badge>
           </div>
@@ -32,10 +26,7 @@ export function ContactSidebar() {
           <ul className="mt-5 space-y-4">
             <li>
               <div className="flex items-center justify-between gap-3">
-                <a
-                  href={siteConfig.phoneHref}
-                  className="flex items-center gap-3 hover:text-teal"
-                >
+                <a href={siteConfig.phoneHref} className="flex items-center gap-3 hover:text-teal">
                   <Phone className="h-5 w-5 text-teal" aria-hidden />
                   <span className="text-lg font-semibold">{siteConfig.phone}</span>
                 </a>
@@ -54,10 +45,7 @@ export function ContactSidebar() {
               </a>
             </li>
             <li>
-              <a
-                href={siteConfig.emailHref}
-                className="flex items-center gap-3 hover:text-teal"
-              >
+              <a href={siteConfig.emailHref} className="flex items-center gap-3 hover:text-teal">
                 <Mail className="h-5 w-5 text-teal" aria-hidden />
                 {siteConfig.email}
               </a>

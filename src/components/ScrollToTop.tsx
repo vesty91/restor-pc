@@ -21,7 +21,7 @@ export function ScrollToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={cn(
         "fixed bottom-20 right-4 z-40 grid h-11 w-11 place-items-center rounded-xl border border-line bg-paper text-ink shadow-[var(--shadow-soft)] transition-all md:bottom-6 md:right-6",
-        show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none"
+        show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3 pointer-events-none",
       )}
     >
       <ArrowUp className="h-4 w-4" />

@@ -72,7 +72,7 @@ export function CompteAuthForm({
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<"google" | "github" | null>(null);
   const [error, setError] = useState<string | null>(
-    oauthError ? "Connexion Google / GitHub interrompue. Réessayez." : null
+    oauthError ? "Connexion Google / GitHub interrompue. Réessayez." : null,
   );
   const [info, setInfo] = useState<string | null>(null);
   const redirectTo = safeNext(nextPath);
@@ -131,9 +131,7 @@ export function CompteAuthForm({
           return;
         }
         if (data.user && !data.session) {
-          setInfo(
-            "Compte créé. Confirmez l’email reçu, puis connectez-vous pour continuer."
-          );
+          setInfo("Compte créé. Confirmez l’email reçu, puis connectez-vous pour continuer.");
           setMode("login");
           return;
         }
@@ -237,11 +235,7 @@ export function CompteAuthForm({
           />
         </label>
         <Button type="submit" className="w-full" disabled={busy}>
-          {loading
-            ? "…"
-            : mode === "login"
-              ? "Se connecter"
-              : "Créer mon compte"}
+          {loading ? "…" : mode === "login" ? "Se connecter" : "Créer mon compte"}
         </Button>
       </form>
 

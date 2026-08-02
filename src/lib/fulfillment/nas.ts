@@ -30,9 +30,7 @@ function publicBase(): string {
     throw new Error("NAS_PUBLIC_BASE invalide (protocole non autorisé).");
   }
   if (isProd && !isHttps) {
-    throw new Error(
-      "NAS_PUBLIC_BASE invalide (https obligatoire en production)."
-    );
+    throw new Error("NAS_PUBLIC_BASE invalide (https obligatoire en production).");
   }
 
   // Les identifiants DSM ne doivent jamais être intégrés dans l'URL.
@@ -79,7 +77,7 @@ class NasDsmHttpError extends Error {
 async function fetchWithTimeout(
   url: string,
   init: RequestInit,
-  timeoutMs = nasHttpTimeoutMs()
+  timeoutMs = nasHttpTimeoutMs(),
 ): Promise<Response> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -153,7 +151,7 @@ export async function createNasOneTimeShare(opts: {
     if (!sshEnabled || !process.env.NAS_SSH_HOST?.trim()) throw httpErr;
     console.warn(
       "NAS HTTP echoue, fallback SSH:",
-      httpErr instanceof Error ? httpErr.message : "error"
+      httpErr instanceof Error ? httpErr.message : "error",
     );
     return await createViaSsh({ ...opts, expireTimes });
   }
@@ -195,7 +193,7 @@ async function createViaHttp(opts: {
   };
   if (!loginJson.success || !loginJson.data?.sid) {
     throw new Error(
-      `NAS login echoue (code ${loginJson.error?.code ?? "?"}). Verifiez NAS_DSM_URL / 2FA / identifiants.`
+      `NAS login echoue (code ${loginJson.error?.code ?? "?"}). Verifiez NAS_DSM_URL / 2FA / identifiants.`,
     );
   }
   const sid = loginJson.data.sid;
@@ -224,7 +222,7 @@ async function createViaHttp(opts: {
     };
     if (!createJson.success || !createJson.data?.links?.[0]) {
       throw new Error(
-        `NAS share create echoue (code ${createJson.error?.code ?? "?"}) pour ${opts.filePath}`
+        `NAS share create echoue (code ${createJson.error?.code ?? "?"}) pour ${opts.filePath}`,
       );
     }
     const link = createJson.data.links[0];
@@ -252,7 +250,7 @@ async function createViaHttp(opts: {
             body: logoutBody,
             cache: "no-store",
           },
-          2000
+          2000,
         );
       } catch {
         // Best-effort : le partage a déjà été créé avec succès.
@@ -319,9 +317,7 @@ async function revokeViaHttp(shareId: string): Promise<void> {
     error?: { code?: number };
   };
   if (!loginJson.success || !loginJson.data?.sid) {
-    throw new Error(
-      `NAS revoke login echoue (code ${loginJson.error?.code ?? "?"})`
-    );
+    throw new Error(`NAS revoke login echoue (code ${loginJson.error?.code ?? "?"})`);
   }
   const sid = loginJson.data.sid;
 
@@ -371,7 +367,7 @@ async function revokeViaHttp(shareId: string): Promise<void> {
             body: logoutBody,
             cache: "no-store",
           },
-          2000
+          2000,
         );
       } catch {
         /* best-effort */
@@ -430,9 +426,7 @@ async function revokeViaSsh(shareId: string): Promise<void> {
                   return;
                 }
                 reject(
-                  new Error(
-                    `NAS SSH share delete fail (code ${code ?? "?"}): ${out.slice(-500)}`
-                  )
+                  new Error(`NAS SSH share delete fail (code ${code ?? "?"}): ${out.slice(-500)}`),
                 );
               } catch (e) {
                 reject(e);

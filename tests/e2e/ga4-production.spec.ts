@@ -22,9 +22,7 @@ function isGaCollect(url: string): boolean {
 }
 
 function isGtagScript(url: string): boolean {
-  return (
-    url.includes("googletagmanager.com/gtag/js") && url.includes(`id=${GA_ID}`)
-  );
+  return url.includes("googletagmanager.com/gtag/js") && url.includes(`id=${GA_ID}`);
 }
 
 function isAnalyticsCspBlock(blocked: string, directive: string): boolean {
@@ -64,12 +62,15 @@ async function waitForClientId(page: Page, timeoutMs = 12_000): Promise<string |
             return setTimeout(tick, 150);
           }
           let done = false;
-          const timer = setTimeout(() => {
-            if (!done) {
-              done = true;
-              resolve(null);
-            }
-          }, Math.max(500, ms - (Date.now() - started)));
+          const timer = setTimeout(
+            () => {
+              if (!done) {
+                done = true;
+                resolve(null);
+              }
+            },
+            Math.max(500, ms - (Date.now() - started)),
+          );
           try {
             window.gtag!("get", id, "client_id", (value: unknown) => {
               if (done) return;
@@ -87,7 +88,7 @@ async function waitForClientId(page: Page, timeoutMs = 12_000): Promise<string |
         };
         tick();
       }),
-    { id: GA_ID, timeoutMs }
+    { id: GA_ID, timeoutMs },
   );
 }
 
@@ -96,13 +97,11 @@ test.describe("GA4 production — Chromium", () => {
     const base = process.env.PLAYWRIGHT_BASE_URL || "";
     test.skip(
       !base.includes("www.restor-pc.fr"),
-      "Définir PLAYWRIGHT_BASE_URL=https://www.restor-pc.fr"
+      "Définir PLAYWRIGHT_BASE_URL=https://www.restor-pc.fr",
     );
   });
 
-  test("consentement → gtag → client_id → g/collect → events métier", async ({
-    browser,
-  }) => {
+  test("consentement → gtag → client_id → g/collect → events métier", async ({ browser }) => {
     const context = await browser.newContext({
       locale: "fr-FR",
       colorScheme: "light",
@@ -126,10 +125,8 @@ test.describe("GA4 production — Chromium", () => {
     });
 
     await page.addInitScript(() => {
-      const hits: Array<{ directive: string; blocked: string; disposition: string }> =
-        [];
-      (window as unknown as { __cspAnalyticsHits: typeof hits }).__cspAnalyticsHits =
-        hits;
+      const hits: Array<{ directive: string; blocked: string; disposition: string }> = [];
+      (window as unknown as { __cspAnalyticsHits: typeof hits }).__cspAnalyticsHits = hits;
       document.addEventListener("securitypolicyviolation", (e) => {
         hits.push({
           directive: e.effectiveDirective,
@@ -147,21 +144,15 @@ test.describe("GA4 production — Chromium", () => {
     await expect(page.getByRole("button", { name: "Accepter" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Refuser" })).toBeVisible();
 
-    const consentBefore = await page.evaluate(
-      (key) => localStorage.getItem(key),
-      CONSENT_KEY
-    );
+    const consentBefore = await page.evaluate((key) => localStorage.getItem(key), CONSENT_KEY);
     expect(consentBefore).toBeNull();
 
     // 2. Aucun hit GA4 avant acceptation
     await page.waitForTimeout(1500);
-    expect(
-      collectBefore,
-      `Hits collect avant consentement: ${collectBefore.join("\n")}`
-    ).toEqual([]);
-    expect(
-      await page.locator('script[src*="googletagmanager.com/gtag/js"]').count()
-    ).toBe(0);
+    expect(collectBefore, `Hits collect avant consentement: ${collectBefore.join("\n")}`).toEqual(
+      [],
+    );
+    expect(await page.locator('script[src*="googletagmanager.com/gtag/js"]').count()).toBe(0);
 
     // 3–4. Accepter → gtag + consent granted
     accepted = true;
@@ -169,18 +160,15 @@ test.describe("GA4 production — Chromium", () => {
     await expect(dialog).toBeHidden({ timeout: 10_000 });
 
     await expect
-      .poll(
-        async () =>
-          page.evaluate((key) => localStorage.getItem(key), CONSENT_KEY),
-        { timeout: 10_000 }
-      )
+      .poll(async () => page.evaluate((key) => localStorage.getItem(key), CONSENT_KEY), {
+        timeout: 10_000,
+      })
       .toBe("granted");
 
     await expect
       .poll(
-        async () =>
-          page.locator(`script[src*="googletagmanager.com/gtag/js?id=${GA_ID}"]`).count(),
-        { timeout: 15_000 }
+        async () => page.locator(`script[src*="googletagmanager.com/gtag/js?id=${GA_ID}"]`).count(),
+        { timeout: 15_000 },
       )
       .toBe(1);
 
@@ -209,12 +197,10 @@ test.describe("GA4 production — Chromium", () => {
     expect(String(clientId)).toMatch(/^\d+\.\d+$/);
 
     // 6. Requête automatique g/collect
-    await expect
-      .poll(() => collectAfter.length, { timeout: 20_000 })
-      .toBeGreaterThan(0);
+    await expect.poll(() => collectAfter.length, { timeout: 20_000 }).toBeGreaterThan(0);
     expect(
       collectAfter.some((u) => u.includes("/g/collect") || u.includes("collect")),
-      collectAfter[0]
+      collectAfter[0],
     ).toBe(true);
 
     // 7. Événements métier (click_phone via délégation)
@@ -229,7 +215,7 @@ test.describe("GA4 production — Chromium", () => {
           const dlHint = ens.includes("click_phone");
           return dlHint || collectAfter.some((u) => u.includes("click_phone"));
         },
-        { timeout: 15_000 }
+        { timeout: 15_000 },
       )
       .toBe(true);
 
@@ -247,39 +233,28 @@ test.describe("GA4 production — Chromium", () => {
         );
       });
     });
-    expect(phoneInDataLayer || collectAfter.some((u) => u.includes("click_phone"))).toBe(
-      true
-    );
+    expect(phoneInDataLayer || collectAfter.some((u) => u.includes("click_phone"))).toBe(true);
 
     // 8. Pas d’erreur CSP Analytics
     const cspHits = await page.evaluate(() => {
       return (
-        (window as unknown as { __cspAnalyticsHits?: Array<{ directive: string; blocked: string; disposition: string }> })
-          .__cspAnalyticsHits || []
+        (
+          window as unknown as {
+            __cspAnalyticsHits?: Array<{ directive: string; blocked: string; disposition: string }>;
+          }
+        ).__cspAnalyticsHits || []
       );
     });
     const analyticsCsp = cspHits.filter(
-      (h) =>
-        h.disposition === "enforce" &&
-        isAnalyticsCspBlock(h.blocked, h.directive)
+      (h) => h.disposition === "enforce" && isAnalyticsCspBlock(h.blocked, h.directive),
     );
-    expect(
-      analyticsCsp,
-      `CSP Analytics: ${JSON.stringify(analyticsCsp)}`
-    ).toEqual([]);
+    expect(analyticsCsp, `CSP Analytics: ${JSON.stringify(analyticsCsp)}`).toEqual([]);
 
     // 9. Pas de double chargement gtag.js
-    const scriptCount = await page
-      .locator('script[src*="googletagmanager.com/gtag/js"]')
-      .count();
+    const scriptCount = await page.locator('script[src*="googletagmanager.com/gtag/js"]').count();
     expect(scriptCount).toBe(1);
-    const uniqueGtag = new Set(
-      gtagScriptLoads.map((u) => u.split("&")[0])
-    );
-    expect(
-      uniqueGtag.size,
-      `Chargements gtag: ${[...uniqueGtag].join(", ")}`
-    ).toBe(1);
+    const uniqueGtag = new Set(gtagScriptLoads.map((u) => u.split("&")[0]));
+    expect(uniqueGtag.size, `Chargements gtag: ${[...uniqueGtag].join(", ")}`).toBe(1);
 
     // Rapport console
     const summary = {
@@ -295,7 +270,7 @@ test.describe("GA4 production — Chromium", () => {
             } catch {
               return u;
             }
-          })
+          }),
         ),
       ],
       eventNames: collectEventNames(collectAfter),

@@ -7,6 +7,7 @@ Base : `master` (PR #19 incluse)
 ## Résumé
 
 ### État initial
+
 - Sonner / Zod / DataTable / Playwright présents (PR #19) mais toasts peu testés.
 - CI mono-job sans E2E séparé.
 - Axe désactivait globalement `color-contrast`.
@@ -15,6 +16,7 @@ Base : `master` (PR #19 incluse)
 - Cookie atelier déjà HMAC (secret **pas** dans le cookie) ; routes encore `isAtelierAuthed` direct ; fallback signature = `ATELIER_SECRET` en prod.
 
 ### État final
+
 - Toasts : `formatPublicApiError` + tests unit/E2E mock contact.
 - CI : jobs `quality`, `unit-tests`, `integration-tests`, `build`, `e2e`.
 - Contraste : règle réactivée ; exclusion ciblée canvas / `[data-hero-webgl]` ; `--ink-muted` assombri.
@@ -23,14 +25,16 @@ Base : `master` (PR #19 incluse)
 - Admin : APIs atelier via `requireTechnician` ; `ATELIER_SESSION_SECRET` obligatoire en production.
 
 ### Bloqueurs corrigés
-1. Tests notifications Sonner  
-2. GitHub Actions complet  
-3. Contraste Axe  
-4. Idempotence / claim atomique fulfillment  
-5. Autorisation commandes par `user_id`  
-6. Auth atelier sans secret brut en cookie + rôles côté serveur  
+
+1. Tests notifications Sonner
+2. GitHub Actions complet
+3. Contraste Axe
+4. Idempotence / claim atomique fulfillment
+5. Autorisation commandes par `user_id`
+6. Auth atelier sans secret brut en cookie + rôles côté serveur
 
 ### Risques restants
+
 - Migrations à appliquer manuellement sur Supabase.
 - Backfill `user_id` obligatoire pour l’historique.
 - Transition HMAC atelier encore active (documentée, à retirer après création d’admins Supabase).
@@ -41,18 +45,18 @@ Base : `master` (PR #19 incluse)
 
 ## Fichiers modifiés (extrait)
 
-| Fichier | Modification | Justification |
-|---|---|---|
-| `src/lib/toast.ts` | `formatPublicApiError`, `notify.apiError` | Toasts sûrs + réf. support |
-| `src/lib/fulfillment/*` | claim atomique, `ORDER_STATUSES` | Idempotence / concurrence |
-| `src/app/api/stripe/webhook/route.ts` | `user_id` obligatoire | Propriétaire commande |
-| `src/app/api/compte/orders/route.ts` | plus de fallback email | Authz stricte |
-| `src/app/api/atelier/*` | `requireTechnician` | Rôles serveur |
-| `src/lib/atelier-auth.ts` | session secret prod | Plus de fallback secret MDP |
-| `.github/workflows/ci.yml` | 5 jobs | CI obligatoire |
-| `supabase/migrations/20260729120000_*.sql` | wave3 | DB idempotence + RLS |
-| `tests/e2e/*` | toasts + a11y | Validation PR #19 |
-| `docs/*` | procédures | Ops / prod |
+| Fichier                                    | Modification                              | Justification               |
+| ------------------------------------------ | ----------------------------------------- | --------------------------- |
+| `src/lib/toast.ts`                         | `formatPublicApiError`, `notify.apiError` | Toasts sûrs + réf. support  |
+| `src/lib/fulfillment/*`                    | claim atomique, `ORDER_STATUSES`          | Idempotence / concurrence   |
+| `src/app/api/stripe/webhook/route.ts`      | `user_id` obligatoire                     | Propriétaire commande       |
+| `src/app/api/compte/orders/route.ts`       | plus de fallback email                    | Authz stricte               |
+| `src/app/api/atelier/*`                    | `requireTechnician`                       | Rôles serveur               |
+| `src/lib/atelier-auth.ts`                  | session secret prod                       | Plus de fallback secret MDP |
+| `.github/workflows/ci.yml`                 | 5 jobs                                    | CI obligatoire              |
+| `supabase/migrations/20260729120000_*.sql` | wave3                                     | DB idempotence + RLS        |
+| `tests/e2e/*`                              | toasts + a11y                             | Validation PR #19           |
+| `docs/*`                                   | procédures                                | Ops / prod                  |
 
 ---
 
@@ -79,13 +83,13 @@ Base : `master` (PR #19 incluse)
 
 ## Tests
 
-| Commande | Résultat | Nb | Remarque |
-|---|---|---|---|
-| `npm run typecheck` | OK | — | |
-| `npm run test:unit` | OK | 27 | + toast / orders |
-| `npm run test:integration` | OK | 13 | mocks sécurité |
-| `npm run test:e2e` (BASE_URL sain) | OK | contact/toasts/menu | Validé sur serveur 3011 |
-| `npm run test:e2e:ci` | Amélioré | — | Attend `/contact` avec formulaire avant Playwright |
+| Commande                           | Résultat | Nb                  | Remarque                                           |
+| ---------------------------------- | -------- | ------------------- | -------------------------------------------------- |
+| `npm run typecheck`                | OK       | —                   |                                                    |
+| `npm run test:unit`                | OK       | 27                  | + toast / orders                                   |
+| `npm run test:integration`         | OK       | 13                  | mocks sécurité                                     |
+| `npm run test:e2e` (BASE_URL sain) | OK       | contact/toasts/menu | Validé sur serveur 3011                            |
+| `npm run test:e2e:ci`              | Amélioré | —                   | Attend `/contact` avec formulaire avant Playwright |
 
 ## GitHub Actions
 

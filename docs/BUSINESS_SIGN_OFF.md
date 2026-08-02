@@ -13,22 +13,22 @@ Il complète `docs/PRODUCTION_CHECKLIST.md` (checklist technique détaillée).
 
 ## 1. Ce qui a été validé techniquement
 
-| Élément | Statut | Preuve |
-|---|---|---|
-| Checkout → webhook → email → licence + lien NAS | ✅ Testé en conditions réelles (Stripe Test) | Commande réelle passée le 2026-08-02 : mail reçu, licence active, lien NAS fonctionnel |
-| Remboursement / litige → révocation licence + lien NAS | ✅ Testé en conditions réelles | Même session du 2026-08-02 |
-| Remboursement hors-ordre (refund avant webhook de fulfillment) | ✅ Couvert par tests automatisés + harness SQL isolé | `tests/integration/stripe-webhook.test.ts`, `scripts/sql-harness-race-assertions.sql` — **non rejoué en conditions réelles Stripe Test** (voir risques résiduels) |
-| Double webhook Stripe (idempotence) | ✅ Testé | `tests/integration/stripe-webhook.test.ts`, CI verte |
-| Échec d'envoi email (pas de recréation de licence) | ✅ Testé | `tests/unit`/`tests/integration` fulfillment-flow, CI verte |
-| RLS `tool_orders` / `script_licenses` (`user_id = auth.uid()` strict) | ✅ Vérifié | Migrations + harness SQL |
-| RPC `SECURITY DEFINER` réservées à `service_role` | ✅ Corrigé et vérifié | Migration `20260802130000_lockdown_rpc_execute.sql`, advisors Supabase relus |
-| Backfill `user_id` sur commandes existantes | ✅ Fait | 8/8 commandes, 2026-08-02 |
-| CI (quality, unit, integration, build, e2e) | ✅ Verte | Branch protection activée sur `master` |
-| Accessibilité (contrastes Axe, hors canvas WebGL) | ✅ Vérifié | `tests/e2e/a11y.spec.ts`, CI verte |
-| Toasts Sonner (contact + licences, succès/erreur) | ✅ Vérifié | `tests/e2e/smoke.spec.ts`, `tests/e2e/admin.spec.ts`, CI verte |
-| Mentions légales / CGV (éditeur, hébergeur, responsabilité outils) | ✅ Contenu à jour | `src/app/mentions-legales`, `src/app/conditions-vente` |
-| Secrets hors dépôt Git | ✅ Vérifié | Historique git audité 2026-08-02, seuls les `.env.example` sont trackés |
-| `npm audit` | ✅ Lu, pas de correctif forcé aveugle | 2 `high` (`sharp`/`postcss`, transitifs Next.js) documentés dans `SECURITY.md` |
+| Élément                                                               | Statut                                               | Preuve                                                                                                                                                            |
+| --------------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Checkout → webhook → email → licence + lien NAS                       | ✅ Testé en conditions réelles (Stripe Test)         | Commande réelle passée le 2026-08-02 : mail reçu, licence active, lien NAS fonctionnel                                                                            |
+| Remboursement / litige → révocation licence + lien NAS                | ✅ Testé en conditions réelles                       | Même session du 2026-08-02                                                                                                                                        |
+| Remboursement hors-ordre (refund avant webhook de fulfillment)        | ✅ Couvert par tests automatisés + harness SQL isolé | `tests/integration/stripe-webhook.test.ts`, `scripts/sql-harness-race-assertions.sql` — **non rejoué en conditions réelles Stripe Test** (voir risques résiduels) |
+| Double webhook Stripe (idempotence)                                   | ✅ Testé                                             | `tests/integration/stripe-webhook.test.ts`, CI verte                                                                                                              |
+| Échec d'envoi email (pas de recréation de licence)                    | ✅ Testé                                             | `tests/unit`/`tests/integration` fulfillment-flow, CI verte                                                                                                       |
+| RLS `tool_orders` / `script_licenses` (`user_id = auth.uid()` strict) | ✅ Vérifié                                           | Migrations + harness SQL                                                                                                                                          |
+| RPC `SECURITY DEFINER` réservées à `service_role`                     | ✅ Corrigé et vérifié                                | Migration `20260802130000_lockdown_rpc_execute.sql`, advisors Supabase relus                                                                                      |
+| Backfill `user_id` sur commandes existantes                           | ✅ Fait                                              | 8/8 commandes, 2026-08-02                                                                                                                                         |
+| CI (quality, unit, integration, build, e2e)                           | ✅ Verte                                             | Branch protection activée sur `master`                                                                                                                            |
+| Accessibilité (contrastes Axe, hors canvas WebGL)                     | ✅ Vérifié                                           | `tests/e2e/a11y.spec.ts`, CI verte                                                                                                                                |
+| Toasts Sonner (contact + licences, succès/erreur)                     | ✅ Vérifié                                           | `tests/e2e/smoke.spec.ts`, `tests/e2e/admin.spec.ts`, CI verte                                                                                                    |
+| Mentions légales / CGV (éditeur, hébergeur, responsabilité outils)    | ✅ Contenu à jour                                    | `src/app/mentions-legales`, `src/app/conditions-vente`                                                                                                            |
+| Secrets hors dépôt Git                                                | ✅ Vérifié                                           | Historique git audité 2026-08-02, seuls les `.env.example` sont trackés                                                                                           |
+| `npm audit`                                                           | ✅ Lu, pas de correctif forcé aveugle                | 2 `high` (`sharp`/`postcss`, transitifs Next.js) documentés dans `SECURITY.md`                                                                                    |
 
 ---
 
@@ -94,12 +94,12 @@ Je soussigné, porteur du projet Restor-PC, atteste avoir pris connaissance :
 et **décide en connaissance de cause** d'activer (ou non) les paiements
 réels.
 
-| | |
-|---|---|
-| Décision | ☐ Go Live maintenant  ☐ Go Live après correction des points 2.1/2.2  ☐ Report |
-| Nom | ___________________________ |
-| Date | ___________________________ |
-| Signature | ___________________________ |
+|           |                                                                             |
+| --------- | --------------------------------------------------------------------------- |
+| Décision  | ☐ Go Live maintenant ☐ Go Live après correction des points 2.1/2.2 ☐ Report |
+| Nom       | ___________________________                                                 |
+| Date      | ___________________________                                                 |
+| Signature | ___________________________                                                 |
 
 Une fois signé, passer `ALLOW_STRIPE_LIVE=true`, configurer les clés Stripe
 Live + webhook Live, et activer le monitoring d'alertes (dernier point de

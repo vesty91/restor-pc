@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  formatPublicApiError,
-  sanitizeToastMessage,
-} from "@/lib/toast";
+import { formatPublicApiError, sanitizeToastMessage } from "@/lib/toast";
 import { ORDER_STATUSES, isOrderStatus } from "@/lib/fulfillment/order-status";
 
 describe("toast sanitize", () => {
@@ -14,9 +11,7 @@ describe("toast sanitize", () => {
   });
 
   it("n’expose pas d’UUID complets", () => {
-    const msg = sanitizeToastMessage(
-      "Erreur 11111111-2222-3333-4444-555555555555"
-    );
+    const msg = sanitizeToastMessage("Erreur 11111111-2222-3333-4444-555555555555");
     expect(msg).toContain("[id]");
     expect(msg).not.toContain("11111111-2222");
   });

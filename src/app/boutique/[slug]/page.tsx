@@ -5,11 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { getOutilDetails } from "@/lib/data/outils-details";
-import {
-  formatOutilPrice,
-  getAllProducts,
-  getProductBySlug,
-} from "@/lib/data/outils";
+import { formatOutilPrice, getAllProducts, getProductBySlug } from "@/lib/data/outils";
 import { buildPageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -44,12 +40,7 @@ export default async function BoutiqueProductPage({ params }: Props) {
     <div className="boutique-grid-scene">
       <div className="boutique-grid-bg" aria-hidden />
       <Section className="pb-16 pt-20 md:pt-28">
-        <Breadcrumbs
-          items={[
-            { label: "Boutique", href: "/boutique" },
-            { label: product.title },
-          ]}
-        />
+        <Breadcrumbs items={[{ label: "Boutique", href: "/boutique" }, { label: product.title }]} />
 
         <div className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div>
@@ -71,11 +62,7 @@ export default async function BoutiqueProductPage({ params }: Props) {
             </p>
 
             <div className="mt-8 lg:hidden">
-              <ToolGuiPreview
-                title={product.title}
-                kind={details.preview}
-                exe={details.exe}
-              />
+              <ToolGuiPreview title={product.title} kind={details.preview} exe={details.exe} />
             </div>
 
             <div className="mt-8 rounded-2xl border border-teal/25 bg-teal-soft/60 p-5">
@@ -122,9 +109,7 @@ export default async function BoutiqueProductPage({ params }: Props) {
 
             <p className="mt-8 text-xs text-ink-muted">
               Fichier :{" "}
-              <code className="rounded bg-surface-2 px-1.5 py-0.5 text-ink">
-                {details.exe}
-              </code>
+              <code className="rounded bg-surface-2 px-1.5 py-0.5 text-ink">{details.exe}</code>
               {" · "}
               Guide HTML / PDF inclus dans le ZIP
             </p>
@@ -132,11 +117,7 @@ export default async function BoutiqueProductPage({ params }: Props) {
 
           <div className="space-y-5 lg:sticky lg:top-28">
             <div className="hidden lg:block">
-              <ToolGuiPreview
-                title={product.title}
-                kind={details.preview}
-                exe={details.exe}
-              />
+              <ToolGuiPreview title={product.title} kind={details.preview} exe={details.exe} />
             </div>
             <div className="rounded-[24px] border border-line bg-paper p-6 md:p-7">
               <div className="mb-2 flex flex-wrap gap-2">
@@ -148,16 +129,15 @@ export default async function BoutiqueProductPage({ params }: Props) {
               </p>
               <ul className="mt-4 space-y-2 text-sm text-ink-muted">
                 <li>
-                  <strong className="text-ink">Compte obligatoire</strong> pour
-                  acheter et retrouver licence + téléchargement.
+                  <strong className="text-ink">Compte obligatoire</strong> pour acheter et retrouver
+                  licence + téléchargement.
                 </li>
                 <li>
-                  Licence liée à <strong className="text-ink">1 PC</strong> (1re
-                  activation).
+                  Licence liée à <strong className="text-ink">1 PC</strong> (1re activation).
                 </li>
                 <li>
-                  Lien de téléchargement{" "}
-                  <strong className="text-ink">1 fois</strong> + mot de passe.
+                  Lien de téléchargement <strong className="text-ink">1 fois</strong> + mot de
+                  passe.
                 </li>
                 <li>Email immédiat après paiement (clé + lien).</li>
               </ul>
@@ -168,10 +148,7 @@ export default async function BoutiqueProductPage({ params }: Props) {
                 />
               </div>
               <p className="mt-3 text-center text-xs text-ink-muted">
-                <a
-                  href="/conditions-vente"
-                  className="text-teal underline underline-offset-2"
-                >
+                <a href="/conditions-vente" className="text-teal underline underline-offset-2">
                   Conditions générales de vente
                 </a>
                 <span className="mx-1">·</span>

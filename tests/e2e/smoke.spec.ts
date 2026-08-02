@@ -7,7 +7,7 @@ async function expectNoCriticalA11y(page: import("@playwright/test").Page) {
     .exclude("[data-hero-webgl]")
     .analyze();
   const critical = results.violations.filter(
-    (v) => v.impact === "critical" || v.impact === "serious"
+    (v) => v.impact === "critical" || v.impact === "serious",
   );
   expect(critical, JSON.stringify(critical, null, 2)).toEqual([]);
 }
@@ -22,7 +22,7 @@ test.describe("Pages publiques", () => {
   test("contact affiche le formulaire", async ({ page }) => {
     await page.goto("/contact");
     await expect(page.getByRole("heading", { name: /formulaire de contact/i })).toBeVisible();
-    await expect(page.locator('form[novalidate]')).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator("form[novalidate]")).toBeVisible({ timeout: 20_000 });
   });
 
   test("boutique catalogue", async ({ page }) => {
@@ -47,7 +47,7 @@ test.describe("Navigation", () => {
   test("menu mobile s’ouvre", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/contact");
-    await expect(page.locator('form[novalidate]')).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator("form[novalidate]")).toBeVisible({ timeout: 20_000 });
     const toggle = page.getByRole("button", { name: /ouvrir le menu/i });
     await expect(toggle).toBeVisible();
     await toggle.click();
@@ -74,7 +74,7 @@ test.describe("Reduced motion", () => {
 });
 
 async function fillContactForm(page: import("@playwright/test").Page) {
-  await expect(page.locator('form[novalidate]')).toBeVisible({ timeout: 20_000 });
+  await expect(page.locator("form[novalidate]")).toBeVisible({ timeout: 20_000 });
   await page.locator('input[autocomplete="name"]').fill("Alice Test");
   await page.locator('input[autocomplete="email"]').fill("alice@example.com");
   await page.locator('input[autocomplete="tel"]').fill("0612345678");

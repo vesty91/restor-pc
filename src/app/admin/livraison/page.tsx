@@ -17,12 +17,7 @@ export default async function AdminLivraisonPage() {
 
   return (
     <Section className="noise-bg pt-20 md:pt-28 pb-16">
-      <Breadcrumbs
-        items={[
-          { label: "Admin", href: "/admin" },
-          { label: "Livraison" },
-        ]}
-      />
+      <Breadcrumbs items={[{ label: "Admin", href: "/admin" }, { label: "Livraison" }]} />
       <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
         <SectionHeader
           eyebrow="Admin"

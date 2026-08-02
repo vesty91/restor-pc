@@ -30,17 +30,13 @@ describe("TRUST_PROXY_HEADERS / getTrustedIp", () => {
   it("désactivé par défaut (absence de variable)", () => {
     delete process.env.TRUST_PROXY_HEADERS;
     expect(isTrustProxyHeadersEnabled()).toBe(false);
-    expect(
-      getTrustedIp(requestWith({ "x-forwarded-for": "9.9.9.9" }))
-    ).toBe("unknown");
+    expect(getTrustedIp(requestWith({ "x-forwarded-for": "9.9.9.9" }))).toBe("unknown");
   });
 
   it("TRUST_PROXY_HEADERS=false ignore X-Forwarded-For falsifié", () => {
     process.env.TRUST_PROXY_HEADERS = "false";
     expect(isTrustProxyHeadersEnabled()).toBe(false);
-    expect(
-      getTrustedIp(requestWith({ "x-forwarded-for": "203.0.113.99" }))
-    ).toBe("unknown");
+    expect(getTrustedIp(requestWith({ "x-forwarded-for": "203.0.113.99" }))).toBe("unknown");
   });
 
   it("TRUST_PROXY_HEADERS=true utilise X-Real-IP en priorité", () => {
@@ -50,17 +46,15 @@ describe("TRUST_PROXY_HEADERS / getTrustedIp", () => {
         requestWith({
           "x-real-ip": "198.51.100.10",
           "x-forwarded-for": "203.0.113.1, 10.0.0.1",
-        })
-      )
+        }),
+      ),
     ).toBe("198.51.100.10");
   });
 
   it("TRUST_PROXY_HEADERS=true prend le premier hop de X-Forwarded-For", () => {
     process.env.TRUST_PROXY_HEADERS = "true";
     expect(
-      getTrustedIp(
-        requestWith({ "x-forwarded-for": "203.0.113.50, 10.0.0.2, 192.168.1.1" })
-      )
+      getTrustedIp(requestWith({ "x-forwarded-for": "203.0.113.50, 10.0.0.2, 192.168.1.1" })),
     ).toBe("203.0.113.50");
   });
 

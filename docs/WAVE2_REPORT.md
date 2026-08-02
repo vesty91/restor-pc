@@ -5,14 +5,14 @@ Base : Vague 1 (`security/wave1-production-hardening`)
 
 ## Contenu
 
-| Reco | Livrable |
-|------|----------|
-| 11 | `src/lib/security/rate-limit.ts` + RPC Supabase + contact/auth/checkout/resend |
-| 15 | Vitest + tests unitaires (`tests/unit/*`) |
-| 16 | `.github/workflows/ci.yml` + Dependabot |
-| 17 | `docs/BACKUP_RESTORE.md` + scripts backup/restore exemple |
-| 18 | `src/lib/logging/alerts.ts` (`ALERT_WEBHOOK_URL`) |
-| 20 | déjà Vague 1 — inchangé |
+| Reco | Livrable                                                                       |
+| ---- | ------------------------------------------------------------------------------ |
+| 11   | `src/lib/security/rate-limit.ts` + RPC Supabase + contact/auth/checkout/resend |
+| 15   | Vitest + tests unitaires (`tests/unit/*`)                                      |
+| 16   | `.github/workflows/ci.yml` + Dependabot                                        |
+| 17   | `docs/BACKUP_RESTORE.md` + scripts backup/restore exemple                      |
+| 18   | `src/lib/logging/alerts.ts` (`ALERT_WEBHOOK_URL`)                              |
+| 20   | déjà Vague 1 — inchangé                                                        |
 
 ## Migration
 

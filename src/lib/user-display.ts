@@ -18,12 +18,7 @@ export function getUserFirstName(user: User | null | undefined): string | null {
   if (custom) return capitalizeWord(custom.split(/\s+/)[0] ?? custom);
 
   const raw = String(
-    meta.given_name ||
-      meta.first_name ||
-      meta.full_name ||
-      meta.name ||
-      meta.user_name ||
-      ""
+    meta.given_name || meta.first_name || meta.full_name || meta.name || meta.user_name || "",
   ).trim();
 
   if (raw) {

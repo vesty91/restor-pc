@@ -55,6 +55,7 @@ docker compose up -d
 - `npm run typecheck` / `npm run test:unit` — qualité
 - `npm run lint` — ESLint
 - `npm run stripe:update-webhook` — events webhook boutique
+
 ## Outils / NAS (dossier parent)
 
 ```powershell
@@ -73,13 +74,13 @@ Catalogue boutique = outils dans `mes-script-TEST-OK` (17 outils). **Debloat-Win
 
 ## Pages utiles
 
-| Route | Rôle |
-|--------|------|
-| `/boutique` | Catalogue + FAQ boutique |
-| `/compte` | Auth + commandes / licences |
-| `/contact` | Formulaire → Resend |
-| `/conditions-vente` | CGV (responsabilité scripts) |
-| `/admin` | Atelier (mot de passe `ATELIER_SECRET`) |
+| Route               | Rôle                                    |
+| ------------------- | --------------------------------------- |
+| `/boutique`         | Catalogue + FAQ boutique                |
+| `/compte`           | Auth + commandes / licences             |
+| `/contact`          | Formulaire → Resend                     |
+| `/conditions-vente` | CGV (responsabilité scripts)            |
+| `/admin`            | Atelier (mot de passe `ATELIER_SECRET`) |
 
 ## Docs locales
 

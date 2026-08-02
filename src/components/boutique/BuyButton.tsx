@@ -9,13 +9,7 @@ import { useEffect, useState } from "react";
 const CONSENT_LABEL =
   "Je demande l’exécution immédiate du contrat avant la fin du délai de rétractation et je reconnais perdre mon droit de rétractation dès la fourniture du téléchargement et de la licence.";
 
-export function BuyButton({
-  slug,
-  label = "Acheter",
-}: {
-  slug: string;
-  label?: string;
-}) {
+export function BuyButton({ slug, label = "Acheter" }: { slug: string; label?: string }) {
   const [email, setEmail] = useState<string | null>(null);
   const [checking, setChecking] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -84,8 +78,8 @@ export function BuyButton({
     return (
       <div className="space-y-3">
         <p className="text-sm leading-relaxed text-ink-muted">
-          Un <strong className="text-ink">compte Restor-PC</strong> est obligatoire pour
-          acheter (licence, téléchargement et historique dans votre espace).
+          Un <strong className="text-ink">compte Restor-PC</strong> est obligatoire pour acheter
+          (licence, téléchargement et historique dans votre espace).
         </p>
         <Button href={signupHref} size="lg" className="w-full sm:w-auto">
           Créer un compte pour acheter
@@ -103,8 +97,7 @@ export function BuyButton({
   return (
     <div className="space-y-3">
       <p className="text-sm text-ink-muted">
-        Connecté en tant que{" "}
-        <strong className="text-ink">{email}</strong>
+        Connecté en tant que <strong className="text-ink">{email}</strong>
         {" — "}licence et lien envoyés à cet email.
       </p>
       <label className="flex items-start gap-3 rounded-xl border border-line bg-surface-2/40 p-3 text-sm leading-relaxed text-ink-muted cursor-pointer">
@@ -130,8 +123,8 @@ export function BuyButton({
         <Link href="/conditions-vente" className="text-teal underline underline-offset-2">
           CGV
         </Link>
-        . L’utilisation des outils est sous votre responsabilité exclusive ;
-        {siteConfig.name} n’est responsable d’aucun dommage lié à leur exécution.
+        . L’utilisation des outils est sous votre responsabilité exclusive ;{siteConfig.name} n’est
+        responsable d’aucun dommage lié à leur exécution.
       </p>
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
     </div>

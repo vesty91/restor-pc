@@ -34,7 +34,7 @@ export function Reveal({
           obs.disconnect();
         }
       },
-      { threshold: 0.08, rootMargin: "0px 0px -20px 0px" }
+      { threshold: 0.08, rootMargin: "0px 0px -20px 0px" },
     );
     obs.observe(el);
     return () => {
@@ -50,7 +50,7 @@ export function Reveal({
         /* Pas de translate : les transforms coupaient les jambages (g, p, q) */
         "transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
         visible ? "opacity-100" : "opacity-0 motion-reduce:opacity-100",
-        className
+        className,
       )}
       style={{ transitionDelay: visible ? `${delay}ms` : "0ms" }}
     >

@@ -21,7 +21,9 @@
     "stripe:listen": "scripts/stripe-listen.cmd",
     "fulfill:session": "tsx scripts/fulfill-session.mjs",
     "stripe:update-webhook": "node scripts/create-boutique-webhook.mjs",
-    "backup:db": "node scripts/backup-db.mjs"
+    "backup:db": "node scripts/backup-db.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -57,6 +59,7 @@
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
+    "prettier": "^3.9.6",
     "shadcn": "^4.16.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.1",

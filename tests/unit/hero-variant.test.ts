@@ -1,9 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import {
-  getHeroMobileVariant,
-  getHeroVariant,
-  HERO_VARIANTS,
-} from "@/lib/hero-variant";
+import { getHeroMobileVariant, getHeroVariant, HERO_VARIANTS } from "@/lib/hero-variant";
 
 describe("hero-variant", () => {
   const prevDesktop = process.env.NEXT_PUBLIC_HERO_VARIANT;

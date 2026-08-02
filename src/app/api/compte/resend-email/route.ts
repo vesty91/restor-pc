@@ -19,12 +19,7 @@ export async function POST(request: Request) {
     windowMs: 30 * 60 * 1000,
   });
   if (!limited.ok) {
-    return jsonError(
-      "RATE_LIMITED",
-      "Trop de renvois. Reessayez plus tard.",
-      429,
-      requestId
-    );
+    return jsonError("RATE_LIMITED", "Trop de renvois. Reessayez plus tard.", 429, requestId);
   }
 
   const supabase = await createClient();
@@ -48,7 +43,7 @@ export async function POST(request: Request) {
       "INVALID_BODY",
       publicZodMessage(parsed.error, "Commande manquante."),
       400,
-      requestId
+      requestId,
     );
   }
 
@@ -57,9 +52,7 @@ export async function POST(request: Request) {
   const sb = getSupabaseAdmin();
   const { data: order, error } = await sb
     .from("tool_orders")
-    .select(
-      "id, order_ref, email, user_id, tool_slug, license_key, share_url, share_password"
-    )
+    .select("id, order_ref, email, user_id, tool_slug, license_key, share_url, share_password")
     .eq("id", orderId)
     .maybeSingle();
 
@@ -67,21 +60,13 @@ export async function POST(request: Request) {
     return publicErrorResponse(error, "ORDER_LOOKUP_FAILED", requestId);
   }
 
-  const owns =
-    order &&
-    (order.user_id === user.id ||
-      (!order.user_id && order.email === email));
+  const owns = order && (order.user_id === user.id || (!order.user_id && order.email === email));
 
   if (!owns || !order) {
     return jsonError("ORDER_NOT_FOUND", "Commande introuvable.", 404, requestId);
   }
   if (!order.license_key || !order.share_url || !order.share_password) {
-    return jsonError(
-      "ORDER_INCOMPLETE",
-      "Commande encore en preparation.",
-      400,
-      requestId
-    );
+    return jsonError("ORDER_INCOMPLETE", "Commande encore en preparation.", 400, requestId);
   }
 
   try {
@@ -99,7 +84,7 @@ export async function POST(request: Request) {
         "EMAIL_SEND_FAILED",
         "Envoi refuse par le serveur mail. Les acces restent visibles dans votre compte.",
         502,
-        requestId
+        requestId,
       );
     }
     return NextResponse.json({ ok: true, emailId: result.emailId, requestId });

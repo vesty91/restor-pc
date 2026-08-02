@@ -1,14 +1,8 @@
 import { serializeJsonLd } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
-export function JsonLd({
-  data,
-}: {
-  data?: Record<string, unknown> | Record<string, unknown>[];
-}) {
-  const areaCities = siteConfig.nearbyCities.filter(
-    (name) => name !== siteConfig.city
-  );
+export function JsonLd({ data }: { data?: Record<string, unknown> | Record<string, unknown>[] }) {
+  const areaCities = siteConfig.nearbyCities.filter((name) => name !== siteConfig.city);
 
   const localBusiness = {
     "@type": ["LocalBusiness", "ComputerStore"],
@@ -32,14 +26,7 @@ export function JsonLd({
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ],
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         opens: "09:00",
         closes: "19:00",
       },

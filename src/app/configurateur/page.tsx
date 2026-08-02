@@ -27,16 +27,15 @@ export default function ConfigurateurPage() {
           Construisez une config intelligente, pas juste une liste de pièces
         </h1>
         <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-muted">
-          Usage, budget, préférences : une base claire pour démarrer.
-          Compatibilité et prix pièces sont validés en atelier avant devis
-          définitif.
+          Usage, budget, préférences : une base claire pour démarrer. Compatibilité et prix pièces
+          sont validés en atelier avant devis définitif.
         </p>
         <p className="mt-4 max-w-2xl rounded-2xl border border-line bg-paper px-4 py-3 text-sm leading-relaxed text-ink-muted">
           <Badge variant="warning" className="mb-2 mr-2">
             Bêta
           </Badge>
-          Les configurations proposées sont des bases de travail. Stock,
-          compatibilité fine et total final sont confirmés avant commande.
+          Les configurations proposées sont des bases de travail. Stock, compatibilité fine et total
+          final sont confirmés avant commande.
         </p>
       </Section>
       <Section className="pb-20 pt-0">

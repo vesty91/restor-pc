@@ -39,13 +39,7 @@ function formatCurrent(n: number, parsed: Parsed): string {
   return `${parsed.prefix}${Math.round(n)}${parsed.suffix}`;
 }
 
-export function AnimatedStat({
-  value,
-  className,
-}: {
-  value: string;
-  className?: string;
-}) {
+export function AnimatedStat({ value, className }: { value: string; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const parsed = useMemo(() => parseStat(value), [value]);
   const [display, setDisplay] = useState(() => {
@@ -85,8 +79,7 @@ export function AnimatedStat({
 
     // Déjà visible au montage (ou parent Reveal qui apparaît)
     const rect = el.getBoundingClientRect();
-    const inView =
-      rect.top < window.innerHeight * 0.92 && rect.bottom > window.innerHeight * 0.08;
+    const inView = rect.top < window.innerHeight * 0.92 && rect.bottom > window.innerHeight * 0.08;
 
     if (inView) {
       // Laisse le Reveal parent finir son fade (~300ms)
@@ -104,7 +97,7 @@ export function AnimatedStat({
           obs.disconnect();
         }
       },
-      { threshold: 0.25, rootMargin: "0px 0px -8% 0px" }
+      { threshold: 0.25, rootMargin: "0px 0px -8% 0px" },
     );
     obs.observe(el);
 

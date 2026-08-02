@@ -50,21 +50,12 @@ export function Timeline({
   const opacityTransform = useTransform(scrollYProgress, [0, 0.08], [0, 1]);
 
   return (
-    <div
-      ref={containerRef}
-      className={cn("w-full font-sans", className)}
-    >
+    <div ref={containerRef} className={cn("w-full font-sans", className)}>
       <div className="mx-auto max-w-3xl px-1 pb-6 md:pb-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal">
-          {eyebrow}
-        </p>
-        <h2 className="mt-3 text-3xl md:text-4xl leading-tight text-balance text-ink">
-          {title}
-        </h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal">{eyebrow}</p>
+        <h2 className="mt-3 text-3xl md:text-4xl leading-tight text-balance text-ink">{title}</h2>
         {description ? (
-          <p className="mt-4 max-w-xl text-ink-muted leading-relaxed">
-            {description}
-          </p>
+          <p className="mt-4 max-w-xl text-ink-muted leading-relaxed">{description}</p>
         ) : null}
       </div>
 

@@ -45,7 +45,7 @@ export function Marquee({
           "flex-row": !vertical,
           "flex-col": vertical,
         },
-        className
+        className,
       )}
     >
       {Array(reduceMotion ? 1 : repeat)

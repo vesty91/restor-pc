@@ -59,7 +59,7 @@ export function SparklesCore({
           key={d.key}
           className={cn(
             "absolute rounded-full opacity-70",
-            !reduceMotion && "motion-safe:animate-pulse"
+            !reduceMotion && "motion-safe:animate-pulse",
           )}
           style={{
             left: d.left,

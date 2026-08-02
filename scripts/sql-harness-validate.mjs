@@ -45,7 +45,7 @@ function psql(sql, label) {
         input: sql,
         encoding: "utf8",
         stdio: ["pipe", "pipe", "pipe"],
-      }
+      },
     );
     console.log("OK");
   } catch (err) {
@@ -75,7 +75,7 @@ function resetDatabase() {
         "-c",
         "drop schema if exists public cascade; drop schema if exists auth cascade; create schema public; grant all on schema public to postgres; grant all on schema public to public;",
       ],
-      { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+      { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
     );
     console.log("OK");
   } catch (err) {
@@ -102,10 +102,7 @@ for (const file of migrationFiles) {
   psql(sql, file);
 }
 
-const assertions = readFileSync(
-  join(root, "scripts/sql-harness-race-assertions.sql"),
-  "utf8"
-);
+const assertions = readFileSync(join(root, "scripts/sql-harness-race-assertions.sql"), "utf8");
 psql(assertions, "sql-harness-race-assertions.sql");
 
 console.log("\nHarness SQL validation passed.");

@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         "RATE_LIMITED",
         "Trop de tentatives de paiement. Reessayez plus tard.",
         429,
-        requestId
+        requestId,
       );
     }
 
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
         "AUTH_REQUIRED",
         "Compte requis. Créez un compte ou connectez-vous pour acheter.",
         401,
-        requestId
+        requestId,
       );
     }
 
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         "INVALID_BODY",
         publicZodMessage(parsed.error, "Donnees invalides."),
         400,
-        requestId
+        requestId,
       );
     }
 
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
         "PRICE_NOT_CONFIGURED",
         "Paiement indisponible pour ce produit pour le moment.",
         503,
-        requestId
+        requestId,
       );
     }
 
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
         "STRIPE_SESSION_ERROR",
         "Impossible de démarrer le paiement.",
         500,
-        requestId
+        requestId,
       );
     }
 

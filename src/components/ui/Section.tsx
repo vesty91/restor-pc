@@ -37,17 +37,12 @@ export function SectionHeader({
 }) {
   const Heading = as;
   return (
-    <div
-      className={cn(
-        "mb-10 md:mb-14 max-w-2xl",
-        align === "center" && "mx-auto text-center"
-      )}
-    >
+    <div className={cn("mb-10 md:mb-14 max-w-2xl", align === "center" && "mx-auto text-center")}>
       {eyebrow ? (
         <p
           className={cn(
             "mb-3 text-xs font-semibold uppercase tracking-[0.18em]",
-            tone === "dark" ? "text-[#7eb8ff]" : "text-teal"
+            tone === "dark" ? "text-[#7eb8ff]" : "text-teal",
           )}
         >
           {eyebrow}
@@ -56,7 +51,7 @@ export function SectionHeader({
       <Heading
         className={cn(
           "text-3xl md:text-4xl lg:text-[2.75rem] leading-[1.3] text-balance",
-          tone === "dark" && "text-panel-fg"
+          tone === "dark" && "text-panel-fg",
         )}
       >
         {title}
@@ -65,7 +60,7 @@ export function SectionHeader({
         <p
           className={cn(
             "mt-4 text-base md:text-lg leading-relaxed text-balance",
-            tone === "dark" ? "text-white/65" : "text-ink-muted"
+            tone === "dark" ? "text-white/65" : "text-ink-muted",
           )}
         >
           {description}

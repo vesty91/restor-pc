@@ -22,10 +22,10 @@ Auteur audit : agent DevOps (exécution réelle des contrôles)
 
 ## 2. SHA local
 
-| Réf | SHA | Notes |
-|---|---|---|
-| `master` (avant travail) | `b363df4` | working tree clean, = `origin/master` |
-| `security/csp-hardening` (locale) | `2097bf0` | uniquement locale ; 3 fichiers CSP |
+| Réf                                   | SHA       | Notes                                        |
+| ------------------------------------- | --------- | -------------------------------------------- |
+| `master` (avant travail)              | `b363df4` | working tree clean, = `origin/master`        |
+| `security/csp-hardening` (locale)     | `2097bf0` | uniquement locale ; 3 fichiers CSP           |
 | `security/csp-hardening-sync` (créée) | `6b055b7` | cherry-pick propre de `2097bf0` sur `master` |
 
 `git merge-base --is-ancestor 2097bf0 master` → **non** (exit 1).  
@@ -35,24 +35,24 @@ Pas de cherry-pick équivalent déjà dans `master` (blobs `next.config.ts` diff
 
 Chemin : `/volume1/vesty/restor-pc`
 
-| Contrôle | Résultat |
-|---|---|
-| `git rev-parse HEAD` | `b363df4cbb489880bb233742711cdb69092da79b` |
-| Working tree | clean (`git status --short` vide) |
-| Ancêtre `2097bf0` | **non** (objet inconnu sur le NAS) |
-| `Content-Security-Policy-Report-Only` dans `next.config.ts` | **absent** |
-| `src/app/api/csp-report/route.ts` | **absent** |
-| `tests/unit/csp-report.test.ts` | **absent** |
-| Diff non commité CSP | **aucun** |
+| Contrôle                                                    | Résultat                                   |
+| ----------------------------------------------------------- | ------------------------------------------ |
+| `git rev-parse HEAD`                                        | `b363df4cbb489880bb233742711cdb69092da79b` |
+| Working tree                                                | clean (`git status --short` vide)          |
+| Ancêtre `2097bf0`                                           | **non** (objet inconnu sur le NAS)         |
+| `Content-Security-Policy-Report-Only` dans `next.config.ts` | **absent**                                 |
+| `src/app/api/csp-report/route.ts`                           | **absent**                                 |
+| `tests/unit/csp-report.test.ts`                             | **absent**                                 |
+| Diff non commité CSP                                        | **aucun**                                  |
 
 ## 4. Image Docker active
 
-| Champ | Valeur |
-|---|---|
-| Conteneur | `restor-pc` |
-| Image ID | `sha256:273fd297edc08e5d7a2df45a5519e08f1e8ac10295c95445a1b2ad39b74a1c07` |
-| Tag local compose | `restor-pc-restor-pc` |
-| Origine build | `docker compose build` depuis dépôt NAS `@ b363df4` (déploiement du 2026-07-29) |
+| Champ             | Valeur                                                                          |
+| ----------------- | ------------------------------------------------------------------------------- |
+| Conteneur         | `restor-pc`                                                                     |
+| Image ID          | `sha256:273fd297edc08e5d7a2df45a5519e08f1e8ac10295c95445a1b2ad39b74a1c07`       |
+| Tag local compose | `restor-pc-restor-pc`                                                           |
+| Origine build     | `docker compose build` depuis dépôt NAS `@ b363df4` (déploiement du 2026-07-29) |
 
 Contrôles conteneur (sans restart) :
 
@@ -62,23 +62,23 @@ Contrôles conteneur (sans restart) :
 
 ## 5. Présence du commit `2097bf0`
 
-| Cible | Présent ? |
-|---|---|
-| Local `security/csp-hardening` | oui |
-| Local / GitHub `master` | **non** |
-| GitHub remote (tout objet) | **non** |
-| NAS | **non** |
-| Conteneur | **non** (image construite sans ce commit) |
+| Cible                          | Présent ?                                 |
+| ------------------------------ | ----------------------------------------- |
+| Local `security/csp-hardening` | oui                                       |
+| Local / GitHub `master`        | **non**                                   |
+| GitHub remote (tout objet)     | **non**                                   |
+| NAS                            | **non**                                   |
+| Conteneur                      | **non** (image construite sans ce commit) |
 
 Équivalent poussé : `6b055b7` sur `security/csp-hardening-sync` (même contenu, nouveau SHA après cherry-pick).
 
 ## 6. Présence des fichiers CSP par cible
 
-| Fichier | master / NAS / image | branche CSP sync |
-|---|---|---|
-| `next.config.ts` (+ Report-Only + Reporting-Endpoints) | non | oui |
-| `src/app/api/csp-report/route.ts` | non | oui |
-| `tests/unit/csp-report.test.ts` | non | oui |
+| Fichier                                                | master / NAS / image | branche CSP sync |
+| ------------------------------------------------------ | -------------------- | ---------------- |
+| `next.config.ts` (+ Report-Only + Reporting-Endpoints) | non                  | oui              |
+| `src/app/api/csp-report/route.ts`                      | non                  | oui              |
+| `tests/unit/csp-report.test.ts`                        | non                  | oui              |
 
 ## 7. Résultat des en-têtes HTTP
 
@@ -88,27 +88,27 @@ Contrôles conteneur (sans restart) :
 
 ### `https://atelier.restor-pc.fr/`
 
-| Header | Statut |
-|---|---|
+| Header                                  | Statut                 |
+| --------------------------------------- | ---------------------- |
 | `Content-Security-Policy` (enforcement) | **présent** (inchangé) |
-| `Content-Security-Policy-Report-Only` | **absent** |
-| `Reporting-Endpoints` | **absent** |
+| `Content-Security-Policy-Report-Only`   | **absent**             |
+| `Reporting-Endpoints`                   | **absent**             |
 
 ### `https://www.restor-pc.fr/`
 
-| Header | Statut |
-|---|---|
-| `Content-Security-Policy` | absent |
+| Header                                | Statut |
+| ------------------------------------- | ------ |
+| `Content-Security-Policy`             | absent |
 | `Content-Security-Policy-Report-Only` | absent |
-| `Reporting-Endpoints` | absent |
+| `Reporting-Endpoints`                 | absent |
 
 ## 8. Résultat de `/api/csp-report`
 
-| URL | Méthode | Résultat |
-|---|---|---|
-| `https://atelier.restor-pc.fr/api/csp-report` | GET | **404** (page Next HTML) |
-| `https://atelier.restor-pc.fr/api/csp-report` | POST (rapport factice) | **404** (pas de route) |
-| `https://www.restor-pc.fr/api/csp-report` | GET/POST | **200** HTML static (pas l’API Next) |
+| URL                                           | Méthode                | Résultat                             |
+| --------------------------------------------- | ---------------------- | ------------------------------------ |
+| `https://atelier.restor-pc.fr/api/csp-report` | GET                    | **404** (page Next HTML)             |
+| `https://atelier.restor-pc.fr/api/csp-report` | POST (rapport factice) | **404** (pas de route)               |
+| `https://www.restor-pc.fr/api/csp-report`     | GET/POST               | **200** HTML static (pas l’API Next) |
 
 Aucun secret / stack exposé dans les réponses testées.
 
@@ -183,15 +183,15 @@ Si Report-Only pose problème **après** un futur déploiement :
 
 ## Validation locale (branche PR)
 
-| Commande | Résultat |
-|---|---|
-| `npm ci` | OK (après unlock EPERM next-swc) |
-| `npm run typecheck` | OK |
-| `npm run lint` | OK |
-| `npm run test:unit` | OK |
-| `npm run test:integration` | OK |
-| `npm run build` | OK — `.next/server/app/api/csp-report` présent |
-| `npm run test:e2e:ci` | 31 passed / 1 failed (`admin.spec` — hors CSP) |
+| Commande                   | Résultat                                       |
+| -------------------------- | ---------------------------------------------- |
+| `npm ci`                   | OK (après unlock EPERM next-swc)               |
+| `npm run typecheck`        | OK                                             |
+| `npm run lint`             | OK                                             |
+| `npm run test:unit`        | OK                                             |
+| `npm run test:integration` | OK                                             |
+| `npm run build`            | OK — `.next/server/app/api/csp-report` présent |
+| `npm run test:e2e:ci`      | 31 passed / 1 failed (`admin.spec` — hors CSP) |
 
 ## Conclusion
 

@@ -6,14 +6,14 @@ Contexte : PR #19 déjà dans `master` (TanStack, Sonner, Zod, Playwright).
 
 ## État constaté
 
-| Zone | Déjà présent | Gap à combler |
-|---|---|---|
-| Sonner | `notify` + Toaster | Tests ; requestId support ; éviter double feedback |
-| CI | `.github/workflows/ci.yml` (mono-job) | Jobs séparés + integration + e2e + artifacts |
-| Axe | smoke e2e | `color-contrast` désactivé globalement |
-| Stripe | `stripe_events` + `claim_stripe_event` | Retry si claim réussi mais traitement failed ; claim commande atomique ; unique session |
-| user_id | colonne + metadata checkout | Fallback email encore autorisant l’accès ; backfill |
-| Admin | cookie HMAC opaque (secret **pas** dans cookie) | Routes encore `isAtelierAuthed` only ; brancher rôles Supabase ; session secret dédié |
+| Zone    | Déjà présent                                    | Gap à combler                                                                           |
+| ------- | ----------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Sonner  | `notify` + Toaster                              | Tests ; requestId support ; éviter double feedback                                      |
+| CI      | `.github/workflows/ci.yml` (mono-job)           | Jobs séparés + integration + e2e + artifacts                                            |
+| Axe     | smoke e2e                                       | `color-contrast` désactivé globalement                                                  |
+| Stripe  | `stripe_events` + `claim_stripe_event`          | Retry si claim réussi mais traitement failed ; claim commande atomique ; unique session |
+| user_id | colonne + metadata checkout                     | Fallback email encore autorisant l’accès ; backfill                                     |
+| Admin   | cookie HMAC opaque (secret **pas** dans cookie) | Routes encore `isAtelierAuthed` only ; brancher rôles Supabase ; session secret dédié   |
 
 ## Approche
 

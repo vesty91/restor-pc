@@ -28,8 +28,8 @@ export function Footer() {
           <div className="lg:col-span-1">
             <BrandLogo variant="full" />
             <p className="mt-4 text-sm leading-relaxed text-white/70 max-w-xs">
-              Atelier de dépannage informatique à Yerres (91). Diagnostic précis,
-              réparation soignée, configurations sur mesure.
+              Atelier de dépannage informatique à Yerres (91). Diagnostic précis, réparation
+              soignée, configurations sur mesure.
             </p>
             <p className="mt-3 text-xs text-white/55">{siteConfig.guarantee}</p>
           </div>
@@ -50,9 +50,7 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/55">
-              Infos
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/55">Infos</p>
             <ul className="mt-4 space-y-2.5">
               {legal.map((l) => (
                 <li key={l.href}>
@@ -87,7 +85,10 @@ export function Footer() {
             </p>
             <ul className="mt-4 space-y-3 text-sm text-white/80">
               <li>
-                <a href={siteConfig.phoneHref} className="inline-flex items-center gap-2 hover:text-white">
+                <a
+                  href={siteConfig.phoneHref}
+                  className="inline-flex items-center gap-2 hover:text-white"
+                >
                   <Phone className="h-4 w-4 text-teal" />
                   {siteConfig.phone}
                 </a>
@@ -104,7 +105,10 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href={siteConfig.emailHref} className="inline-flex items-center gap-2 hover:text-white">
+                <a
+                  href={siteConfig.emailHref}
+                  className="inline-flex items-center gap-2 hover:text-white"
+                >
                   <Mail className="h-4 w-4 text-teal" />
                   {siteConfig.email}
                 </a>
@@ -132,8 +136,8 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/55 md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {siteConfig.name} — {siteConfig.city} ({siteConfig.postalCode}).
-            Tous droits réservés.
+            © {new Date().getFullYear()} {siteConfig.name} — {siteConfig.city} (
+            {siteConfig.postalCode}). Tous droits réservés.
           </p>
           <p>Diagnostic · Réparation · Montage · Assistance</p>
         </div>

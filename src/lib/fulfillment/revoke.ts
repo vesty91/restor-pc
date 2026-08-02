@@ -66,8 +66,7 @@ export async function revokeAccessByPaymentIntent(opts: {
           shareId: row.share_id,
         });
       } catch (err) {
-        revokeError =
-          err instanceof Error ? err.message.slice(0, 500) : "NAS_REVOKE_FAILED";
+        revokeError = err instanceof Error ? err.message.slice(0, 500) : "NAS_REVOKE_FAILED";
         logEvent("error", "nas.link.revoke_failed", {
           orderId: row.order_id,
           shareId: row.share_id,
@@ -116,7 +115,7 @@ async function fallbackClaimRevocation(opts: {
       stripe_event_id: opts.stripeEventId ?? null,
       updated_at: new Date().toISOString(),
     },
-    { onConflict: "payment_intent_id" }
+    { onConflict: "payment_intent_id" },
   );
 
   const { data: orders } = await sb
@@ -127,11 +126,7 @@ async function fallbackClaimRevocation(opts: {
   const rows: RevocationOrderRow[] = [];
   for (const o of orders ?? []) {
     const nextStatus =
-      o.status === "refunded"
-        ? "refunded"
-        : opts.reason === "refunded"
-          ? "refunded"
-          : opts.reason;
+      o.status === "refunded" ? "refunded" : opts.reason === "refunded" ? "refunded" : opts.reason;
 
     await sb
       .from("tool_orders")
@@ -163,7 +158,7 @@ async function fallbackClaimRevocation(opts: {
 
 /** True si un refund/dispute a déjà été enregistré pour ce PI (fulfill hors-ordre). */
 export async function isPaymentIntentRevoked(
-  paymentIntentId: string | null | undefined
+  paymentIntentId: string | null | undefined,
 ): Promise<RevocationReason | null> {
   if (!paymentIntentId?.trim()) return null;
   const sb = getSupabaseAdmin();
@@ -188,17 +183,13 @@ export async function cleanupOrphanFulfillmentAssets(opts: {
 }): Promise<void> {
   const sb = getSupabaseAdmin();
 
-  await sb
-    .from("script_licenses")
-    .update({ status: "revoked" })
-    .eq("license_key", opts.licenseKey);
+  await sb.from("script_licenses").update({ status: "revoked" }).eq("license_key", opts.licenseKey);
 
   let revokeError: string | null = null;
   try {
     await revokeNasShare(opts.shareId);
   } catch (err) {
-    revokeError =
-      err instanceof Error ? err.message.slice(0, 500) : "NAS_REVOKE_FAILED";
+    revokeError = err instanceof Error ? err.message.slice(0, 500) : "NAS_REVOKE_FAILED";
   }
 
   await sb

@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 const InterventionTimelineClient = dynamic(
   () =>
     import("@/components/home/InterventionTimelineClient").then(
-      (m) => m.InterventionTimelineClient
+      (m) => m.InterventionTimelineClient,
     ),
   {
     loading: () => (
@@ -17,7 +17,7 @@ const InterventionTimelineClient = dynamic(
         </div>
       </section>
     ),
-  }
+  },
 );
 
 export function InterventionTimeline() {

@@ -21,8 +21,7 @@ const STEPS = [
   },
   {
     title: "4. Devis & validation",
-    content:
-      "Proposition claire avec options. Aucune intervention facturée sans votre accord.",
+    content: "Proposition claire avec options. Aucune intervention facturée sans votre accord.",
   },
   {
     title: "5. Intervention",

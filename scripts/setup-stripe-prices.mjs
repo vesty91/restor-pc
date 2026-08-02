@@ -65,7 +65,7 @@ async function main() {
       "STRIPE_SECRET_KEY manquant dans .env.local.\n" +
         "1. Dashboard Stripe → Mode test → Développeurs → Clés API\n" +
         "2. Colle sk_test_… dans STRIPE_SECRET_KEY\n" +
-        "3. Relance : npm run stripe:setup-prices"
+        "3. Relance : npm run stripe:setup-prices",
     );
     process.exit(1);
   }

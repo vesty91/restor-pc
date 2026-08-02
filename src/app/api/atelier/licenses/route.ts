@@ -49,7 +49,7 @@ export async function GET(request: Request) {
       "INVALID_QUERY",
       publicZodMessage(parsed.error, "Parametres invalides."),
       400,
-      requestId
+      requestId,
     );
   }
 
@@ -68,7 +68,7 @@ export async function GET(request: Request) {
   if (status) query = query.eq("status", status);
   if (q) {
     query = query.or(
-      `license_key.ilike.%${q}%,note.ilike.%${q}%,script_id.ilike.%${q}%,machine_name.ilike.%${q}%,bios_serial.ilike.%${q}%`
+      `license_key.ilike.%${q}%,note.ilike.%${q}%,script_id.ilike.%${q}%,machine_name.ilike.%${q}%,bios_serial.ilike.%${q}%`,
     );
   }
 
@@ -101,7 +101,7 @@ export async function POST(request: Request) {
         "INVALID_BODY",
         publicZodMessage(parsed.error, "Donnees invalides."),
         400,
-        requestId
+        requestId,
       );
     }
 
@@ -143,7 +143,7 @@ export async function PATCH(request: Request) {
         "INVALID_BODY",
         publicZodMessage(parsed.error, "Donnees invalides."),
         400,
-        requestId
+        requestId,
       );
     }
 
@@ -190,7 +190,7 @@ export async function DELETE(request: Request) {
         "INVALID_BODY",
         publicZodMessage(parsed.error, "Donnees invalides."),
         400,
-        requestId
+        requestId,
       );
     }
 
@@ -213,7 +213,7 @@ export async function DELETE(request: Request) {
         "NOT_REVOKED",
         "Seules les licences revoked peuvent etre supprimees.",
         400,
-        requestId
+        requestId,
       );
     }
 

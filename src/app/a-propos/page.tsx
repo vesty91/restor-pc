@@ -8,14 +8,7 @@ import { Section } from "@/components/ui/Section";
 import { processSteps } from "@/lib/data/faq";
 import { commitments, trustStats } from "@/lib/data/testimonials";
 import { siteConfig } from "@/lib/site";
-import {
-  FileCheck2,
-  LockKeyhole,
-  MapPin,
-  MessageCircle,
-  Shield,
-  Users,
-} from "lucide-react";
+import { FileCheck2, LockKeyhole, MapPin, MessageCircle, Shield, Users } from "lucide-react";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
@@ -71,9 +64,9 @@ export default function AboutPage() {
             </Badge>
             <h2 className="text-xl md:text-2xl">Comprendre avant de réparer</h2>
             <p className="mt-3 leading-relaxed text-ink-muted">
-              Vous comprendrez toujours ce qui ne va pas, ce que nous proposons,
-              et pourquoi. Pas de pièces inutiles. Pas de pression commerciale.
-              Juste la solution la plus juste pour votre usage et votre budget.
+              Vous comprendrez toujours ce qui ne va pas, ce que nous proposons, et pourquoi. Pas de
+              pièces inutiles. Pas de pression commerciale. Juste la solution la plus juste pour
+              votre usage et votre budget.
             </p>
           </article>
           <article className="rounded-[24px] border border-line bg-paper p-6 md:p-8">
@@ -82,10 +75,9 @@ export default function AboutPage() {
             </Badge>
             <h2 className="text-xl md:text-2xl">Pourquoi ici ?</h2>
             <p className="mt-3 leading-relaxed text-ink-muted">
-              Un atelier de proximité, accessible en RER D et en voiture, pour
-              intervenir vite sur Yerres et les communes voisines — sans plateforme
-              anonyme. Vous parlez à la personne qui mettra les mains dans la
-              machine.
+              Un atelier de proximité, accessible en RER D et en voiture, pour intervenir vite sur
+              Yerres et les communes voisines — sans plateforme anonyme. Vous parlez à la personne
+              qui mettra les mains dans la machine.
             </p>
           </article>
         </div>
@@ -99,9 +91,8 @@ export default function AboutPage() {
           </div>
           <h2 className="mt-3 text-xl md:text-2xl">Un interlocuteur unique</h2>
           <p className="mt-3 max-w-3xl leading-relaxed text-ink-muted">
-            Particuliers, indépendants, créatifs, gamers et petites structures qui
-            veulent quelqu’un capable de dépanner demain et de monter une config
-            sérieuse la semaine suivante.
+            Particuliers, indépendants, créatifs, gamers et petites structures qui veulent quelqu’un
+            capable de dépanner demain et de monter une config sérieuse la semaine suivante.
           </p>
           <ul className="mt-5 flex flex-wrap gap-2">
             {audience.map((item) => (
@@ -126,10 +117,7 @@ export default function AboutPage() {
         </p>
         <ol className="mt-8 grid list-none gap-4 p-0 md:grid-cols-2 lg:grid-cols-4">
           {processSteps.map((s) => (
-            <li
-              key={s.step}
-              className="rounded-[20px] border border-line bg-surface p-5"
-            >
+            <li key={s.step} className="rounded-[20px] border border-line bg-surface p-5">
               <Badge variant="outline" className="font-mono">
                 {s.step}
               </Badge>
@@ -181,8 +169,8 @@ export default function AboutPage() {
             </Badge>
             <h2 className="text-2xl md:text-3xl">Venez nous voir</h2>
             <p className="mt-3 max-w-lg leading-relaxed text-ink-muted">
-              Dépôt et retrait sur rendez-vous. Ou intervention à domicile sur
-              Yerres et les communes voisines.
+              Dépôt et retrait sur rendez-vous. Ou intervention à domicile sur Yerres et les
+              communes voisines.
             </p>
             <ul className="mt-5 space-y-2 text-sm text-ink-soft">
               <li className="flex gap-2">

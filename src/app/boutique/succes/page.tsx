@@ -20,12 +20,7 @@ export default async function BoutiqueSuccesPage({
   return (
     <Section className="noise-bg pb-16 pt-20 md:pt-28">
       <PurchaseSuccessTracker sessionId={sp.session_id} />
-      <Breadcrumbs
-        items={[
-          { label: "Boutique", href: "/boutique" },
-          { label: "Succès" },
-        ]}
-      />
+      <Breadcrumbs items={[{ label: "Boutique", href: "/boutique" }, { label: "Succès" }]} />
       <div className="mt-6">
         <div className="mb-4 flex flex-wrap gap-2">
           <StatusBadge status="fulfilled" />

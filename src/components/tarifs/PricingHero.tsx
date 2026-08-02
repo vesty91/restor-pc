@@ -39,22 +39,13 @@ export function PricingHero() {
 
       <div className="relative">
         <div className="flex flex-wrap gap-2">
-          <Badge
-            variant="info"
-            className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
-          >
+          <Badge variant="info" className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]">
             Tarifs · {siteConfig.city}
           </Badge>
-          <Badge
-            variant="outline"
-            className="border-white/20 bg-white/5 text-white/80"
-          >
+          <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
             Devis avant travaux
           </Badge>
-          <Badge
-            variant="outline"
-            className="border-white/20 bg-white/5 text-white/80"
-          >
+          <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
             Sans surprise
           </Badge>
         </div>
@@ -65,8 +56,8 @@ export function PricingHero() {
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/65 md:text-lg">
           Domicile dès {formatPrice(DOMICILE_MIN)} la première heure · urgence dès{" "}
-          {formatPrice(URGENCY_RATES.standard)} · atelier au forfait. Pas
-          d’intervention à distance — vous venez, ou je me déplace.
+          {formatPrice(URGENCY_RATES.standard)} · atelier au forfait. Pas d’intervention à distance
+          — vous venez, ou je me déplace.
         </p>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -83,20 +74,10 @@ export function PricingHero() {
   );
 }
 
-function StatChip({
-  label,
-  value,
-  hint,
-}: {
-  label: string;
-  value: string;
-  hint: string;
-}) {
+function StatChip({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">
-        {label}
-      </p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">{label}</p>
       <p className="mt-1 font-display text-2xl tracking-tight text-white">
         {value}
         <span className="ml-1 text-sm font-sans font-medium text-white/45">{hint}</span>

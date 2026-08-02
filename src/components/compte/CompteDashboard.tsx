@@ -5,10 +5,7 @@ import { StatusBadge } from "@/components/restor-pc/status-badge";
 import { ReceiptSkeleton } from "@/components/animata/receipt-skeleton";
 import { createClient, signOutClient } from "@/lib/supabase/client";
 import { siteConfig } from "@/lib/site";
-import {
-  DISPLAY_FIRST_NAME_KEY,
-  normalizeFirstNameInput,
-} from "@/lib/user-display";
+import { DISPLAY_FIRST_NAME_KEY, normalizeFirstNameInput } from "@/lib/user-display";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -260,15 +257,19 @@ export function CompteDashboard({
       <div className="rounded-[24px] border border-line bg-paper p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-display text-xl tracking-tight">Mes commandes</h2>
-          <Button type="button" variant="ghost" size="sm" onClick={() => void load()} disabled={loading}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => void load()}
+            disabled={loading}
+          >
             {loading ? "…" : "Actualiser"}
           </Button>
         </div>
 
         {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
-        {resendMsg ? (
-          <p className="mt-3 text-sm text-ink-muted">{resendMsg}</p>
-        ) : null}
+        {resendMsg ? <p className="mt-3 text-sm text-ink-muted">{resendMsg}</p> : null}
 
         {!loading && orders.length === 0 ? (
           <p className="mt-6 text-sm text-ink-muted">
@@ -304,9 +305,7 @@ export function CompteDashboard({
                     </div>
                     {lic ? (
                       <div className="text-right">
-                        <StatusBadge
-                          status={lic.status === "active" ? "active" : "expired"}
-                        />
+                        <StatusBadge status={lic.status === "active" ? "active" : "expired"} />
                         <p className="mt-1 text-xs text-ink-muted">
                           {lic.machine_id
                             ? `${lic.machine_name || "PC lié"}${lic.bios_serial ? ` · SN ${lic.bios_serial}` : ""}`
@@ -357,8 +356,8 @@ export function CompteDashboard({
                         </p>
                       ) : null}
                       <p className="text-xs text-ink-muted">
-                        Limite : {o.expire_times ?? 1} téléchargement(s). Si le lien refuse
-                        l’accès, contactez-nous pour un nouveau lien.
+                        Limite : {o.expire_times ?? 1} téléchargement(s). Si le lien refuse l’accès,
+                        contactez-nous pour un nouveau lien.
                       </p>
                       <div className="pt-1">
                         <Button

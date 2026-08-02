@@ -6,14 +6,11 @@ export function getOpenStatus(now = new Date()): {
   label: string;
   detail: string;
 } {
-  const paris = new Date(
-    now.toLocaleString("en-US", { timeZone: "Europe/Paris" })
-  );
+  const paris = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" }));
   const day = paris.getDay(); // 0 = dimanche
   const hour = paris.getHours() + paris.getMinutes() / 60;
   const isOpenDay = siteConfig.openDays.includes(day);
-  const open =
-    isOpenDay && hour >= siteConfig.openHour && hour < siteConfig.closeHour;
+  const open = isOpenDay && hour >= siteConfig.openHour && hour < siteConfig.closeHour;
 
   if (open) {
     return {

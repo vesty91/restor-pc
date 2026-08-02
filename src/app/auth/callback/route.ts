@@ -22,16 +22,10 @@ function resolveRedirectOrigin(request: Request): string {
   const envUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "");
   if (envUrl) return envUrl;
 
-  const hostHeader =
-    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  const hostHeader = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
   const proto = request.headers.get("x-forwarded-proto");
   const host = hostHeader?.split(",")[0]?.trim();
-  if (
-    host &&
-    proto &&
-    !/^0\.0\.0\.0(:\d+)?$/i.test(host) &&
-    !/^localhost(:\d+)?$/i.test(host)
-  ) {
+  if (host && proto && !/^0\.0\.0\.0(:\d+)?$/i.test(host) && !/^localhost(:\d+)?$/i.test(host)) {
     return `${proto}://${host}`;
   }
 
@@ -61,6 +55,6 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.redirect(
-    `${origin}/compte?error=oauth&mode=login${next !== "/compte" ? `&next=${encodeURIComponent(next)}` : ""}`
+    `${origin}/compte?error=oauth&mode=login${next !== "/compte" ? `&next=${encodeURIComponent(next)}` : ""}`,
   );
 }

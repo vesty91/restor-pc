@@ -1,10 +1,6 @@
 "use client";
 
-export function SceneFallback({
-  label = "Chargement du diagnostic 3D…",
-}: {
-  label?: string;
-}) {
+export function SceneFallback({ label = "Chargement du diagnostic 3D…" }: { label?: string }) {
   return (
     <div
       className="flex h-full min-h-[320px] w-full items-center justify-center rounded-[28px] border border-white/10 bg-black/25 backdrop-blur-sm"
@@ -13,9 +9,7 @@ export function SceneFallback({
     >
       <div className="text-center px-6">
         <span className="mx-auto mb-3 block h-8 w-8 rounded-full border-2 border-[#4ba3ff]/35 border-t-[#4ba3ff] animate-spin" />
-        <p className="font-mono text-[11px] tracking-wider text-white/45 uppercase">
-          {label}
-        </p>
+        <p className="font-mono text-[11px] tracking-wider text-white/45 uppercase">{label}</p>
       </div>
     </div>
   );

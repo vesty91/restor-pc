@@ -32,19 +32,8 @@ function TracePath({
   color?: string;
   opacity?: number;
 }) {
-  const vectors = useMemo(
-    () => points.map((p) => new THREE.Vector3(...p)),
-    [points]
-  );
-  return (
-    <Line
-      points={vectors}
-      color={color}
-      lineWidth={1.8}
-      transparent
-      opacity={opacity}
-    />
-  );
+  const vectors = useMemo(() => points.map((p) => new THREE.Vector3(...p)), [points]);
+  return <Line points={vectors} color={color} lineWidth={1.8} transparent opacity={opacity} />;
 }
 
 function FanBlades({ spinning }: { spinning: boolean }) {
@@ -55,27 +44,16 @@ function FanBlades({ spinning }: { spinning: boolean }) {
   return (
     <group ref={ref}>
       {[0, 1, 2, 3, 4, 5].map((i) => (
-        <mesh
-          key={i}
-          rotation={[0, (i * Math.PI) / 3, 0]}
-          position={[0, 0, 0]}
-        >
+        <mesh key={i} rotation={[0, (i * Math.PI) / 3, 0]} position={[0, 0, 0]}>
           <boxGeometry args={[0.42, 0.02, 0.1]} />
-          <meshStandardMaterial
-            color="#6a849c"
-            metalness={0.55}
-            roughness={0.35}
-          />
+          <meshStandardMaterial color="#6a849c" metalness={0.55} roughness={0.35} />
         </mesh>
       ))}
     </group>
   );
 }
 
-export function DiagnosticRig({
-  motion,
-  quality = "high",
-}: DiagnosticRigProps) {
+export function DiagnosticRig({ motion, quality = "high" }: DiagnosticRigProps) {
   const root = useRef<THREE.Group>(null);
   const cpu = useRef<THREE.Group>(null);
   const cooler = useRef<THREE.Group>(null);
@@ -128,12 +106,11 @@ export function DiagnosticRig({
           [-0.2, 0.06, 0.48],
         ],
       ] as Vec3[][],
-    []
+    [],
   );
 
   const detail = quality !== "low";
-  const explodeAmp =
-    quality === "high" ? 0.1 : quality === "medium" ? 0.07 : 0.03;
+  const explodeAmp = quality === "high" ? 0.1 : quality === "medium" ? 0.07 : 0.03;
   const baseTilt = quality === "low" ? 0.22 : 0.3;
 
   useFrame((state, delta) => {
@@ -147,18 +124,13 @@ export function DiagnosticRig({
     }
     const ease = 1 - Math.pow(1 - entry.current, 3);
 
-    const explode = motion.reducedMotion
-      ? 0.15
-      : (Math.sin(t * 0.45) * 0.5 + 0.5) * explodeAmp;
+    const explode = motion.reducedMotion ? 0.15 : (Math.sin(t * 0.45) * 0.5 + 0.5) * explodeAmp;
 
     if (root.current) {
       const scrollFactor = Math.min(1, motion.scrollY / 800);
-      const parallax =
-        quality === "low" ? 0 : quality === "medium" ? 0.5 : 1;
-      root.current.rotation.y =
-        t * 0.035 + motion.mouseX * 0.04 * parallax;
-      root.current.rotation.x =
-        baseTilt + motion.mouseY * -0.03 * parallax + scrollFactor * 0.02;
+      const parallax = quality === "low" ? 0 : quality === "medium" ? 0.5 : 1;
+      root.current.rotation.y = t * 0.035 + motion.mouseX * 0.04 * parallax;
+      root.current.rotation.x = baseTilt + motion.mouseY * -0.03 * parallax + scrollFactor * 0.02;
       root.current.position.y = Math.sin(t * 0.6) * 0.025;
       root.current.visible = ease > 0.02;
     }
@@ -232,11 +204,7 @@ export function DiagnosticRig({
       {/* I/O shield bar */}
       <mesh position={[0, 0.12, -1.18]}>
         <boxGeometry args={[2.4, 0.18, 0.08]} />
-        <meshStandardMaterial
-          color={METAL}
-          metalness={0.75}
-          roughness={0.25}
-        />
+        <meshStandardMaterial color={METAL} metalness={0.75} roughness={0.25} />
       </mesh>
 
       {/* Chipset / VRMs */}
@@ -266,11 +234,7 @@ export function DiagnosticRig({
         ).map((p, i) => (
           <mesh key={i} position={p}>
             <cylinderGeometry args={[0.07, 0.07, 0.12, 10]} />
-            <meshStandardMaterial
-              color="#3d5a72"
-              metalness={0.6}
-              roughness={0.3}
-            />
+            <meshStandardMaterial color="#3d5a72" metalness={0.6} roughness={0.3} />
           </mesh>
         ))}
 
@@ -288,11 +252,7 @@ export function DiagnosticRig({
       <group ref={cpu} position={[0, 0.08, 0]}>
         <mesh>
           <boxGeometry args={[0.85, 0.08, 0.85]} />
-          <meshStandardMaterial
-            color="#2c445c"
-            metalness={0.55}
-            roughness={0.3}
-          />
+          <meshStandardMaterial color="#2c445c" metalness={0.55} roughness={0.3} />
         </mesh>
         <mesh position={[0, 0.06, 0]}>
           <boxGeometry args={[0.58, 0.06, 0.58]} />
@@ -315,11 +275,7 @@ export function DiagnosticRig({
         ).map((p, i) => (
           <mesh key={i} position={p}>
             <boxGeometry args={[0.05, 0.04, 0.05]} />
-            <meshStandardMaterial
-              color={METAL}
-              metalness={0.85}
-              roughness={0.2}
-            />
+            <meshStandardMaterial color={METAL} metalness={0.85} roughness={0.2} />
           </mesh>
         ))}
       </group>
@@ -328,11 +284,7 @@ export function DiagnosticRig({
       <group ref={cooler} position={[0, 0.42, 0]}>
         <mesh position={[0, -0.08, 0]}>
           <cylinderGeometry args={[0.38, 0.42, 0.18, 20]} />
-          <meshStandardMaterial
-            color={METAL_DARK}
-            metalness={0.65}
-            roughness={0.3}
-          />
+          <meshStandardMaterial color={METAL_DARK} metalness={0.65} roughness={0.3} />
         </mesh>
         <mesh>
           <torusGeometry args={[0.36, 0.04, 10, 28]} />
@@ -347,11 +299,7 @@ export function DiagnosticRig({
         <FanBlades spinning={!motion.reducedMotion && quality !== "low"} />
         <mesh position={[0, 0.02, 0]}>
           <cylinderGeometry args={[0.08, 0.08, 0.06, 12]} />
-          <meshStandardMaterial
-            color={METAL}
-            metalness={0.8}
-            roughness={0.2}
-          />
+          <meshStandardMaterial color={METAL} metalness={0.8} roughness={0.2} />
         </mesh>
       </group>
 
@@ -369,19 +317,11 @@ export function DiagnosticRig({
         </mesh>
         <mesh position={[0.02, 0.2, 0.03]}>
           <boxGeometry args={[0.04, 0.12, 0.02]} />
-          <meshStandardMaterial
-            color={ACCENT}
-            emissive={ACCENT}
-            emissiveIntensity={0.7}
-          />
+          <meshStandardMaterial color={ACCENT} emissive={ACCENT} emissiveIntensity={0.7} />
         </mesh>
         <mesh position={[0, -0.32, 0]}>
           <boxGeometry args={[0.14, 0.06, 0.05]} />
-          <meshStandardMaterial
-            color={METAL}
-            metalness={0.8}
-            roughness={0.2}
-          />
+          <meshStandardMaterial color={METAL} metalness={0.8} roughness={0.2} />
         </mesh>
       </group>
       <group ref={ramB} position={[1.28, 0.12, 0.05]} rotation={[0, -0.05, 0.04]}>
@@ -397,28 +337,16 @@ export function DiagnosticRig({
         </mesh>
         <mesh position={[0.02, 0.15, 0.03]}>
           <boxGeometry args={[0.04, 0.1, 0.02]} />
-          <meshStandardMaterial
-            color={ACCENT}
-            emissive={ACCENT}
-            emissiveIntensity={0.55}
-          />
+          <meshStandardMaterial color={ACCENT} emissive={ACCENT} emissiveIntensity={0.55} />
         </mesh>
         <mesh position={[0, -0.32, 0]}>
           <boxGeometry args={[0.14, 0.06, 0.05]} />
-          <meshStandardMaterial
-            color={METAL}
-            metalness={0.8}
-            roughness={0.2}
-          />
+          <meshStandardMaterial color={METAL} metalness={0.8} roughness={0.2} />
         </mesh>
       </group>
 
       {/* ——— GPU ——— */}
-      <group
-        ref={gpu}
-        position={[0.15, -0.05, 0.15]}
-        rotation={[0.02, 0.12, 0]}
-      >
+      <group ref={gpu} position={[0.15, -0.05, 0.15]} rotation={[0.02, 0.12, 0]}>
         <mesh>
           <boxGeometry args={[2.1, 0.22, 0.55]} />
           <meshStandardMaterial
@@ -432,11 +360,7 @@ export function DiagnosticRig({
         {/* shroud / fins hint */}
         <mesh position={[0, 0.14, 0]}>
           <boxGeometry args={[1.9, 0.06, 0.48]} />
-          <meshStandardMaterial
-            color="#3a556c"
-            metalness={0.6}
-            roughness={0.32}
-          />
+          <meshStandardMaterial color="#3a556c" metalness={0.6} roughness={0.32} />
         </mesh>
         <mesh position={[-0.55, 0.18, 0]}>
           <cylinderGeometry args={[0.14, 0.14, 0.05, 14]} />
@@ -450,20 +374,12 @@ export function DiagnosticRig({
         </mesh>
         <mesh position={[0.35, 0.18, 0]}>
           <cylinderGeometry args={[0.14, 0.14, 0.05, 14]} />
-          <meshStandardMaterial
-            color="#5a738a"
-            metalness={0.65}
-            roughness={0.3}
-          />
+          <meshStandardMaterial color="#5a738a" metalness={0.65} roughness={0.3} />
         </mesh>
         {/* PCIe gold contacts */}
         <mesh position={[0, -0.08, -0.22]}>
           <boxGeometry args={[1.6, 0.04, 0.08]} />
-          <meshStandardMaterial
-            color="#c4a35a"
-            metalness={0.85}
-            roughness={0.25}
-          />
+          <meshStandardMaterial color="#c4a35a" metalness={0.85} roughness={0.25} />
         </mesh>
         <mesh position={[0.85, 0.02, 0.28]}>
           <boxGeometry args={[0.35, 0.08, 0.04]} />
@@ -500,11 +416,7 @@ export function DiagnosticRig({
         </mesh>
         <mesh position={[0.32, 0, 0]}>
           <boxGeometry args={[0.12, 0.035, 0.22]} />
-          <meshStandardMaterial
-            color={METAL}
-            metalness={0.8}
-            roughness={0.2}
-          />
+          <meshStandardMaterial color={METAL} metalness={0.8} roughness={0.2} />
         </mesh>
       </group>
 

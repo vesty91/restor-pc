@@ -7,14 +7,8 @@ import {
 import { sendPurchaseEmail } from "@/lib/fulfillment/email";
 import { generateLicenseKey, generateSharePassword } from "@/lib/fulfillment/keys";
 import { createNasOneTimeShare } from "@/lib/fulfillment/nas";
-import {
-  FULFILLABLE_STATUSES,
-  type OrderStatus,
-} from "@/lib/fulfillment/order-status";
-import {
-  cleanupOrphanFulfillmentAssets,
-  isPaymentIntentRevoked,
-} from "@/lib/fulfillment/revoke";
+import { FULFILLABLE_STATUSES, type OrderStatus } from "@/lib/fulfillment/order-status";
+import { cleanupOrphanFulfillmentAssets, isPaymentIntentRevoked } from "@/lib/fulfillment/revoke";
 import { getSupabaseAdmin } from "@/lib/fulfillment/supabase";
 import { getTermsVersion } from "@/lib/env";
 import { logEvent } from "@/lib/logging/logger";
@@ -156,7 +150,7 @@ async function reserveOrder(input: FulfillInput): Promise<OrderRow> {
   const { data: existing } = await sb
     .from("tool_orders")
     .select(
-      "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
+      "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id",
     )
     .eq("order_ref", input.orderRef)
     .maybeSingle();
@@ -179,18 +173,16 @@ async function reserveOrder(input: FulfillInput): Promise<OrderRow> {
       stripe_event_id: input.stripeEventId ?? null,
       stripe_payment_intent_id: input.stripePaymentIntentId ?? null,
       stripe_price_id: input.stripePriceId ?? null,
-      stripe_checkout_session_id:
-        input.source === "stripe" ? input.orderRef : null,
+      stripe_checkout_session_id: input.source === "stripe" ? input.orderRef : null,
       amount_total: input.amountTotal ?? null,
       currency: input.currency ?? null,
       terms_version: input.termsVersion ?? getTermsVersion(),
       terms_accepted_at: input.termsAcceptedAt ?? null,
       withdrawal_consent_at: input.withdrawalConsentAt ?? null,
-      digital_delivery_requested_at:
-        input.digitalDeliveryRequestedAt ?? now,
+      digital_delivery_requested_at: input.digitalDeliveryRequestedAt ?? now,
     })
     .select(
-      "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
+      "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id",
     )
     .single();
 
@@ -200,7 +192,7 @@ async function reserveOrder(input: FulfillInput): Promise<OrderRow> {
       const { data: raced } = await sb
         .from("tool_orders")
         .select(
-          "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
+          "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id",
         )
         .eq("order_ref", input.orderRef)
         .maybeSingle();
@@ -237,8 +229,7 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
   }
 
   if (input.userId) {
-    const uuidRe =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     if (!uuidRe.test(input.userId)) {
       throw new AppError({
         code: "INVALID_USER_ID",
@@ -252,9 +243,7 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
   const order = await reserveOrder(input);
 
   // Refund/dispute arrivé avant ou pendant la livraison (hors-ordre Stripe)
-  const revokedReason = await isPaymentIntentRevoked(
-    input.stripePaymentIntentId
-  );
+  const revokedReason = await isPaymentIntentRevoked(input.stripePaymentIntentId);
   if (revokedReason) {
     await sb
       .from("tool_orders")
@@ -351,7 +340,7 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
       const { data: again } = await sb
         .from("tool_orders")
         .select(
-          "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
+          "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id",
         )
         .eq("id", order.id)
         .maybeSingle();
@@ -384,7 +373,7 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
     const { data: again } = await sb
       .from("tool_orders")
       .select(
-        "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id"
+        "id, status, license_key, share_url, share_password, expire_times, tool_title, script_id, email_sent_at, email_id, email_error, user_id",
       )
       .eq("id", order.id)
       .maybeSingle();
@@ -531,18 +520,15 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
     });
   }
 
-  const { data: finalized, error: updErr } = await sb.rpc(
-    "finalize_tool_order_fulfillment",
-    {
-      p_order_id: order.id,
-      p_license_key: licenseKey,
-      p_share_id: share.id,
-      p_share_url: share.url,
-      p_share_password: share.password,
-      p_expire_times: expireTimes,
-      p_user_id: input.userId ?? order.user_id,
-    }
-  );
+  const { data: finalized, error: updErr } = await sb.rpc("finalize_tool_order_fulfillment", {
+    p_order_id: order.id,
+    p_license_key: licenseKey,
+    p_share_id: share.id,
+    p_share_url: share.url,
+    p_share_password: share.password,
+    p_expire_times: expireTimes,
+    p_user_id: input.userId ?? order.user_id,
+  });
 
   if (updErr) {
     // Fallback : update conditionnel status=processing uniquement
@@ -575,9 +561,7 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
       });
     }
     if (!updated) {
-      const reason =
-        (await isPaymentIntentRevoked(input.stripePaymentIntentId)) ??
-        "refunded";
+      const reason = (await isPaymentIntentRevoked(input.stripePaymentIntentId)) ?? "refunded";
       await cleanupOrphanFulfillmentAssets({
         orderId: order.id,
         licenseKey,
@@ -591,8 +575,7 @@ export async function fulfillToolOrder(input: FulfillInput): Promise<FulfillResu
       });
     }
   } else if (finalized !== true) {
-    const reason =
-      (await isPaymentIntentRevoked(input.stripePaymentIntentId)) ?? "refunded";
+    const reason = (await isPaymentIntentRevoked(input.stripePaymentIntentId)) ?? "refunded";
     await cleanupOrphanFulfillmentAssets({
       orderId: order.id,
       licenseKey,

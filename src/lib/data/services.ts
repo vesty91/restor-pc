@@ -21,8 +21,7 @@ export const services: Service[] = [
     slug: "depannage-informatique",
     title: "Dépannage informatique",
     shortTitle: "Dépannage",
-    excerpt:
-      "PC lent, écrans bleus, pannes soudaines : diagnostic clair et intervention ciblée.",
+    excerpt: "PC lent, écrans bleus, pannes soudaines : diagnostic clair et intervention ciblée.",
     description:
       "Votre ordinateur refuse de démarrer, plante sans raison ou devient inutilisable ? Restor-PC réalise un diagnostic méthodique pour identifier la cause réelle — matérielle ou logicielle — puis applique la solution la plus fiable, sans surfacturation ni jargon inutile.",
     icon: "Wrench",
@@ -67,8 +66,7 @@ export const services: Service[] = [
     slug: "reparation-pc",
     title: "Réparation PC",
     shortTitle: "Réparation",
-    excerpt:
-      "Remplacement de composants, réparation hardware, restauration de performance.",
+    excerpt: "Remplacement de composants, réparation hardware, restauration de performance.",
     description:
       "Disque HS, alimentation défaillante, surchauffe, écran défectueux : nous réparons ou remplaçons les pièces défaillantes avec des composants de qualité, en respectant la compatibilité et la durée de vie de votre machine.",
     icon: "Cpu",
@@ -113,8 +111,7 @@ export const services: Service[] = [
     slug: "virus-optimisation",
     title: "Suppression de virus & optimisation",
     shortTitle: "Virus & perf.",
-    excerpt:
-      "Nettoyage malware, accélération système et regain de fluidité au quotidien.",
+    excerpt: "Nettoyage malware, accélération système et regain de fluidité au quotidien.",
     description:
       "Adware, ransomware, navigateurs saturés, démarrage interminable : nous nettoyons en profondeur, sécurisons le système et optimisons Windows pour retrouver un PC fluide et stable.",
     icon: "ShieldCheck",
@@ -155,8 +152,7 @@ export const services: Service[] = [
     slug: "reinstallation-windows",
     title: "Réinstallation Windows",
     shortTitle: "Réinstallation",
-    excerpt:
-      "Windows propre, drivers à jour, transfert de données et configuration soignée.",
+    excerpt: "Windows propre, drivers à jour, transfert de données et configuration soignée.",
     description:
       "Quand le système est trop corrompu ou trop lent, une réinstallation propre est souvent la solution la plus durable. Nous sauvegardons vos données, réinstallons Windows, installons les drivers et reconfigurons l’essentiel.",
     icon: "RefreshCw",
@@ -243,8 +239,7 @@ export const services: Service[] = [
     slug: "sauvegarde-securite",
     title: "Sauvegarde & sécurité",
     shortTitle: "Sauvegarde",
-    excerpt:
-      "Stratégie de backup, antivirus pro et protection réelle de vos données.",
+    excerpt: "Stratégie de backup, antivirus pro et protection réelle de vos données.",
     description:
       "La meilleure réparation, c’est celle qu’on n’a pas à faire. Nous mettons en place une stratégie de sauvegarde adaptée (local + cloud), renforçons la sécurité et vous formons aux bons réflexes.",
     icon: "Lock",
@@ -285,8 +280,7 @@ export const services: Service[] = [
     slug: "montage-pc",
     title: "Montage PC sur mesure",
     shortTitle: "Montage PC",
-    excerpt:
-      "Configuration équilibrée, assemblage pro, tests de stabilité et cable management.",
+    excerpt: "Configuration équilibrée, assemblage pro, tests de stabilité et cable management.",
     description:
       "Gaming, création, bureautique ou station pro : nous concevons et assemblons un PC adapté à votre usage et votre budget. Compatibilité vérifiée, montage propre, BIOS réglé, benchmarks inclus.",
     icon: "Monitor",
@@ -327,8 +321,7 @@ export const services: Service[] = [
     slug: "maintenance",
     title: "Entretien & maintenance",
     shortTitle: "Maintenance",
-    excerpt:
-      "Nettoyage, mises à jour, check-up périodique pour éviter les pannes.",
+    excerpt: "Nettoyage, mises à jour, check-up périodique pour éviter les pannes.",
     description:
       "Un entretien régulier prolonge la durée de vie de votre matériel. Contrôle santé disque, nettoyage poussière, mises à jour, vérification backups : un check-up simple qui évite les mauvaises surprises.",
     icon: "Sparkles",

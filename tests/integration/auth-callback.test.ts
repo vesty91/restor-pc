@@ -17,9 +17,7 @@ describe("auth callback GET", () => {
   });
 
   it("redirige vers /compte si le code OAuth est absent", async () => {
-    const response = await GET(
-      new Request("http://localhost/auth/callback")
-    );
+    const response = await GET(new Request("http://localhost/auth/callback"));
     expect(response.status).toBe(307);
     const location = response.headers.get("location") ?? "";
     expect(location).toContain("/compte");
@@ -29,7 +27,7 @@ describe("auth callback GET", () => {
   it("accepte un paramètre next interne", async () => {
     exchangeCodeForSessionMock.mockResolvedValue({ error: null });
     const response = await GET(
-      new Request("http://localhost/auth/callback?code=valid&next=/boutique")
+      new Request("http://localhost/auth/callback?code=valid&next=/boutique"),
     );
     expect(response.status).toBe(307);
     expect(response.headers.get("location")).toBe("http://localhost/boutique");
@@ -38,7 +36,7 @@ describe("auth callback GET", () => {
   it("refuse une redirection externe via next", async () => {
     exchangeCodeForSessionMock.mockResolvedValue({ error: null });
     const response = await GET(
-      new Request("http://localhost/auth/callback?code=valid&next=//evil.example/phish")
+      new Request("http://localhost/auth/callback?code=valid&next=//evil.example/phish"),
     );
     expect(response.status).toBe(307);
     const location = response.headers.get("location") ?? "";
@@ -56,18 +54,16 @@ describe("auth callback GET", () => {
           host: "0.0.0.0:3000",
           "x-forwarded-proto": "https",
         },
-      })
+      }),
     );
-    expect(response.headers.get("location")).toBe(
-      "https://www.restor-pc.fr/compte"
-    );
+    expect(response.headers.get("location")).toBe("https://www.restor-pc.fr/compte");
     process.env.NEXT_PUBLIC_SITE_URL = prev;
   });
 
   it("refuse un next sans slash initial", async () => {
     exchangeCodeForSessionMock.mockResolvedValue({ error: null });
     const response = await GET(
-      new Request("http://localhost/auth/callback?code=valid&next=https://evil.example")
+      new Request("http://localhost/auth/callback?code=valid&next=https://evil.example"),
     );
     expect(response.headers.get("location")).toBe("http://localhost/compte");
   });
@@ -77,7 +73,7 @@ describe("auth callback GET", () => {
       error: { message: "invalid code" },
     });
     const response = await GET(
-      new Request("http://localhost/auth/callback?code=bad&next=/compte/commandes")
+      new Request("http://localhost/auth/callback?code=bad&next=/compte/commandes"),
     );
     const location = response.headers.get("location") ?? "";
     expect(location).toContain("/compte");

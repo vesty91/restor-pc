@@ -9,9 +9,7 @@ export function FaqSearch() {
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return faqs;
-    return faqs.filter(
-      (f) => f.q.toLowerCase().includes(q) || f.a.toLowerCase().includes(q)
-    );
+    return faqs.filter((f) => f.q.toLowerCase().includes(q) || f.a.toLowerCase().includes(q));
   }, [query]);
 
   return (
@@ -30,7 +28,11 @@ export function FaqSearch() {
 
       <div className="mx-auto max-w-3xl divide-y divide-line rounded-[24px] border border-line bg-paper">
         {list.map((item) => (
-          <details key={item.q} className="group px-5 py-5 md:px-7" open={query.trim().length > 0 && list.length <= 3}>
+          <details
+            key={item.q}
+            className="group px-5 py-5 md:px-7"
+            open={query.trim().length > 0 && list.length <= 3}
+          >
             <summary className="cursor-pointer list-none pr-8 font-semibold relative text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal rounded-md">
               {item.q}
               <span
@@ -40,9 +42,7 @@ export function FaqSearch() {
                 +
               </span>
             </summary>
-            <p className="mt-3 text-sm md:text-base text-ink-muted leading-relaxed">
-              {item.a}
-            </p>
+            <p className="mt-3 text-sm md:text-base text-ink-muted leading-relaxed">{item.a}</p>
           </details>
         ))}
         {list.length === 0 ? (

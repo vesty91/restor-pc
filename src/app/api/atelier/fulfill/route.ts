@@ -33,7 +33,7 @@ export async function POST(request: Request) {
         "INVALID_BODY",
         publicZodMessage(parsed.error, "Donnees invalides."),
         400,
-        requestId
+        requestId,
       );
     }
 

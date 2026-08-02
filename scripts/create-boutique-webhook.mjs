@@ -20,7 +20,7 @@ const env = Object.fromEntries(
     .map((l) => {
       const i = l.indexOf("=");
       return [l.slice(0, i), l.slice(i + 1)];
-    })
+    }),
 );
 
 if (!env.STRIPE_SECRET_KEY?.startsWith("sk_")) {
@@ -28,19 +28,15 @@ if (!env.STRIPE_SECRET_KEY?.startsWith("sk_")) {
   process.exit(1);
 }
 
-if (
-  env.STRIPE_SECRET_KEY.startsWith("sk_live_") &&
-  env.ALLOW_STRIPE_LIVE !== "true"
-) {
+if (env.STRIPE_SECRET_KEY.startsWith("sk_live_") && env.ALLOW_STRIPE_LIVE !== "true") {
   console.error("Clé Live refusée (ALLOW_STRIPE_LIVE !== true)");
   process.exit(1);
 }
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-const url = (env.NEXT_PUBLIC_SITE_URL || "https://www.restor-pc.fr").replace(
-  /\/$/,
-  ""
-) + "/api/stripe/webhook";
+const url =
+  (env.NEXT_PUBLIC_SITE_URL || "https://www.restor-pc.fr").replace(/\/$/, "") +
+  "/api/stripe/webhook";
 
 const list = await stripe.webhookEndpoints.list({ limit: 20 });
 console.log("=== Webhooks actuels ===");
@@ -76,24 +72,19 @@ if (!ep) {
 let raw = raw0;
 const espace = env.STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT || env.STRIPE_WEBHOOK_SECRET;
 if (!espace) {
-  console.warn(
-    "STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT absent — pas d'archivage espace-client."
-  );
+  console.warn("STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT absent — pas d'archivage espace-client.");
 }
 
 if (espace && !/^STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT=/m.test(raw)) {
   raw = raw.replace(
     /^STRIPE_WEBHOOK_SECRET=.*$/m,
-    `STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT=${espace}\nSTRIPE_WEBHOOK_SECRET=`
+    `STRIPE_WEBHOOK_SECRET_ESPACE_CLIENT=${espace}\nSTRIPE_WEBHOOK_SECRET=`,
   );
 }
 
 if (ep.secret) {
   if (/^STRIPE_WEBHOOK_SECRET=/m.test(raw)) {
-    raw = raw.replace(
-      /^STRIPE_WEBHOOK_SECRET=.*$/m,
-      `STRIPE_WEBHOOK_SECRET=${ep.secret}`
-    );
+    raw = raw.replace(/^STRIPE_WEBHOOK_SECRET=.*$/m, `STRIPE_WEBHOOK_SECRET=${ep.secret}`);
   } else {
     raw += `\nSTRIPE_WEBHOOK_SECRET=${ep.secret}\n`;
   }

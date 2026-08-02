@@ -37,9 +37,7 @@ export default async function ArticlePage({ params }: Props) {
   if (!article) notFound();
 
   const others = articles.filter((a) => a.slug !== slug).slice(0, 2);
-  const related = article.relatedServices
-    .map((s) => getService(s))
-    .filter(Boolean);
+  const related = article.relatedServices.map((s) => getService(s)).filter(Boolean);
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -64,21 +62,14 @@ export default async function ArticlePage({ params }: Props) {
     <>
       <JsonLd data={articleSchema} />
       <Section className="noise-bg pt-20 md:pt-28">
-        <Breadcrumbs
-          items={[
-            { label: "Conseils", href: "/conseils" },
-            { label: article.title },
-          ]}
-        />
+        <Breadcrumbs items={[{ label: "Conseils", href: "/conseils" }, { label: article.title }]} />
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal">
           {article.category} · {article.readTime}
         </p>
         <h1 className="mt-3 max-w-3xl text-3xl md:text-5xl leading-tight text-balance">
           {article.title}
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-ink-muted leading-relaxed">
-          {article.excerpt}
-        </p>
+        <p className="mt-4 max-w-2xl text-lg text-ink-muted leading-relaxed">{article.excerpt}</p>
         <div className="mt-5">
           <CopyPageLink />
         </div>
@@ -88,14 +79,9 @@ export default async function ArticlePage({ params }: Props) {
         <article className="mx-auto max-w-2xl">
           {article.content.map((block, i) => (
             <div key={i} className={i > 0 ? "mt-8" : ""}>
-              {block.heading ? (
-                <h2 className="text-2xl leading-snug">{block.heading}</h2>
-              ) : null}
+              {block.heading ? <h2 className="text-2xl leading-snug">{block.heading}</h2> : null}
               {block.paragraphs.map((p) => (
-                <p
-                  key={p.slice(0, 24)}
-                  className="mt-3 text-[17px] leading-relaxed text-ink-soft"
-                >
+                <p key={p.slice(0, 24)} className="mt-3 text-[17px] leading-relaxed text-ink-soft">
                   {p}
                 </p>
               ))}
@@ -119,7 +105,7 @@ export default async function ArticlePage({ params }: Props) {
                       </Link>
                       <p className="text-sm text-ink-muted">{s.excerpt}</p>
                     </li>
-                  ) : null
+                  ) : null,
                 )}
               </ul>
               {article.relatedConfigurator ? (
@@ -133,15 +119,11 @@ export default async function ArticlePage({ params }: Props) {
           <div className="mt-6 rounded-[20px] border border-line bg-surface p-5">
             <p className="font-semibold">Besoin d’un diagnostic à Yerres ?</p>
             <p className="mt-1 text-sm text-ink-muted">
-              Atelier {siteConfig.addressShort}. On vous oriente vers la bonne
-              intervention — domicile ou atelier Yerres.
+              Atelier {siteConfig.addressShort}. On vous oriente vers la bonne intervention —
+              domicile ou atelier Yerres.
             </p>
             <Button
-              href={
-                related[0]
-                  ? `/contact?service=${related[0].slug}&type=devis`
-                  : "/contact"
-              }
+              href={related[0] ? `/contact?service=${related[0].slug}&type=devis` : "/contact"}
               className="mt-4"
             >
               Demander un devis

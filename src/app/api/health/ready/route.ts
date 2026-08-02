@@ -20,12 +20,7 @@ export async function GET(request: Request) {
       return jsonError("FORBIDDEN", "Acces refuse.", 403, requestId);
     }
   } else if (process.env.NODE_ENV === "production") {
-    return jsonError(
-      "NOT_CONFIGURED",
-      "Endpoint ready non configure.",
-      503,
-      requestId
-    );
+    return jsonError("NOT_CONFIGURED", "Endpoint ready non configure.", 503, requestId);
   }
 
   let db = "unknown";
@@ -45,6 +40,6 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString(),
       requestId,
     },
-    { status: ready ? 200 : 503 }
+    { status: ready ? 200 : 503 },
   );
 }

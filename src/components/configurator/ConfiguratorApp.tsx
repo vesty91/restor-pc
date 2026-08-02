@@ -18,15 +18,7 @@ import {
 } from "@/lib/data/configurator";
 import { CONFIG_STORAGE_KEY } from "@/lib/site";
 import { cn, formatPrice } from "@/lib/utils";
-import {
-  ArrowRight,
-  Check,
-  Copy,
-  Gauge,
-  Scale,
-  Sparkles,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, Check, Copy, Gauge, Scale, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, type ReactNode } from "react";
@@ -50,14 +42,12 @@ export function ConfiguratorApp() {
   const [usage, setUsage] = useState<UsageId>("gaming");
   const [budget, setBudget] = useState<BudgetId>("equilibre");
   const [prefs, setPrefs] = useState<PrefId[]>(["upgrade"]);
-  const [overrides, setOverrides] = useState<
-    Partial<Record<ComponentCategory, string>>
-  >({});
+  const [overrides, setOverrides] = useState<Partial<Record<ComponentCategory, string>>>({});
   const [copied, setCopied] = useState(false);
 
   const build: BuildResult = useMemo(
     () => generateBuild(usage, budget, prefs, overrides),
-    [usage, budget, prefs, overrides]
+    [usage, budget, prefs, overrides],
   );
 
   const platform = build.components.cpu.brand === "Intel" ? "intel" : "amd";
@@ -68,7 +58,7 @@ export function ConfiguratorApp() {
       "",
       ...orderedCategories.map(
         (cat) =>
-          `${categoryLabels[cat]} : ${build.components[cat].name} (${formatPrice(build.components[cat].price)})`
+          `${categoryLabels[cat]} : ${build.components[cat].name} (${formatPrice(build.components[cat].price)})`,
       ),
       "",
       `Pièces : ${formatPrice(build.total)}`,
@@ -111,9 +101,7 @@ export function ConfiguratorApp() {
         total: build.grandTotal,
       });
     });
-    router.push(
-      `/contact?type=config&usage=${usage}&budget=${budget}&total=${build.grandTotal}`
-    );
+    router.push(`/contact?type=config&usage=${usage}&budget=${budget}&total=${build.grandTotal}`);
   }
 
   return (
@@ -135,7 +123,7 @@ export function ConfiguratorApp() {
                     variant={active ? "default" : done ? "info" : "outline"}
                     className={cn(
                       "cursor-pointer px-3.5 py-1.5 text-sm",
-                      active && "bg-panel text-panel-fg hover:bg-panel"
+                      active && "bg-panel text-panel-fg hover:bg-panel",
                     )}
                   >
                     {i + 1}. {label}
@@ -170,7 +158,7 @@ export function ConfiguratorApp() {
                       "rounded-2xl border p-5 text-left transition-all",
                       selected
                         ? "border-teal bg-teal-soft/60 shadow-[var(--shadow-soft)]"
-                        : "border-line bg-paper hover:border-line-strong"
+                        : "border-line bg-paper hover:border-line-strong",
                     )}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -182,9 +170,7 @@ export function ConfiguratorApp() {
                         </Badge>
                       ) : null}
                     </div>
-                    <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                      {u.description}
-                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-ink-muted">{u.description}</p>
                   </button>
                 );
               })}
@@ -225,7 +211,7 @@ export function ConfiguratorApp() {
                       "flex flex-col gap-2 rounded-2xl border p-5 text-left transition-all sm:flex-row sm:items-center sm:justify-between",
                       selected
                         ? "border-teal bg-teal-soft/60"
-                        : "border-line bg-paper hover:border-line-strong"
+                        : "border-line bg-paper hover:border-line-strong",
                     )}
                   >
                     <div>
@@ -251,9 +237,7 @@ export function ConfiguratorApp() {
               Étape 3
             </Badge>
             <h2 className="text-2xl md:text-3xl">Des préférences particulières ?</h2>
-            <p className="mt-2 text-ink-muted">
-              Optionnel. Sélectionnez ce qui compte pour vous.
-            </p>
+            <p className="mt-2 text-ink-muted">Optionnel. Sélectionnez ce qui compte pour vous.</p>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               {preferences.map((p) => {
                 const active = prefs.includes(p.id);
@@ -266,7 +250,7 @@ export function ConfiguratorApp() {
                       "rounded-2xl border p-4 text-left transition-all",
                       active
                         ? "border-teal bg-teal-soft/60"
-                        : "border-line bg-paper hover:border-line-strong"
+                        : "border-line bg-paper hover:border-line-strong",
                     )}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -274,7 +258,7 @@ export function ConfiguratorApp() {
                       <span
                         className={cn(
                           "grid h-5 w-5 place-items-center rounded-md border",
-                          active ? "border-teal bg-teal text-white" : "border-line"
+                          active ? "border-teal bg-teal text-white" : "border-line",
                         )}
                         aria-hidden
                       >
@@ -296,21 +280,17 @@ export function ConfiguratorApp() {
             </Badge>
             <h2 className="text-2xl md:text-3xl">Votre configuration recommandée</h2>
             <p className="mt-2 text-ink-muted">
-              Ajustez un composant si besoin. La compatibilité et les scores se
-              mettent à jour.
+              Ajustez un composant si besoin. La compatibilité et les scores se mettent à jour.
             </p>
             <div className="mt-6 space-y-3">
               {orderedCategories.map((cat) => {
                 const current = build.components[cat];
                 const options = getOptionsForCategory(
                   cat,
-                  cat === "motherboard" || cat === "cpu" ? platform : undefined
+                  cat === "motherboard" || cat === "cpu" ? platform : undefined,
                 );
                 return (
-                  <div
-                    key={cat}
-                    className="rounded-2xl border border-line bg-paper p-4 md:p-5"
-                  >
+                  <div key={cat} className="rounded-2xl border border-line bg-paper p-4 md:p-5">
                     <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                       <div className="min-w-0">
                         <Badge variant="muted" className="mb-2">
@@ -334,8 +314,7 @@ export function ConfiguratorApp() {
                       >
                         {options.map((opt) => (
                           <option key={opt.id} value={opt.id}>
-                            {opt.name} —{" "}
-                            {opt.price === 0 ? "0 €" : formatPrice(opt.price)}
+                            {opt.name} — {opt.price === 0 ? "0 €" : formatPrice(opt.price)}
                           </option>
                         ))}
                       </select>
@@ -352,11 +331,11 @@ export function ConfiguratorApp() {
               </p>
               <ul className="mt-3 space-y-2">
                 {build.tips.map((tip) => (
-                  <li
-                    key={tip}
-                    className="relative pl-4 text-sm leading-relaxed text-ink-muted"
-                  >
-                    <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-teal" aria-hidden />
+                  <li key={tip} className="relative pl-4 text-sm leading-relaxed text-ink-muted">
+                    <span
+                      className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-teal"
+                      aria-hidden
+                    />
                     {tip}
                   </li>
                 ))}
@@ -393,16 +372,10 @@ export function ConfiguratorApp() {
         <BorderBeam size={70} duration={10} borderWidth={1.25} />
         <div className="relative">
           <div className="flex flex-wrap gap-2">
-            <Badge
-              variant="outline"
-              className="border-white/20 bg-white/5 text-white/80"
-            >
+            <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
               Récap live
             </Badge>
-            <Badge
-              variant="info"
-              className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
-            >
+            <Badge variant="info" className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]">
               Indicatif
             </Badge>
           </div>
@@ -440,16 +413,13 @@ export function ConfiguratorApp() {
             </div>
             <div className="flex justify-between gap-3 border-t border-white/10 pt-3 text-base">
               <dt className="font-semibold">Total estimé</dt>
-              <dd className="font-display text-2xl text-teal">
-                {formatPrice(build.grandTotal)}
-              </dd>
+              <dd className="font-display text-2xl text-teal">{formatPrice(build.grandTotal)}</dd>
             </div>
           </dl>
 
           <p className="mt-4 text-xs leading-relaxed text-white/45">
-            Bêta — estimation indicative. Prix pièces variables selon stock et
-            marché. Compatibilité et total final confirmés en atelier avant devis
-            ferme.
+            Bêta — estimation indicative. Prix pièces variables selon stock et marché. Compatibilité
+            et total final confirmés en atelier avant devis ferme.
           </p>
 
           <div className="mt-6 flex flex-col gap-2">
@@ -477,15 +447,7 @@ export function ConfiguratorApp() {
   );
 }
 
-function ScorePill({
-  icon,
-  label,
-  value,
-}: {
-  icon: ReactNode;
-  label: string;
-  value: number;
-}) {
+function ScorePill({ icon, label, value }: { icon: ReactNode; label: string; value: number }) {
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-3">
       <p className="flex items-center gap-1.5 text-[11px] text-white/50">
@@ -525,16 +487,14 @@ function ProfileCompare({
           gpu: b.components.gpu.name,
         };
       }),
-    [budget]
+    [budget],
   );
 
   return (
     <div className="mt-10 rounded-2xl border border-line bg-paper p-5 md:p-6">
       <div className="mb-2 flex flex-wrap gap-2">
         <Badge variant="muted">Comparaison</Badge>
-        <Badge variant="outline">
-          Budget {budgets.find((b) => b.id === budget)?.label}
-        </Badge>
+        <Badge variant="outline">Budget {budgets.find((b) => b.id === budget)?.label}</Badge>
       </div>
       <p className="text-lg font-semibold">Comparaison rapide des profils</p>
       <p className="mt-1 text-sm text-ink-muted">
@@ -557,7 +517,7 @@ function ProfileCompare({
                 key={row.id}
                 className={cn(
                   "border-b border-line/70 last:border-0",
-                  activeUsage === row.id && "bg-teal-soft/50"
+                  activeUsage === row.id && "bg-teal-soft/50",
                 )}
               >
                 <td className="py-2" colSpan={5}>
@@ -566,7 +526,7 @@ function ProfileCompare({
                     onClick={() => onPick(row.id)}
                     className={cn(
                       "grid w-full grid-cols-[1.2fr_1.4fr_0.5fr_0.5fr_0.8fr] items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors",
-                      activeUsage === row.id ? "bg-transparent" : "hover:bg-surface"
+                      activeUsage === row.id ? "bg-transparent" : "hover:bg-surface",
                     )}
                   >
                     <span className="font-semibold">{row.label}</span>

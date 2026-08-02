@@ -68,15 +68,15 @@ utilise alors une clé partagée (`unknown`), ce qui reste sûr contre le spoofi
 
 ### Diagnostic production (2026-08-01)
 
-| Élément | Valeur observée |
-|---|---|
-| Conteneur | `restor-pc`, network `restor-pc_default`, IP `172.20.0.2` |
-| Publish actuel (avant changement) | `0.0.0.0:3000->3000` et `[::]:3000` |
-| Healthcheck | `wget http://127.0.0.1:3000/api/health` (dans le conteneur) |
-| Curl NAS loopback | `http://127.0.0.1:3000/api/health` → 200 |
-| Curl NAS LAN | `http://192.168.1.5:3000/api/health` → 200 |
-| Nginx `www` | `proxy_pass http://192.168.1.5:3000;` (`http.restor-pc-www-migration.conf`) |
-| Reverse Proxy DSM `atelier` | backend `192.168.1.5:3000` (overridden en 301 vers www par la conf migration) |
+| Élément                           | Valeur observée                                                               |
+| --------------------------------- | ----------------------------------------------------------------------------- |
+| Conteneur                         | `restor-pc`, network `restor-pc_default`, IP `172.20.0.2`                     |
+| Publish actuel (avant changement) | `0.0.0.0:3000->3000` et `[::]:3000`                                           |
+| Healthcheck                       | `wget http://127.0.0.1:3000/api/health` (dans le conteneur)                   |
+| Curl NAS loopback                 | `http://127.0.0.1:3000/api/health` → 200                                      |
+| Curl NAS LAN                      | `http://192.168.1.5:3000/api/health` → 200                                    |
+| Nginx `www`                       | `proxy_pass http://192.168.1.5:3000;` (`http.restor-pc-www-migration.conf`)   |
+| Reverse Proxy DSM `atelier`       | backend `192.168.1.5:3000` (overridden en 301 vers www par la conf migration) |
 
 ### Cible
 

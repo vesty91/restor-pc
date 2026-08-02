@@ -93,8 +93,7 @@ describe("autorisation commandes", () => {
   });
 
   it("user_id invalide rejeté", () => {
-    const uuidRe =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     expect(uuidRe.test("not-a-uuid")).toBe(false);
     expect(uuidRe.test("11111111-2222-4333-a444-555555555555")).toBe(true);
   });

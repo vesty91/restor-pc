@@ -25,7 +25,7 @@ export function CtaBand({
   const whatsapp = buildWhatsAppUrl(
     open
       ? "Bonjour Restor-PC, j’aimerais un devis / diagnostic pour mon PC."
-      : "Bonjour Restor-PC, atelier fermé — je souhaite un rappel dès que possible pour mon PC."
+      : "Bonjour Restor-PC, atelier fermé — je souhaite un rappel dès que possible pour mon PC.",
   );
 
   return (

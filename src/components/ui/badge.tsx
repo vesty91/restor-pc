@@ -17,8 +17,7 @@ const badgeVariants = cva(
         outline: "border-line bg-transparent text-ink",
         success:
           "border-transparent bg-[color-mix(in_oklab,var(--success)_16%,white)] text-[#0b4d28] dark:bg-[color-mix(in_oklab,var(--success)_22%,transparent)] dark:text-[#86efac]",
-        warning:
-          "border-transparent bg-amber-soft text-[#92400e] dark:text-[#fcd34d]",
+        warning: "border-transparent bg-amber-soft text-[#92400e] dark:text-[#fcd34d]",
         danger:
           "border-transparent bg-[color-mix(in_oklab,var(--danger)_14%,white)] text-[#991b1b] dark:bg-[color-mix(in_oklab,var(--danger)_22%,transparent)] dark:text-[#fca5a5]",
         muted: "border-transparent bg-surface text-ink-muted",
@@ -28,7 +27,7 @@ const badgeVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 function Badge({
@@ -36,8 +35,7 @@ function Badge({
   variant = "default",
   asChild = false,
   ...props
-}: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+}: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
   const Comp = asChild ? Slot.Root : "span";
 
   return (

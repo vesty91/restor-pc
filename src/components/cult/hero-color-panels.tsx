@@ -24,7 +24,7 @@ export function HeroColorPanels({
     <div
       className={cn(
         "relative aspect-[4/5] w-full max-w-md overflow-hidden rounded-[28px] border border-white/10",
-        className
+        className,
       )}
       role="img"
       aria-label={label}
@@ -52,29 +52,19 @@ export function HeroColorPanels({
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#4ba3ff]">
           Restor-PC
         </p>
-        <p className="mt-1 text-sm font-semibold text-white/90">
-          Variante visuelle légère
-        </p>
+        <p className="mt-1 text-sm font-semibold text-white/90">Variante visuelle légère</p>
       </div>
     </div>
   );
 }
 
-function Panel({
-  tone,
-  title,
-  delay,
-}: {
-  tone: string;
-  title: string;
-  delay?: string;
-}) {
+function Panel({ tone, title, delay }: { tone: string; title: string; delay?: string }) {
   return (
     <div
       className={cn(
         "rounded-2xl border border-white/10 bg-gradient-to-br p-3 shadow-[inset_0_1px_0_rgb(255_255_255/8%)]",
         tone,
-        "motion-safe:transition-transform motion-safe:duration-500 motion-safe:hover:-translate-y-0.5"
+        "motion-safe:transition-transform motion-safe:duration-500 motion-safe:hover:-translate-y-0.5",
       )}
       style={delay ? { transitionDelay: delay } : undefined}
     >

@@ -82,7 +82,7 @@ export function loadGoogleAnalytics(consentGranted: boolean) {
 
 export function trackEvent(
   name: GaEventName | string,
-  params?: Record<string, string | number | boolean | undefined>
+  params?: Record<string, string | number | boolean | undefined>,
 ) {
   if (typeof window === "undefined") return;
   if (!getGaMeasurementId()) return;

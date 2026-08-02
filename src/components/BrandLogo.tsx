@@ -14,11 +14,7 @@ const LOGO_W = 401;
 const LOGO_H = 119;
 const LOGO_SRC = "/brand/restor-pc-logo.png";
 
-export function BrandLogo({
-  className,
-  variant = "mark",
-  priority = false,
-}: Props) {
+export function BrandLogo({ className, variant = "mark", priority = false }: Props) {
   if (variant === "full") {
     return (
       <Link
@@ -45,7 +41,7 @@ export function BrandLogo({
       href="/"
       className={cn(
         "inline-flex h-[48px] items-center shrink-0 bg-transparent sm:h-[54px] md:h-[60px]",
-        className
+        className,
       )}
       aria-label={`${siteConfig.name} — accueil`}
     >

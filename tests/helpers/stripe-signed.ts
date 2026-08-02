@@ -29,7 +29,8 @@ export function buildCheckoutSessionEvent(opts: {
   paymentIntent?: string;
   type?: "checkout.session.completed" | "checkout.session.async_payment_succeeded";
 }): { payload: string; event: StripeTypes.Event } {
-  const sessionId = opts.sessionId ?? `cs_test_${crypto.randomUUID().replace(/-/g, "").slice(0, 20)}`;
+  const sessionId =
+    opts.sessionId ?? `cs_test_${crypto.randomUUID().replace(/-/g, "").slice(0, 20)}`;
   const eventId = opts.eventId ?? `evt_test_${crypto.randomUUID().replace(/-/g, "").slice(0, 20)}`;
   const session = {
     id: sessionId,
@@ -39,11 +40,14 @@ export function buildCheckoutSessionEvent(opts: {
     customer_details: { email: opts.email ?? "buyer@example.com" },
     amount_total: 1900,
     currency: "eur",
-    payment_intent: opts.paymentIntent ?? `pi_test_${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`,
+    payment_intent:
+      opts.paymentIntent ?? `pi_test_${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`,
     metadata: {
       tool_slug: opts.toolSlug ?? "changer-dns",
-      user_id: opts.userId === null ? undefined : (opts.userId ?? "11111111-2222-4333-a444-555555555555"),
-      stripe_price_id: opts.priceId === null ? undefined : (opts.priceId ?? "price_test_changer_dns"),
+      user_id:
+        opts.userId === null ? undefined : (opts.userId ?? "11111111-2222-4333-a444-555555555555"),
+      stripe_price_id:
+        opts.priceId === null ? undefined : (opts.priceId ?? "price_test_changer_dns"),
       terms_version: "2026-07-01",
       terms_accepted_at: new Date().toISOString(),
       withdrawal_consent_at: new Date().toISOString(),

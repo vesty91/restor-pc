@@ -1,9 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Proxy — pages publiques", () => {
-  test("accueil, services, tarifs, contact et mentions légales sans boucle", async ({
-    page,
-  }) => {
+  test("accueil, services, tarifs, contact et mentions légales sans boucle", async ({ page }) => {
     const paths = ["/", "/services", "/tarifs", "/contact", "/mentions-legales"];
     for (const path of paths) {
       const response = await page.goto(path);
@@ -36,7 +34,9 @@ test.describe("Proxy — assets statiques", () => {
     await expect(stylesheet).toHaveAttribute("href", /.+/);
     const href = await stylesheet.getAttribute("href");
     if (href) {
-      const css = await request.get(href.startsWith("http") ? href : new URL(href, page.url()).href);
+      const css = await request.get(
+        href.startsWith("http") ? href : new URL(href, page.url()).href,
+      );
       expect(css.status()).toBe(200);
     }
   });
@@ -76,9 +76,7 @@ test.describe("Proxy — auth callback", () => {
     expect(page.url()).toMatch(/error=oauth|mode=login/);
   });
 
-  test("callback avec code invalide ne redirige pas vers un domaine externe", async ({
-    page,
-  }) => {
+  test("callback avec code invalide ne redirige pas vers un domaine externe", async ({ page }) => {
     await page.goto("/auth/callback?code=e2e-invalid-code&next=//evil.example");
     await expect(page).toHaveURL(/\/compte/);
     expect(page.url()).not.toContain("evil.example");

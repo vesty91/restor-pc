@@ -10,7 +10,8 @@ import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Services de dépannage informatique — Yerres",
-  description: "Prestations Restor-PC à Yerres (91) : dépannage, réparation, virus, réinstallation, récupération de données, montage PC et assistance.",
+  description:
+    "Prestations Restor-PC à Yerres (91) : dépannage, réparation, virus, réinstallation, récupération de données, montage PC et assistance.",
   path: "/services",
 });
 

@@ -12,7 +12,7 @@
 - [x] Webhook Stripe pointant vers `/api/stripe/webhook` — vérifié via API Stripe : `enabled`, 6/6 événements requis
 - [x] Double webhook testé (idempotent) — couvert par `tests/integration/stripe-webhook.test.ts` (CI verte)
 - [x] Remboursement / litige testés (licence `revoked` + lien NAS supprimé) — testé 2026-08-02
-- [ ] Refund hors-ordre testé en conditions réelles (refund avant fulfill) — *reporté sciemment (2026-08-02), couverture logique jugée suffisante via tests + harness SQL*
+- [ ] Refund hors-ordre testé en conditions réelles (refund avant fulfill) — _reporté sciemment (2026-08-02), couverture logique jugée suffisante via tests + harness SQL_
 - [x] Migration `20260802120000_stripe_revocation_races.sql` appliquée (Supabase + NAS)
 - [x] Migration `20260802130000_lockdown_rpc_execute.sql` — RPC fulfillment réservées à `service_role` (faille anon/authenticated corrigée)
 - [x] Harness SQL local OK (`node scripts/sql-harness-validate.mjs`)
@@ -21,7 +21,7 @@
 - [x] CI verte sur `master`
 - [x] Branch protection activée — quality, unit-tests, integration-tests, build, e2e requis + branche à jour + force-push/suppression bloqués (2026-08-02)
 - [x] Mentions légales / CGV à jour — contenu vérifié 2026-08-02 (éditeur, hébergeur, responsabilité outils, CGV 10 sections)
-- [ ] **Médiateur de la consommation non souscrit** — `siteConfig.legal.mediator` est `null` (aucune valeur inventée, cf. `.env.example`). Obligation légale FR pour vente en ligne à des consommateurs : souscrire un médiateur (ex. CM2C, SACM…) puis renseigner `NEXT_PUBLIC_CONSUMER_MEDIATOR_*` dans `.env.local`. **Action métier réelle, ne peut pas être faite par le code.** *Reporté sciemment par le porteur du projet (2026-08-02) — à faire avant Go Live définitif.*
+- [ ] **Médiateur de la consommation non souscrit** — `siteConfig.legal.mediator` est `null` (aucune valeur inventée, cf. `.env.example`). Obligation légale FR pour vente en ligne à des consommateurs : souscrire un médiateur (ex. CM2C, SACM…) puis renseigner `NEXT_PUBLIC_CONSUMER_MEDIATOR_*` dans `.env.local`. **Action métier réelle, ne peut pas être faite par le code.** _Reporté sciemment par le porteur du projet (2026-08-02) — à faire avant Go Live définitif._
 - [x] Secrets hors git — vérifié 2026-08-02 : seuls `.env.example`/`.env.docker.example` sont trackés, aucun secret (`sk_live`, `whsec_`) dans l'historique git
 - [x] Sauvegarde base — déplacée sur le NAS (toujours allumé, contrairement au PC) : conteneur autonome `restor-pc-backup-cron` (`nas/backup-cron/`), `pg_dump` quotidien 3h00 + rotation + notification ntfy (succès et échec), testé de bout en bout le 2026-08-02 (dump réel 52 Ko, notification ntfy reçue HTTP 200, conteneur stable). Tâche planifiée Windows `Restor-PC - Backup DB` désactivée (redondante), script `npm run backup:db` gardé en secours manuel. Plan Supabase toujours Free (pas de backup géré Supabase) — cette sauvegarde applicative est donc la seule protection ; voir `docs/BACKUP_RESTORE.md`.
 - [x] Toasts Sonner vérifiés — couvert par CI e2e (`tests/e2e/smoke.spec.ts` : contact succès/erreur ; `tests/e2e/admin.spec.ts` : licences succès/erreur), CI verte

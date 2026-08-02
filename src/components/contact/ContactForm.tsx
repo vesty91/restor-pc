@@ -107,11 +107,8 @@ export function ContactForm() {
         message = `Bonjour,\n\n${decodeURIComponent(summary)}\n\nCordialement`;
       }
 
-      const resolvedType =
-        stored || (summary && type === "config") ? "config" : type;
-      const resolvedUrgency =
-        urgency ||
-        (resolvedType === "urgence" ? "asap" : empty.urgency);
+      const resolvedType = stored || (summary && type === "config") ? "config" : type;
+      const resolvedUrgency = urgency || (resolvedType === "urgence" ? "asap" : empty.urgency);
 
       if (attached) setConfigAttached(true);
       setForm((f) => ({
@@ -128,8 +125,7 @@ export function ContactForm() {
   }, []);
 
   const whatsappHref = useMemo(() => {
-    const serviceTitle =
-      services.find((s) => s.slug === form.service)?.title ?? form.service;
+    const serviceTitle = services.find((s) => s.slug === form.service)?.title ?? form.service;
     return buildContactWhatsApp({
       name: form.name,
       type: typeLabels[form.type] ?? form.type,
@@ -199,9 +195,7 @@ export function ContactForm() {
 
       // Succès uniquement si l’API confirme l’envoi réel
       if (!res.ok || !data.ok || !data.delivered) {
-        const msg =
-          data.error ??
-          "L’envoi a échoué. Appelez-nous, WhatsApp, ou réessayez.";
+        const msg = data.error ?? "L’envoi a échoué. Appelez-nous, WhatsApp, ou réessayez.";
         setErrors({ form: msg });
         notify.error(msg);
         if (data.mailto) setMailtoFallback(data.mailto);
@@ -254,12 +248,7 @@ export function ContactForm() {
             <Phone className="h-4 w-4" />
             Appeler
           </Button>
-          <Button
-            href={whatsappHref}
-            variant="primary"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Button href={whatsappHref} variant="primary" target="_blank" rel="noopener noreferrer">
             <MessageCircle className="h-4 w-4" />
             Continuer sur WhatsApp
           </Button>
@@ -278,8 +267,8 @@ export function ContactForm() {
           <Badge variant="info" className="mb-2 mr-2">
             Config jointe
           </Badge>
-          Votre configuration PC a été préremplie dans le message. Vous pouvez
-          l’ajuster avant envoi.
+          Votre configuration PC a été préremplie dans le message. Vous pouvez l’ajuster avant
+          envoi.
         </p>
       ) : null}
 
@@ -450,8 +439,7 @@ export function ContactForm() {
           aria-describedby={errors.consent ? `${uid}-consent-err` : undefined}
         />
         <span>
-          J’accepte d’être recontacté au sujet de ma demande. Vos données ne
-          sont pas revendues.{" "}
+          J’accepte d’être recontacté au sujet de ma demande. Vos données ne sont pas revendues.{" "}
           <a href="/politique-confidentialite" className="text-teal underline">
             Politique de confidentialité
           </a>
@@ -471,10 +459,7 @@ export function ContactForm() {
           <p>{errors.form}</p>
           {mailtoFallback ? (
             <p className="mt-2">
-              <a
-                href={mailtoFallback}
-                className="font-semibold underline underline-offset-2"
-              >
+              <a href={mailtoFallback} className="font-semibold underline underline-offset-2">
                 Ouvrir votre messagerie
               </a>
               {" · "}

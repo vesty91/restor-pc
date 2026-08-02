@@ -43,10 +43,9 @@ function HomeLocal() {
             Réparateur informatique à Yerres et communes voisines
           </h2>
           <p className="mt-4 max-w-lg leading-relaxed text-ink-muted">
-            Basés au {siteConfig.address}, nous prenons en charge PC et
-            portables : pannes, virus, Windows, récupération de données et
-            montage — à domicile dans un rayon d’environ 15 km, ou en dépôt
-            atelier.
+            Basés au {siteConfig.address}, nous prenons en charge PC et portables : pannes, virus,
+            Windows, récupération de données et montage — à domicile dans un rayon d’environ 15 km,
+            ou en dépôt atelier.
           </p>
           <ul className="mt-5 flex flex-wrap gap-2">
             {siteConfig.nearbyCities.slice(0, 6).map((city) => (
@@ -58,9 +57,7 @@ function HomeLocal() {
             ))}
           </ul>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Button href="/zone-intervention">
-              Voir les zones d’intervention
-            </Button>
+            <Button href="/zone-intervention">Voir les zones d’intervention</Button>
             <Button href={siteConfig.mapsDirectionsUrl} variant="secondary">
               <MapPin className="h-4 w-4" />
               Itinéraire atelier
@@ -70,9 +67,7 @@ function HomeLocal() {
         <Reveal>
           <div className="rounded-[24px] border border-line bg-surface p-6 md:p-8">
             <Badge variant="muted">Atelier</Badge>
-            <p className="mt-3 font-display text-2xl tracking-tight">
-              {siteConfig.street}
-            </p>
+            <p className="mt-3 font-display text-2xl tracking-tight">{siteConfig.street}</p>
             <p className="text-lg text-ink-soft">
               {siteConfig.postalCode} {siteConfig.city}
             </p>

@@ -43,9 +43,7 @@ function readStoredTheme(): Theme | null {
 function getThemeSnapshot(): Theme {
   const stored = readStoredTheme();
   if (stored) return stored;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 /** SSR : le script inline du layout applique déjà la classe avant hydratation. */
@@ -82,15 +80,11 @@ function getServerReadySnapshot() {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const theme = useSyncExternalStore(
-    subscribeTheme,
-    getThemeSnapshot,
-    getServerThemeSnapshot
-  );
+  const theme = useSyncExternalStore(subscribeTheme, getThemeSnapshot, getServerThemeSnapshot);
   const ready = useSyncExternalStore(
     subscribeTheme,
     getClientReadySnapshot,
-    getServerReadySnapshot
+    getServerReadySnapshot,
   );
 
   useLayoutEffect(() => {
@@ -113,12 +107,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({ theme, setTheme, toggleTheme, ready }),
-    [theme, setTheme, toggleTheme, ready]
+    [theme, setTheme, toggleTheme, ready],
   );
 
-  return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

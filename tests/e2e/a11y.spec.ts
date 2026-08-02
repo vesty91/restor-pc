@@ -15,7 +15,7 @@ async function expectA11y(page: import("@playwright/test").Page, path: string) {
     .analyze();
 
   const serious = results.violations.filter(
-    (v) => v.impact === "critical" || v.impact === "serious"
+    (v) => v.impact === "critical" || v.impact === "serious",
   );
   expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
 }

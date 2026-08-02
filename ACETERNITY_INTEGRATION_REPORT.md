@@ -5,12 +5,12 @@ Branche : `feature/aceternity-home-sections`
 
 ## 1. Composants installés
 
-| Composant registre | Fichier | Usage home |
-|---|---|---|
-| `@aceternity/bento-grid` | `src/components/ui/bento-grid.tsx` | Section services (`HomeServices`) |
-| `@aceternity/compare` | `src/components/ui/compare.tsx` | Démo avant/après interactive |
-| `@aceternity/sparkles` | `src/components/ui/sparkles.tsx` | API conservée ; implémentation CSS légère |
-| `@aceternity/timeline` | `src/components/ui/timeline.tsx` | Parcours d’intervention |
+| Composant registre       | Fichier                            | Usage home                                |
+| ------------------------ | ---------------------------------- | ----------------------------------------- |
+| `@aceternity/bento-grid` | `src/components/ui/bento-grid.tsx` | Section services (`HomeServices`)         |
+| `@aceternity/compare`    | `src/components/ui/compare.tsx`    | Démo avant/après interactive              |
+| `@aceternity/sparkles`   | `src/components/ui/sparkles.tsx`   | API conservée ; implémentation CSS légère |
+| `@aceternity/timeline`   | `src/components/ui/timeline.tsx`   | Parcours d’intervention                   |
 
 Aucun Background Beams / effet lourd derrière le Hero Three.js.
 
@@ -57,12 +57,12 @@ Motif : tsparticles v4 n’exporte plus `initParticlesEngine` ; le composant Ace
 
 ## 5. Sections remplacées / adaptées
 
-| Section | Action |
-|---|---|
-| Services (home) | Remplacée par Bento Grid (pas de double section) |
-| Avant / après | Enrichie : Compare interactif + 3 cartes pédagogiques |
-| Timeline | Nouvelle section « Comment se déroule une intervention » (8 étapes) |
-| Hero / CTA | Inchangés côté Aceternity lourd |
+| Section         | Action                                                              |
+| --------------- | ------------------------------------------------------------------- |
+| Services (home) | Remplacée par Bento Grid (pas de double section)                    |
+| Avant / après   | Enrichie : Compare interactif + 3 cartes pédagogiques               |
+| Timeline        | Nouvelle section « Comment se déroule une intervention » (8 étapes) |
+| Hero / CTA      | Inchangés côté Aceternity lourd                                     |
 
 ## 6. Adaptations visuelles Restor-PC
 

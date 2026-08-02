@@ -37,7 +37,7 @@ export const patchLicenseSchema = z
       v.max_machines !== undefined ||
       v.script_id !== undefined ||
       v.resetMachine === true,
-    { message: "Aucune modification fournie." }
+    { message: "Aucune modification fournie." },
   );
 
 export const deleteLicenseSchema = z.object({

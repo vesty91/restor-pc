@@ -1,14 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getGaMeasurementId, isGaConfigured } from "@/lib/analytics/config";
-import {
-  classifyOutboundHref,
-  contactLeadEvents,
-  GA_EVENTS,
-} from "@/lib/analytics";
-import {
-  __resetGtagForTests,
-  loadGoogleAnalytics,
-} from "@/lib/analytics/gtag";
+import { classifyOutboundHref, contactLeadEvents, GA_EVENTS } from "@/lib/analytics";
+import { __resetGtagForTests, loadGoogleAnalytics } from "@/lib/analytics/gtag";
 
 describe("analytics config", () => {
   const prev = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
@@ -35,10 +28,7 @@ describe("analytics config", () => {
 
 describe("analytics events mapping", () => {
   it("contact devis → contact_submit + create_quote", () => {
-    expect(contactLeadEvents("devis")).toEqual([
-      GA_EVENTS.contactSubmit,
-      GA_EVENTS.createQuote,
-    ]);
+    expect(contactLeadEvents("devis")).toEqual([GA_EVENTS.contactSubmit, GA_EVENTS.createQuote]);
   });
 
   it("contact config → create_quote", () => {
@@ -61,9 +51,7 @@ describe("outbound href classification", () => {
   it("classe tel, mailto et WhatsApp", () => {
     expect(classifyOutboundHref("tel:+33767282365")).toBe("phone");
     expect(classifyOutboundHref("mailto:contact@restor-pc.fr")).toBe("email");
-    expect(
-      classifyOutboundHref("https://wa.me/33767282365?text=Bonjour")
-    ).toBe("whatsapp");
+    expect(classifyOutboundHref("https://wa.me/33767282365?text=Bonjour")).toBe("whatsapp");
     expect(classifyOutboundHref("/contact")).toBeNull();
   });
 });
@@ -100,9 +88,7 @@ describe("gtag dataLayer stub", () => {
 
     expect(dataLayer.length).toBeGreaterThan(0);
     const first = dataLayer[0];
-    expect(Array.isArray(first), "Array cassé GA4 — il faut Arguments").toBe(
-      false
-    );
+    expect(Array.isArray(first), "Array cassé GA4 — il faut Arguments").toBe(false);
     expect(first && typeof first === "object" && "length" in first).toBe(true);
     expect(head.appendChild).toHaveBeenCalled();
   });

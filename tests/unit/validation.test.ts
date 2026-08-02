@@ -30,9 +30,9 @@ describe("validation/contact", () => {
 
 describe("validation/checkout", () => {
   it("exige le consentement retrait", () => {
-    expect(
-      checkoutSchema.safeParse({ slug: "change-dns", withdrawalConsent: true }).success
-    ).toBe(true);
+    expect(checkoutSchema.safeParse({ slug: "change-dns", withdrawalConsent: true }).success).toBe(
+      true,
+    );
     expect(checkoutSchema.safeParse({ slug: "change-dns" }).success).toBe(false);
   });
 });

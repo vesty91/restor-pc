@@ -50,9 +50,7 @@ function DiagnosticHud({ compact }: { compact?: boolean }) {
             return (
               <li key={row.key} className="flex items-center gap-2">
                 <span className="w-8 text-white/35">{row.key}</span>
-                <span className={busy ? "text-[#4ba3ff]" : "text-white/55"}>
-                  {value}
-                </span>
+                <span className={busy ? "text-[#4ba3ff]" : "text-white/55"}>{value}</span>
                 <span
                   className={`h-1 w-1 rounded-full ${
                     busy ? "bg-[#4ba3ff] animate-pulse" : "bg-emerald-400/70"
@@ -79,8 +77,7 @@ function useSceneQuality(): SceneQuality {
       const saveData =
         "connection" in navigator &&
         Boolean(
-          (navigator as Navigator & { connection?: { saveData?: boolean } })
-            .connection?.saveData
+          (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData,
         );
       if (saveData || cores <= 4 || w < 768) setQuality("low");
       else if (w < 1024) setQuality("medium");
@@ -118,10 +115,7 @@ function SceneContent({
           </group>
         </Center>
       </Bounds>
-      <Particles
-        count={particleCount}
-        active={motion.visible && !motion.reducedMotion}
-      />
+      <Particles count={particleCount} active={motion.visible && !motion.reducedMotion} />
     </>
   );
 }
@@ -138,8 +132,7 @@ export default function HeroScene() {
     if (typeof window === "undefined") return true;
     try {
       const canvas = document.createElement("canvas");
-      const gl =
-        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
       return Boolean(gl);
     } catch {
       return false;

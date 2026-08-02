@@ -28,8 +28,14 @@ export async function sendPurchaseEmail(opts: {
 
   const replyTo = (process.env.CONTACT_TO_EMAIL || siteConfig.email).trim();
   const bccRaw = process.env.PURCHASE_EMAIL_BCC?.trim() || replyTo;
-  const bcc = [...new Set(bccRaw.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean))]
-    .filter((e) => e !== opts.to.trim().toLowerCase());
+  const bcc = [
+    ...new Set(
+      bccRaw
+        .split(",")
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean),
+    ),
+  ].filter((e) => e !== opts.to.trim().toLowerCase());
 
   const subject = `Restor-PC - ${opts.toolTitle} - licence et telechargement`;
   const html = `<!DOCTYPE html><html lang="fr"><body style="font-family:Segoe UI,Arial,sans-serif;line-height:1.5;color:#1a1a1a">

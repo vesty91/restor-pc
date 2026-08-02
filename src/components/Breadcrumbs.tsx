@@ -27,16 +27,8 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
           {all.map((item, i) => {
             const last = i === all.length - 1;
             return (
-              <li
-                key={`${item.label}-${i}`}
-                className="inline-flex items-center gap-1.5"
-              >
-                {i > 0 ? (
-                  <ChevronRight
-                    className="h-3.5 w-3.5 opacity-50"
-                    aria-hidden
-                  />
-                ) : null}
+              <li key={`${item.label}-${i}`} className="inline-flex items-center gap-1.5">
+                {i > 0 ? <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden /> : null}
                 {last || !item.href ? (
                   <span
                     className={last ? "font-medium text-ink" : undefined}
@@ -45,10 +37,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
                     {item.label}
                   </span>
                 ) : (
-                  <Link
-                    href={item.href}
-                    className="hover:text-teal transition-colors"
-                  >
+                  <Link href={item.href} className="hover:text-teal transition-colors">
                     {item.label}
                   </Link>
                 )}

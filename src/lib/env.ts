@@ -5,18 +5,11 @@ import { z } from "zod";
  * Ne jamais importer ce module depuis un composant client.
  */
 
-const emptyToUndefined = (v: unknown) =>
-  typeof v === "string" && v.trim() === "" ? undefined : v;
+const emptyToUndefined = (v: unknown) => (typeof v === "string" && v.trim() === "" ? undefined : v);
 
-const optionalUrl = z.preprocess(
-  emptyToUndefined,
-  z.string().url().optional()
-);
+const optionalUrl = z.preprocess(emptyToUndefined, z.string().url().optional());
 
-const optionalString = z.preprocess(
-  emptyToUndefined,
-  z.string().min(1).optional()
-);
+const optionalString = z.preprocess(emptyToUndefined, z.string().min(1).optional());
 
 const serverEnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -73,9 +66,7 @@ export function getServerEnv(): ServerEnv {
   if (cached) return cached;
   const parsed = serverEnvSchema.safeParse(process.env);
   if (!parsed.success) {
-    const details = parsed.error.issues
-      .map((i) => `${i.path.join(".")}: ${i.message}`)
-      .join("; ");
+    const details = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ");
     throw new Error(`Configuration invalide: ${details}`);
   }
   cached = parsed.data;
@@ -84,14 +75,16 @@ export function getServerEnv(): ServerEnv {
 }
 
 /** Valide Stripe sans planter le build si la clé est absente (pages statiques). */
-export function assertStripeMode(env: Pick<ServerEnv, "STRIPE_SECRET_KEY" | "ALLOW_STRIPE_LIVE" | "NODE_ENV"> = getServerEnv()): void {
+export function assertStripeMode(
+  env: Pick<ServerEnv, "STRIPE_SECRET_KEY" | "ALLOW_STRIPE_LIVE" | "NODE_ENV"> = getServerEnv(),
+): void {
   const key = env.STRIPE_SECRET_KEY;
   if (!key) return;
   const isLive = key.startsWith("sk_live_");
   if (isLive && env.ALLOW_STRIPE_LIVE !== "true") {
     throw new Error(
       "Clé Stripe Live détectée (sk_live_) mais ALLOW_STRIPE_LIVE n'est pas 'true'. " +
-        "Refus de démarrer — restez en mode test tant que la validation n'est pas explicite."
+        "Refus de démarrer — restez en mode test tant que la validation n'est pas explicite.",
     );
   }
 }

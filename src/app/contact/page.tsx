@@ -15,7 +15,8 @@ import Link from "next/link";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Contact & devis — Yerres (91)",
-  description: "Contactez Restor-PC au 07 67 28 23 65 — atelier 3 rue Auber, 91330 Yerres. Devis gratuit d’orientation, urgence et Essonne.",
+  description:
+    "Contactez Restor-PC au 07 67 28 23 65 — atelier 3 rue Auber, 91330 Yerres. Devis gratuit d’orientation, urgence et Essonne.",
   path: "/contact",
 });
 
@@ -40,8 +41,8 @@ export default function ContactPage() {
               </div>
               <h2 className="text-2xl">Formulaire de contact</h2>
               <p className="mt-2 text-sm text-ink-muted">
-                Décrivez le problème ou joignez le résumé de votre configuration.
-                Pour une panne bloquante, cochez urgence ou{" "}
+                Décrivez le problème ou joignez le résumé de votre configuration. Pour une panne
+                bloquante, cochez urgence ou{" "}
                 <a href={siteConfig.phoneHref} className="font-semibold text-teal">
                   appelez directement
                 </a>
@@ -82,10 +83,7 @@ export default function ContactPage() {
             <div className="rounded-[24px] border border-line bg-paper p-6">
               <div className="mb-3 flex flex-wrap gap-2">
                 <Badge variant="muted">Mini FAQ</Badge>
-                <Link
-                  href="/faq"
-                  className="text-xs font-semibold text-teal hover:text-teal-deep"
-                >
+                <Link href="/faq" className="text-xs font-semibold text-teal hover:text-teal-deep">
                   Voir toute la FAQ →
                 </Link>
               </div>

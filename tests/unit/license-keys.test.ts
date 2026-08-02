@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  generateLicenseKey,
-  generateSharePassword,
-} from "@/lib/fulfillment/keys";
+import { generateLicenseKey, generateSharePassword } from "@/lib/fulfillment/keys";
 
 describe("license keys", () => {
   it("génère une clé au format RPC-XXXX-XXXX-XXXX", () => {

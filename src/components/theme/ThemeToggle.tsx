@@ -27,7 +27,7 @@ export function ThemeToggle({
           ? "border-white/20 bg-white/10 text-white hover:bg-white/15"
           : "border-line bg-paper text-ink hover:bg-surface-2",
         !ready && "opacity-0",
-        className
+        className,
       )}
     >
       {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}

@@ -105,9 +105,7 @@ async function loginAdmin(page: Page) {
 test.describe("Admin — sans session", () => {
   test("visite /admin affiche l’écran de connexion", async ({ page }) => {
     await page.goto("/admin");
-    await expect(
-      page.getByRole("heading", { name: /Admin Restor-PC/i })
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Admin Restor-PC/i })).toBeVisible();
     await expect(page.getByLabel(/mot de passe atelier/i)).toBeVisible();
     await expect(page.getByRole("button", { name: /se connecter/i })).toBeVisible();
   });
@@ -115,9 +113,7 @@ test.describe("Admin — sans session", () => {
   test("refus d’accès à /admin/licences sans session", async ({ page }) => {
     await page.goto("/admin/licences");
     await expect(page).toHaveURL(/\/admin\/?$/);
-    await expect(
-      page.getByRole("heading", { name: /Admin Restor-PC/i })
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Admin Restor-PC/i })).toBeVisible();
   });
 
   test("mot de passe incorrect est refusé", async ({ page }) => {
@@ -204,7 +200,10 @@ test.describe("Admin — session simulée + licences mockées", () => {
       timeout: 15_000,
     });
 
-    await page.getByRole("button", { name: /^Révoquer$/i }).first().click();
+    await page
+      .getByRole("button", { name: /^Révoquer$/i })
+      .first()
+      .click();
     await expect(page.getByText(/licence mise à jour/i).first()).toBeVisible({
       timeout: 10_000,
     });

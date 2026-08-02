@@ -8,12 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import { getOutilDetails } from "@/lib/data/outils-details";
-import {
-  formatOutilPrice,
-  getAllProducts,
-  packComplet,
-  outilsCatalog,
-} from "@/lib/data/outils";
+import { formatOutilPrice, getAllProducts, packComplet, outilsCatalog } from "@/lib/data/outils";
 import { Download, Shield, Wifi } from "lucide-react";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
@@ -21,7 +16,8 @@ import Link from "next/link";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Boutique outils atelier",
-  description: "Boutique Restor-PC : outils atelier avec licence 1 PC, fiches détaillées, téléchargement sécurisé (1 fois) et guides inclus.",
+  description:
+    "Boutique Restor-PC : outils atelier avec licence 1 PC, fiches détaillées, téléchargement sécurisé (1 fois) et guides inclus.",
   path: "/boutique",
 });
 
@@ -33,11 +29,7 @@ export default function BoutiquePage({
   return <BoutiqueInner searchParams={searchParams} />;
 }
 
-async function BoutiqueInner({
-  searchParams,
-}: {
-  searchParams?: Promise<{ canceled?: string }>;
-}) {
+async function BoutiqueInner({ searchParams }: { searchParams?: Promise<{ canceled?: string }> }) {
   const sp = searchParams ? await searchParams : {};
   const products = getAllProducts();
   const packDetails = getOutilDetails(packComplet.slug);
@@ -84,27 +76,17 @@ async function BoutiqueInner({
           <BorderBeam size={80} duration={9} borderWidth={1.5} />
           <div className="relative">
             <div className="flex flex-wrap gap-2">
-              <Badge
-                variant="info"
-                className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
-              >
+              <Badge variant="info" className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]">
                 Pack
               </Badge>
-              <Badge
-                variant="outline"
-                className="border-white/20 bg-white/5 text-white/80"
-              >
+              <Badge variant="outline" className="border-white/20 bg-white/5 text-white/80">
                 Meilleure valeur
               </Badge>
             </div>
-            <h2 className="mt-3 font-display text-3xl tracking-tight">
-              {packComplet.title}
-            </h2>
+            <h2 className="mt-3 font-display text-3xl tracking-tight">{packComplet.title}</h2>
             <p className="mt-2 max-w-2xl text-white/65">{packComplet.tagline}</p>
             <p className="mt-3 text-sm text-white/55">{packDetails.when}</p>
-            <p className="mt-4 font-display text-3xl">
-              {formatOutilPrice(packComplet.priceCents)}
-            </p>
+            <p className="mt-4 font-display text-3xl">{formatOutilPrice(packComplet.priceCents)}</p>
             <div className="mt-6">
               <Button href={`/boutique/${packComplet.slug}`} size="lg">
                 Voir le détail du pack

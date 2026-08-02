@@ -13,11 +13,7 @@ function scrub(fields?: LogFields): LogFields | undefined {
   return out;
 }
 
-export function logEvent(
-  level: LogLevel,
-  event: string,
-  fields?: LogFields
-): void {
+export function logEvent(level: LogLevel, event: string, fields?: LogFields): void {
   const line = JSON.stringify({
     level,
     timestamp: new Date().toISOString(),

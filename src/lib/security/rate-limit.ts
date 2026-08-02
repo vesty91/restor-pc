@@ -54,11 +54,7 @@ export function getTrustedIp(request: Request): string {
 }
 
 /** Clé stable (IP hashée) — n’expose pas l’IP brute dans les logs applicatifs. */
-export function rateLimitKey(
-  request: Request,
-  scope: string,
-  extra?: string
-): string {
+export function rateLimitKey(request: Request, scope: string, extra?: string): string {
   const ip = getTrustedIp(request);
   const hash = createHash("sha256")
     .update(`${scope}|${ip}|${extra ?? ""}`)
@@ -67,11 +63,7 @@ export function rateLimitKey(
   return `${scope}:${hash}`;
 }
 
-function checkMemory(
-  key: string,
-  limit: number,
-  windowMs: number
-): RateLimitResult {
+function checkMemory(key: string, limit: number, windowMs: number): RateLimitResult {
   const now = Date.now();
   const entry = memory.get(key);
   if (!entry || now >= entry.resetAt) {
@@ -93,7 +85,7 @@ function checkMemory(
 async function checkSupabase(
   key: string,
   limit: number,
-  windowMs: number
+  windowMs: number,
 ): Promise<RateLimitResult | null> {
   if (!supabaseRateLimitConfigured()) {
     return null;

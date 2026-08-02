@@ -8,21 +8,21 @@ Date : 2026-07-29
 
 ## État initial
 
-| Élément | Valeur |
-|---|---|
-| Next.js | 16.2.11 |
-| Fichier | `src/middleware.ts` |
-| Fonction | `middleware(request)` → `updateSession()` |
-| Helper | `src/lib/supabase/middleware.ts` (inchangé) |
-| Matcher | `/compte`, `/boutique`, `/admin`, `/atelier`, `/auth` (+ `:path*`) |
-| Warning build | `middleware is deprecated, use proxy instead` |
+| Élément       | Valeur                                                             |
+| ------------- | ------------------------------------------------------------------ |
+| Next.js       | 16.2.11                                                            |
+| Fichier       | `src/middleware.ts`                                                |
+| Fonction      | `middleware(request)` → `updateSession()`                          |
+| Helper        | `src/lib/supabase/middleware.ts` (inchangé)                        |
+| Matcher       | `/compte`, `/boutique`, `/admin`, `/atelier`, `/auth` (+ `:path*`) |
+| Warning build | `middleware is deprecated, use proxy instead`                      |
 
 ## Migration
 
-| Action | Fichier |
-|---|---|
-| Supprimé | `src/middleware.ts` |
-| Créé | `src/proxy.ts` |
+| Action   | Fichier                          |
+| -------- | -------------------------------- |
+| Supprimé | `src/middleware.ts`              |
+| Créé     | `src/proxy.ts`                   |
 | Inchangé | `src/lib/supabase/middleware.ts` |
 
 - **Fonction exportée :** `export async function proxy(request: NextRequest)`
@@ -33,16 +33,16 @@ Date : 2026-07-29
 
 ## Tests
 
-| Commande | Résultat | Nombre | Remarque |
-|---|---|---|---|
-| `npm ci` | Non relancé (install locale OK) | — | CI Linux à valider sur PR |
-| `npm run typecheck` | OK | — | |
-| `npm run lint` | OK | 0 erreur / 0 warning | |
-| `npm run test:unit` | OK | 39 | +9 (proxy, updateSession) |
-| `npm run test:integration` | OK | 18 | +5 (auth callback) |
-| `npm run build` | OK | — | `ƒ Proxy (Middleware)` dans la sortie |
-| `npm run test:e2e:ci` | OK | **35** | +12 (`proxy-auth.spec.ts`) ; `next start` |
-| `git diff --check` | OK | — | |
+| Commande                   | Résultat                        | Nombre               | Remarque                                  |
+| -------------------------- | ------------------------------- | -------------------- | ----------------------------------------- |
+| `npm ci`                   | Non relancé (install locale OK) | —                    | CI Linux à valider sur PR                 |
+| `npm run typecheck`        | OK                              | —                    |                                           |
+| `npm run lint`             | OK                              | 0 erreur / 0 warning |                                           |
+| `npm run test:unit`        | OK                              | 39                   | +9 (proxy, updateSession)                 |
+| `npm run test:integration` | OK                              | 18                   | +5 (auth callback)                        |
+| `npm run build`            | OK                              | —                    | `ƒ Proxy (Middleware)` dans la sortie     |
+| `npm run test:e2e:ci`      | OK                              | **35**               | +12 (`proxy-auth.spec.ts`) ; `next start` |
+| `git diff --check`         | OK                              | —                    |                                           |
 
 ### Nouveaux fichiers de test
 
@@ -53,26 +53,26 @@ Date : 2026-07-29
 
 ## Authentification
 
-| Zone | Statut | Vérification |
-|---|---|---|
-| Supabase compte | OK | E2E `/compte`, refresh, unit `updateSession` |
-| OAuth callback | OK | intégration `auth/callback` + E2E redirect |
-| Boutique | OK | E2E catalogue / checkout |
-| Admin UI | OK | E2E login HMAC (`admin.spec.ts`) |
-| HMAC atelier | Inchangé | E2E admin + API 401/403 |
-| Rôles Supabase | Non modifié | Hors scope |
+| Zone            | Statut      | Vérification                                 |
+| --------------- | ----------- | -------------------------------------------- |
+| Supabase compte | OK          | E2E `/compte`, refresh, unit `updateSession` |
+| OAuth callback  | OK          | intégration `auth/callback` + E2E redirect   |
+| Boutique        | OK          | E2E catalogue / checkout                     |
+| Admin UI        | OK          | E2E login HMAC (`admin.spec.ts`)             |
+| HMAC atelier    | Inchangé    | E2E admin + API 401/403                      |
+| Rôles Supabase  | Non modifié | Hors scope                                   |
 
 ## Docker / standalone
 
-| Point | Statut |
-|---|---|
-| `output: "standalone"` | OK (`next.config.ts`) |
-| `.next/standalone` généré | OK |
-| `server.js` | OK |
-| Proxy dans le build | OK (manifest + route `ƒ Proxy`) |
-| `/api/health` | OK (E2E) |
-| Assets `_next/static` | OK (E2E) |
-| Déploiement NAS | **Non exécuté** |
+| Point                     | Statut                          |
+| ------------------------- | ------------------------------- |
+| `output: "standalone"`    | OK (`next.config.ts`)           |
+| `.next/standalone` généré | OK                              |
+| `server.js`               | OK                              |
+| Proxy dans le build       | OK (manifest + route `ƒ Proxy`) |
+| `/api/health`             | OK (E2E)                        |
+| Assets `_next/static`     | OK (E2E)                        |
+| Déploiement NAS           | **Non exécuté**                 |
 
 ## Risques restants
 

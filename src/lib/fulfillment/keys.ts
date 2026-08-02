@@ -15,8 +15,7 @@ export function generateLicenseKey(): string {
 }
 
 export function generateSharePassword(length = 10): string {
-  const alphabet =
-    "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
   const buf = randomBytes(length);
   let out = "";
   for (let i = 0; i < length; i++) {

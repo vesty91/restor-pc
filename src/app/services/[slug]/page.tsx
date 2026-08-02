@@ -50,9 +50,7 @@ export default async function ServiceDetailPage({ params }: Props) {
   if (!service) notFound();
 
   const others = services.filter((s) => s.slug !== slug).slice(0, 3);
-  const relatedArticles = articles
-    .filter((a) => a.relatedServices.includes(slug))
-    .slice(0, 3);
+  const relatedArticles = articles.filter((a) => a.relatedServices.includes(slug)).slice(0, 3);
 
   const serviceSchema = {
     "@context": "https://schema.org",
@@ -93,17 +91,12 @@ export default async function ServiceDetailPage({ params }: Props) {
 
       <Section className="noise-bg pt-20 md:pt-28">
         <Breadcrumbs
-          items={[
-            { label: "Services", href: "/services" },
-            { label: service.shortTitle },
-          ]}
+          items={[{ label: "Services", href: "/services" }, { label: service.shortTitle }]}
         />
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
           <div>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="info">
-                {serviceBadge[service.slug] ?? "Service"}
-              </Badge>
+              <Badge variant="info">{serviceBadge[service.slug] ?? "Service"}</Badge>
               <Badge variant="outline">{siteConfig.city}</Badge>
               <Badge variant="success">Devis avant réparation</Badge>
             </div>
@@ -159,8 +152,8 @@ export default async function ServiceDetailPage({ params }: Props) {
         </div>
         <h2 className="mt-3 text-2xl md:text-3xl">Comment ça se passe</h2>
         <p className="mt-3 max-w-xl text-ink-muted">
-          Étapes propres à cette prestation — le cadre global d’intervention est
-          aussi détaillé sur la page d’accueil.
+          Étapes propres à cette prestation — le cadre global d’intervention est aussi détaillé sur
+          la page d’accueil.
         </p>
         <ol className="mt-8 grid list-none gap-4 p-0 md:grid-cols-3">
           {service.process.map((step, i) => (
@@ -221,10 +214,7 @@ export default async function ServiceDetailPage({ params }: Props) {
           ))}
         </div>
         <div className="mt-6">
-          <Link
-            href="/services"
-            className="text-sm font-semibold text-teal hover:text-teal-deep"
-          >
+          <Link href="/services" className="text-sm font-semibold text-teal hover:text-teal-deep">
             Voir tous les services →
           </Link>
         </div>

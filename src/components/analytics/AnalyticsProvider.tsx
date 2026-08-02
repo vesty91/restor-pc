@@ -77,7 +77,7 @@ export function AnalyticsProvider({ children }: { children: ReactNode }) {
         applyGtagConsent(false);
       }
     },
-    [configured]
+    [configured],
   );
 
   const openPreferences = useCallback(() => {
@@ -93,10 +93,8 @@ export function AnalyticsProvider({ children }: { children: ReactNode }) {
       openPreferences,
       preferencesOpen,
     }),
-    [configured, hydrated, consent, setConsent, openPreferences, preferencesOpen]
+    [configured, hydrated, consent, setConsent, openPreferences, preferencesOpen],
   );
 
-  return (
-    <AnalyticsContext.Provider value={value}>{children}</AnalyticsContext.Provider>
-  );
+  return <AnalyticsContext.Provider value={value}>{children}</AnalyticsContext.Provider>;
 }

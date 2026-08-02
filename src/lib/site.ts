@@ -36,8 +36,7 @@ export const siteConfig = {
     lat: 48.7172,
     lng: 2.4881,
   },
-  mapsUrl:
-    "https://www.google.com/maps/search/?api=1&query=3+Rue+Auber%2C+91330+Yerres",
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=3+Rue+Auber%2C+91330+Yerres",
   mapsEmbedUrl:
     "https://maps.google.com/maps?q=3%20Rue%20Auber%2C%2091330%20Yerres&z=16&output=embed",
   mapsDirectionsUrl:
@@ -69,12 +68,9 @@ export const siteConfig = {
     publicationDirector: "M. Martins",
     /** Renseigner via NEXT_PUBLIC_CONSUMER_MEDIATOR_* (ne pas inventer) */
     mediator: (() => {
-      const name =
-        process.env.NEXT_PUBLIC_CONSUMER_MEDIATOR_NAME?.trim() || null;
-      const url =
-        process.env.NEXT_PUBLIC_CONSUMER_MEDIATOR_WEBSITE?.trim() || null;
-      const address =
-        process.env.NEXT_PUBLIC_CONSUMER_MEDIATOR_ADDRESS?.trim() || undefined;
+      const name = process.env.NEXT_PUBLIC_CONSUMER_MEDIATOR_NAME?.trim() || null;
+      const url = process.env.NEXT_PUBLIC_CONSUMER_MEDIATOR_WEBSITE?.trim() || null;
+      const address = process.env.NEXT_PUBLIC_CONSUMER_MEDIATOR_ADDRESS?.trim() || undefined;
       if (!name && !url) return null;
       return { name: name ?? "Médiateur (à confirmer)", url: url ?? "#", address };
     })() as null | {

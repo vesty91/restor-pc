@@ -30,11 +30,7 @@ export function trackContactSuccess(input: {
   }
 }
 
-export function trackBeginQuote(input: {
-  usage?: string;
-  budget?: string;
-  total?: number;
-}) {
+export function trackBeginQuote(input: { usage?: string; budget?: string; total?: number }) {
   trackEvent(GA_EVENTS.beginQuote, {
     usage: input.usage,
     budget: input.budget,
@@ -67,9 +63,7 @@ export function trackPurchase(sessionId: string) {
   });
 }
 
-export function classifyOutboundHref(
-  href: string
-): "phone" | "email" | "whatsapp" | null {
+export function classifyOutboundHref(href: string): "phone" | "email" | "whatsapp" | null {
   const h = href.trim().toLowerCase();
   if (h.startsWith("tel:")) return "phone";
   if (h.startsWith("mailto:")) return "email";

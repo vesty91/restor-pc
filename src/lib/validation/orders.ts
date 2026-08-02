@@ -1,13 +1,7 @@
 import { z } from "zod";
 import { emailSchema, nonEmptyIdSchema } from "./common";
 
-export const orderStatusSchema = z.enum([
-  "pending",
-  "paid",
-  "fulfilled",
-  "failed",
-  "refunded",
-]);
+export const orderStatusSchema = z.enum(["pending", "paid", "fulfilled", "failed", "refunded"]);
 
 /** Renvoi d’email commande (compte client). */
 export const resendOrderEmailSchema = z.object({

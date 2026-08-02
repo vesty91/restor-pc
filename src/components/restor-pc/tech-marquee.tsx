@@ -28,11 +28,7 @@ export function TechMarquee() {
           className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-paper to-transparent sm:w-20"
           aria-hidden
         />
-        <Marquee
-          pauseOnHover
-          className="[--duration:35s]"
-          aria-label="Domaines d’intervention"
-        >
+        <Marquee pauseOnHover className="[--duration:35s]" aria-label="Domaines d’intervention">
           {ITEMS.map((item) => (
             <Badge
               key={item}

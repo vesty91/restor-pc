@@ -109,7 +109,9 @@ body {
   font-family: var(--font-body), system-ui, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 200ms ease, color 200ms ease;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
 }
 
 ::selection {
@@ -174,15 +176,31 @@ a {
 .noise-bg {
   background-color: var(--surface);
   background-image:
-    radial-gradient(ellipse 80% 50% at 10% -10%, color-mix(in oklab, var(--teal) 14%, transparent), transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 0%, color-mix(in oklab, var(--ink) 6%, transparent), transparent 50%),
+    radial-gradient(
+      ellipse 80% 50% at 10% -10%,
+      color-mix(in oklab, var(--teal) 14%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 100% 0%,
+      color-mix(in oklab, var(--ink) 6%, transparent),
+      transparent 50%
+    ),
     linear-gradient(180deg, var(--noise-top) 0%, var(--surface) 100%);
 }
 
 .dark .noise-bg {
   background-image:
-    radial-gradient(ellipse 80% 50% at 10% -10%, color-mix(in oklab, var(--teal) 12%, transparent), transparent 55%),
-    radial-gradient(ellipse 55% 40% at 100% 0%, color-mix(in oklab, #2dd4bf 8%, transparent), transparent 50%),
+    radial-gradient(
+      ellipse 80% 50% at 10% -10%,
+      color-mix(in oklab, var(--teal) 12%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 100% 0%,
+      color-mix(in oklab, #2dd4bf 8%, transparent),
+      transparent 50%
+    ),
     linear-gradient(180deg, #0b1220 0%, var(--surface) 100%);
 }
 
@@ -223,12 +241,7 @@ a {
   opacity: 0.85;
   will-change: transform;
   animation: boutique-grid-drift 28s linear infinite;
-  mask-image: linear-gradient(
-    180deg,
-    black 0%,
-    black 55%,
-    transparent 100%
-  );
+  mask-image: linear-gradient(180deg, black 0%, black 55%, transparent 100%);
 }
 
 .boutique-grid-bg::after {
@@ -393,12 +406,11 @@ a {
   isolation: isolate;
   overflow: hidden;
   border: 1px solid var(--line);
-  background:
-    linear-gradient(
-      165deg,
-      var(--paper) 0%,
-      color-mix(in oklab, var(--surface) 55%, var(--paper)) 100%
-    );
+  background: linear-gradient(
+    165deg,
+    var(--paper) 0%,
+    color-mix(in oklab, var(--surface) 55%, var(--paper)) 100%
+  );
   box-shadow: var(--shadow-soft);
   transition:
     border-color 320ms ease,
@@ -413,12 +425,11 @@ a {
   z-index: 0;
   pointer-events: none;
   opacity: 0;
-  background:
-    radial-gradient(
-      120% 80% at 0% 0%,
-      color-mix(in oklab, var(--teal) 16%, transparent),
-      transparent 55%
-    );
+  background: radial-gradient(
+    120% 80% at 0% 0%,
+    color-mix(in oklab, var(--teal) 16%, transparent),
+    transparent 55%
+  );
   transition: opacity 320ms ease;
 }
 

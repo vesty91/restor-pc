@@ -41,9 +41,7 @@ export function AnnouncementBar() {
     >
       <div className="container-wide flex items-center justify-between gap-3 py-2 text-sm">
         <p className="min-w-0 truncate">
-          <span className="font-semibold">
-            {status.open ? "Atelier ouvert" : "Atelier fermé"}
-          </span>
+          <span className="font-semibold">{status.open ? "Atelier ouvert" : "Atelier fermé"}</span>
           <span className="text-ink-muted">
             {" "}
             · {status.detail} · {siteConfig.addressShort}

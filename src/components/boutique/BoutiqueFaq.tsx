@@ -15,7 +15,7 @@ const boutiqueFaqs = faqs.filter(
   (f) =>
     boutiqueKeywords.some((k) => f.q.toLowerCase().includes(k)) ||
     f.a.toLowerCase().includes("mon compte") ||
-    f.a.toLowerCase().includes("conditions générales")
+    f.a.toLowerCase().includes("conditions générales"),
 );
 
 export function BoutiqueFaq() {
@@ -34,9 +34,7 @@ export function BoutiqueFaq() {
               +
             </span>
           </summary>
-          <p className="mt-3 text-sm md:text-base text-ink-muted leading-relaxed">
-            {item.a}
-          </p>
+          <p className="mt-3 text-sm md:text-base text-ink-muted leading-relaxed">{item.a}</p>
         </details>
       ))}
     </div>

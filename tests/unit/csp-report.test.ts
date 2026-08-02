@@ -55,18 +55,11 @@ const FORBIDDEN_CSP_PATTERNS = [
   /unsafe-eval/i,
 ] as const;
 
-function findHeader(
-  headers: Array<{ key: string; value: string }>,
-  key: string
-) {
+function findHeader(headers: Array<{ key: string; value: string }>, key: string) {
   return headers.find((h) => h.key === key);
 }
 
-function postCsp(
-  body: string,
-  contentType: string,
-  ip = "203.0.113.10"
-): NextRequest {
+function postCsp(body: string, contentType: string, ip = "203.0.113.10"): NextRequest {
   return new NextRequest("http://localhost/api/csp-report", {
     method: "POST",
     headers: {
@@ -89,8 +82,7 @@ describe("CSP Phase 1 — Report-Only + /api/csp-report", () => {
 
   afterEach(() => {
     process.env = { ...originalEnv };
-    (process.env as Record<string, string | undefined>).NODE_ENV =
-      originalNodeEnv;
+    (process.env as Record<string, string | undefined>).NODE_ENV = originalNodeEnv;
     __resetMemoryRateLimitsForTests();
     vi.restoreAllMocks();
     vi.resetModules();
@@ -278,9 +270,7 @@ describe("CSP Phase 1 — Report-Only + /api/csp-report", () => {
       },
     }));
 
-    const res = await POST(
-      postCsp(JSON.stringify(reports), "application/reports+json")
-    );
+    const res = await POST(postCsp(JSON.stringify(reports), "application/reports+json"));
     expect(res.status).toBe(204);
     expect(spy).toHaveBeenCalledTimes(20);
   });
@@ -305,9 +295,7 @@ describe("CSP Phase 1 — Report-Only + /api/csp-report", () => {
 
   it("retourne 204 sur JSON invalide", async () => {
     const spy = vi.spyOn(console, "info").mockImplementation(() => {});
-    const res = await POST(
-      postCsp("{ invalid json", "application/csp-report")
-    );
+    const res = await POST(postCsp("{ invalid json", "application/csp-report"));
     expect(res.status).toBe(204);
     expect(await res.text()).toBe("");
     expect(spy).not.toHaveBeenCalled();
@@ -366,11 +354,11 @@ describe("CSP Phase 1 — Report-Only + /api/csp-report", () => {
     const prodHeaders = (await prodConfig.headers!())[0].headers;
 
     expect(findHeader(prodHeaders, "Reporting-Endpoints")?.value).toBe(
-      'csp-endpoint="/api/csp-report"'
+      'csp-endpoint="/api/csp-report"',
     );
-    expect(
-      findHeader(prodHeaders, "Content-Security-Policy-Report-Only")?.value
-    ).toBe(EXPECTED_REPORT_ONLY);
+    expect(findHeader(prodHeaders, "Content-Security-Policy-Report-Only")?.value).toBe(
+      EXPECTED_REPORT_ONLY,
+    );
 
     vi.resetModules();
     (process.env as Record<string, string>).NODE_ENV = "development";
@@ -407,10 +395,7 @@ describe("CSP Phase 1 — Report-Only + /api/csp-report", () => {
     const config = (await import("../../next.config")).default;
     const headers = (await config.headers!())[0].headers;
     const enforcement = findHeader(headers, "Content-Security-Policy")!.value;
-    const reportOnly = findHeader(
-      headers,
-      "Content-Security-Policy-Report-Only"
-    )!.value;
+    const reportOnly = findHeader(headers, "Content-Security-Policy-Report-Only")!.value;
 
     for (const policy of [enforcement, reportOnly]) {
       expect(policy).toMatch(/script-src[^;]*https:\/\/www\.googletagmanager\.com/);
@@ -428,10 +413,7 @@ describe("CSP Phase 1 — Report-Only + /api/csp-report", () => {
     const config = (await import("../../next.config")).default;
     const headers = (await config.headers!())[0].headers;
     const enforcement = findHeader(headers, "Content-Security-Policy")!.value;
-    const reportOnly = findHeader(
-      headers,
-      "Content-Security-Policy-Report-Only"
-    )!.value;
+    const reportOnly = findHeader(headers, "Content-Security-Policy-Report-Only")!.value;
 
     for (const policy of [enforcement, reportOnly]) {
       for (const pattern of FORBIDDEN_CSP_PATTERNS) {

@@ -105,80 +105,85 @@ export function AtelierPanel({ authed }: { authed: boolean }) {
         </Button>
       </div>
       <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
-      <div className="rounded-[24px] border border-line bg-paper p-6">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="font-display text-xl tracking-tight">Livrer un outil</h2>
+        <div className="rounded-[24px] border border-line bg-paper p-6">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="font-display text-xl tracking-tight">Livrer un outil</h2>
+          </div>
+          <p className="mt-2 text-sm text-ink-muted">
+            Crée licence (1 PC) + lien NAS 1 téléchargement + email optionnel.
+          </p>
+          <label className="mt-5 block text-sm text-ink-muted">
+            Outil
+            <select
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              className="mt-1.5 w-full rounded-[12px] border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal"
+            >
+              {products.map((p) => (
+                <option key={p.slug} value={p.slug}>
+                  {p.title}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="mt-4 block text-sm text-ink-muted">
+            Email client
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="client@email.fr"
+              className="mt-1.5 w-full rounded-[12px] border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal"
+            />
+          </label>
+          <label className="mt-4 flex items-center gap-2 text-sm text-ink">
+            <input
+              type="checkbox"
+              checked={sendEmail}
+              onChange={(e) => setSendEmail(e.target.checked)}
+            />
+            Envoyer l’email Resend
+          </label>
+          <Button type="button" className="mt-5 w-full" disabled={loading} onClick={fulfill}>
+            {loading ? "Livraison…" : "Générer & livrer"}
+          </Button>
+          {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
         </div>
-        <p className="mt-2 text-sm text-ink-muted">
-          Crée licence (1 PC) + lien NAS 1 téléchargement + email optionnel.
-        </p>
-        <label className="mt-5 block text-sm text-ink-muted">
-          Outil
-          <select
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            className="mt-1.5 w-full rounded-[12px] border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal"
-          >
-            {products.map((p) => (
-              <option key={p.slug} value={p.slug}>
-                {p.title}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="mt-4 block text-sm text-ink-muted">
-          Email client
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="client@email.fr"
-            className="mt-1.5 w-full rounded-[12px] border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-teal"
-          />
-        </label>
-        <label className="mt-4 flex items-center gap-2 text-sm text-ink">
-          <input
-            type="checkbox"
-            checked={sendEmail}
-            onChange={(e) => setSendEmail(e.target.checked)}
-          />
-          Envoyer l’email Resend
-        </label>
-        <Button type="button" className="mt-5 w-full" disabled={loading} onClick={fulfill}>
-          {loading ? "Livraison…" : "Générer & livrer"}
-        </Button>
-        {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
-      </div>
 
-      <div className="rounded-[24px] border border-line bg-paper p-6">
-        <h2 className="font-display text-xl tracking-tight">Résultat</h2>
-        {!result ? (
-          <p className="mt-3 text-sm text-ink-muted">Aucun envoi pour l’instant.</p>
-        ) : (
-          <dl className="mt-4 space-y-3 text-sm">
-            <div>
-              <dt className="text-ink-muted">Produit</dt>
-              <dd className="font-medium text-ink">{result.toolTitle}</dd>
-            </div>
-            <div>
-              <dt className="text-ink-muted">Licence</dt>
-              <dd className="break-all font-mono text-ink">{result.licenseKey}</dd>
-            </div>
-            <div>
-              <dt className="text-ink-muted">Lien</dt>
-              <dd className="break-all">
-                <a href={result.downloadUrl} className="text-teal underline" target="_blank" rel="noreferrer">
-                  {result.downloadUrl}
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt className="text-ink-muted">Mot de passe</dt>
-              <dd className="font-mono text-ink">{result.downloadPassword}</dd>
-            </div>
-          </dl>
-        )}
-      </div>
+        <div className="rounded-[24px] border border-line bg-paper p-6">
+          <h2 className="font-display text-xl tracking-tight">Résultat</h2>
+          {!result ? (
+            <p className="mt-3 text-sm text-ink-muted">Aucun envoi pour l’instant.</p>
+          ) : (
+            <dl className="mt-4 space-y-3 text-sm">
+              <div>
+                <dt className="text-ink-muted">Produit</dt>
+                <dd className="font-medium text-ink">{result.toolTitle}</dd>
+              </div>
+              <div>
+                <dt className="text-ink-muted">Licence</dt>
+                <dd className="break-all font-mono text-ink">{result.licenseKey}</dd>
+              </div>
+              <div>
+                <dt className="text-ink-muted">Lien</dt>
+                <dd className="break-all">
+                  <a
+                    href={result.downloadUrl}
+                    className="text-teal underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {result.downloadUrl}
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="text-ink-muted">Mot de passe</dt>
+                <dd className="font-mono text-ink">{result.downloadPassword}</dd>
+              </div>
+            </dl>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -29,7 +29,8 @@ export type StatusBadgeStatus =
 
 type StatusMeta = {
   label: string;
-  variant: "default" | "secondary" | "outline" | "success" | "warning" | "danger" | "muted" | "info";
+  variant:
+    "default" | "secondary" | "outline" | "success" | "warning" | "danger" | "muted" | "info";
   icon: LucideIcon;
   description: string;
   className?: string;
@@ -115,9 +116,7 @@ export const STATUS_BADGE_MAP: Record<StatusBadgeStatus, StatusMeta> = {
 };
 
 /** Normalise un statut brut (API / Stripe / licences) vers une clé connue. */
-export function resolveStatusBadgeStatus(
-  raw: string | null | undefined
-): StatusBadgeStatus | null {
+export function resolveStatusBadgeStatus(raw: string | null | undefined): StatusBadgeStatus | null {
   if (!raw) return null;
   const key = raw.trim().toLowerCase().replace(/\s+/g, "_");
   const aliases: Record<string, StatusBadgeStatus> = {
@@ -177,10 +176,7 @@ export function StatusBadge({
     >
       {showIcon ? (
         <Icon
-          className={cn(
-            "size-3",
-            resolved === "processing" && "motion-safe:animate-spin"
-          )}
+          className={cn("size-3", resolved === "processing" && "motion-safe:animate-spin")}
           aria-hidden
         />
       ) : null}

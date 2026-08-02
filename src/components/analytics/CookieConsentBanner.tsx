@@ -4,8 +4,7 @@ import { useAnalyticsConsent } from "@/components/analytics/AnalyticsProvider";
 import Link from "next/link";
 
 export function CookieConsentBanner() {
-  const { configured, hydrated, consent, setConsent, preferencesOpen } =
-    useAnalyticsConsent();
+  const { configured, hydrated, consent, setConsent, preferencesOpen } = useAnalyticsConsent();
 
   if (!configured || !hydrated) return null;
   const show = consent === null || preferencesOpen;
@@ -26,13 +25,9 @@ export function CookieConsentBanner() {
           >
             Mesure d’audience
           </p>
-          <p
-            id="cookie-consent-desc"
-            className="mt-1.5 text-sm leading-relaxed text-ink-muted"
-          >
-            Avec votre accord, nous utilisons Google Analytics 4 pour compter les
-            visites et les demandes (appel, e-mail, formulaire, devis, paiement).
-            Pas de publicité ciblée.{" "}
+          <p id="cookie-consent-desc" className="mt-1.5 text-sm leading-relaxed text-ink-muted">
+            Avec votre accord, nous utilisons Google Analytics 4 pour compter les visites et les
+            demandes (appel, e-mail, formulaire, devis, paiement). Pas de publicité ciblée.{" "}
             <Link
               href="/politique-confidentialite#cookies"
               className="font-medium text-teal underline underline-offset-2"

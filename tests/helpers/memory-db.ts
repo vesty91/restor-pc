@@ -20,7 +20,7 @@ function applyFilters(rows: MemoryRow[], filters: Filter[]): MemoryRow[] {
       if (f.kind === "is") return row[f.col] == null;
       if (f.kind === "neq") return row[f.col] !== f.val;
       return true;
-    })
+    }),
   );
 }
 
@@ -47,7 +47,7 @@ export type MemoryDb = {
 function buildClient(tables: MemoryDb["tables"]) {
   const rpc = async (
     name: string,
-    args: Record<string, unknown>
+    args: Record<string, unknown>,
   ): Promise<{ data: unknown; error: { message: string; code?: string } | null }> => {
     if (name === "claim_stripe_event") {
       const id = String(args.p_id);
@@ -93,12 +93,8 @@ function buildClient(tables: MemoryDb["tables"]) {
     if (name === "claim_order_revocation") {
       const pi = String(args.p_payment_intent_id);
       let reason = String(args.p_reason) as "refunded" | "disputed";
-      const eventId = args.p_stripe_event_id
-        ? String(args.p_stripe_event_id)
-        : null;
-      const existing = tables.stripe_payment_revocations.find(
-        (r) => r.payment_intent_id === pi
-      );
+      const eventId = args.p_stripe_event_id ? String(args.p_stripe_event_id) : null;
+      const existing = tables.stripe_payment_revocations.find((r) => r.payment_intent_id === pi);
       if (existing) {
         if (existing.reason === "refunded" || reason === "refunded") {
           reason = "refunded";
@@ -116,23 +112,15 @@ function buildClient(tables: MemoryDb["tables"]) {
         });
       }
 
-      const orders = tables.tool_orders.filter(
-        (o) => o.stripe_payment_intent_id === pi
-      );
+      const orders = tables.tool_orders.filter((o) => o.stripe_payment_intent_id === pi);
       const out = [];
       for (const o of orders) {
         const nextStatus =
-          o.status === "refunded"
-            ? "refunded"
-            : reason === "refunded"
-              ? "refunded"
-              : reason;
+          o.status === "refunded" ? "refunded" : reason === "refunded" ? "refunded" : reason;
         o.status = nextStatus;
         o.error_code = o.error_code ?? "STRIPE_REVOKED";
         if (o.license_key) {
-          const lic = tables.script_licenses.find(
-            (l) => l.license_key === o.license_key
-          );
+          const lic = tables.script_licenses.find((l) => l.license_key === o.license_key);
           if (lic) lic.status = "revoked";
         }
         out.push({
@@ -156,8 +144,7 @@ function buildClient(tables: MemoryDb["tables"]) {
       const orderId = String(args.p_order_id);
       const order = tables.tool_orders.find((o) => o.id === orderId);
       if (!order) return { data: false, error: null };
-      order.assets_revoked_at =
-        order.assets_revoked_at ?? new Date().toISOString();
+      order.assets_revoked_at = order.assets_revoked_at ?? new Date().toISOString();
       order.revoke_error = args.p_revoke_error ?? null;
       order.share_url = null;
       order.share_password = null;
@@ -215,9 +202,7 @@ function buildClient(tables: MemoryDb["tables"]) {
     const api: Record<string, unknown> = {};
 
     const runSelect = () => {
-      let rows = applyFilters(tables[key], state.filters).map((r) =>
-        pick(r, state.columns)
-      );
+      let rows = applyFilters(tables[key], state.filters).map((r) => pick(r, state.columns));
       if (state.orderCol) {
         const col = state.orderCol;
         rows = [...rows].sort((a, b) => {
@@ -251,9 +236,7 @@ function buildClient(tables: MemoryDb["tables"]) {
             }
           }
           if (key === "script_licenses") {
-            if (
-              tables.script_licenses.some((l) => l.license_key === row.license_key)
-            ) {
+            if (tables.script_licenses.some((l) => l.license_key === row.license_key)) {
               return {
                 data: null,
                 error: { message: "duplicate license", code: "23505" },
@@ -281,10 +264,7 @@ function buildClient(tables: MemoryDb["tables"]) {
     };
 
     const thenable = {
-      then(
-        onfulfilled?: (v: unknown) => unknown,
-        onrejected?: (e: unknown) => unknown
-      ) {
+      then(onfulfilled?: (v: unknown) => unknown, onrejected?: (e: unknown) => unknown) {
         return finish().then(onfulfilled, onrejected);
       },
       maybeSingle: async () => {
@@ -320,9 +300,7 @@ function buildClient(tables: MemoryDb["tables"]) {
     };
     api.insert = (row: MemoryRow | MemoryRow[]) => {
       state.mode = "insert";
-      state.insertRows = Array.isArray(row)
-        ? row.map((r) => ({ ...r }))
-        : [{ ...row }];
+      state.insertRows = Array.isArray(row) ? row.map((r) => ({ ...r })) : [{ ...row }];
       return Object.assign(chain(), thenable);
     };
     api.update = (patch: MemoryRow) => {
@@ -346,15 +324,12 @@ function buildClient(tables: MemoryDb["tables"]) {
       state.filters.push({ kind: "is", col, val });
       return Object.assign(chain(), thenable);
     };
-    api.upsert = (
-      row: MemoryRow | MemoryRow[],
-      _opts?: { onConflict?: string }
-    ) => {
+    api.upsert = (row: MemoryRow | MemoryRow[], _opts?: { onConflict?: string }) => {
       const rows = Array.isArray(row) ? row : [row];
       for (const r of rows) {
         if (key === "stripe_payment_revocations") {
           const existing = tables.stripe_payment_revocations.find(
-            (x) => x.payment_intent_id === r.payment_intent_id
+            (x) => x.payment_intent_id === r.payment_intent_id,
           );
           if (existing) {
             Object.assign(existing, r);

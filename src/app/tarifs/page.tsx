@@ -58,10 +58,7 @@ export default function TarifsPage() {
           {urgencyRates.map((row, i) => {
             const Icon = urgencyIcons[i] ?? Clock;
             return (
-              <article
-                key={row.label}
-                className="tile-wow group rounded-[22px] p-6"
-              >
+              <article key={row.label} className="tile-wow group rounded-[22px] p-6">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-soft text-teal transition-transform duration-300 group-hover:scale-110 group-hover:border group-hover:border-teal/40 motion-reduce:transition-none">
                     <Icon className="h-5 w-5" aria-hidden />
@@ -99,8 +96,8 @@ export default function TarifsPage() {
         </div>
         <h2 className="text-2xl md:text-3xl">Toutes les prestations en un coup d’œil</h2>
         <p className="mt-2 max-w-2xl text-ink-muted">
-          Pièces détachées et cas complexes (récupération avancée, multipostes)
-          font l’objet d’un devis personnalisé.
+          Pièces détachées et cas complexes (récupération avancée, multipostes) font l’objet d’un
+          devis personnalisé.
         </p>
         <div className="mt-8 overflow-hidden rounded-[22px] border border-line shadow-[var(--shadow-soft)]">
           <table className="w-full text-left text-sm">
@@ -129,9 +126,7 @@ export default function TarifsPage() {
                       <span className="font-display text-lg">{formatPrice(row.from)}</span>
                     )}
                   </td>
-                  <td className="hidden px-4 py-3.5 text-ink-muted sm:table-cell">
-                    {row.note}
-                  </td>
+                  <td className="hidden px-4 py-3.5 text-ink-muted sm:table-cell">{row.note}</td>
                 </tr>
               ))}
             </tbody>

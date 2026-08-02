@@ -5,11 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { siteConfig } from "@/lib/site";
 import { HeroDiagnosticCard, SceneFallback } from "@/components/three/SceneFallback";
 import { HeroColorPanels } from "@/components/cult/hero-color-panels";
-import {
-  getHeroMobileVariant,
-  getHeroVariant,
-  type HeroVariant,
-} from "@/lib/hero-variant";
+import { getHeroMobileVariant, getHeroVariant, type HeroVariant } from "@/lib/hero-variant";
 import { ArrowRight, MapPin, MessageCircle, Phone, ShieldCheck } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -23,7 +19,7 @@ function pickVisual(
   desktop: HeroVariant,
   mobile: HeroVariant,
   isMobile: boolean,
-  reduceMotion: boolean
+  reduceMotion: boolean,
 ): "three" | "color-panels" | "static" {
   if (reduceMotion) return "static";
   const chosen = isMobile ? mobile : desktop;
@@ -37,7 +33,7 @@ export function Hero() {
   const desktopVariant = getHeroVariant();
   const mobileVariant = getHeroMobileVariant();
   const [visual, setVisual] = useState<"three" | "color-panels" | "static">(
-    desktopVariant === "three" ? "static" : desktopVariant
+    desktopVariant === "three" ? "static" : desktopVariant,
   );
 
   useEffect(() => {
@@ -45,14 +41,7 @@ export function Hero() {
     const narrow = window.matchMedia("(max-width: 1023px)");
 
     const sync = () => {
-      setVisual(
-        pickVisual(
-          desktopVariant,
-          mobileVariant,
-          narrow.matches,
-          reduced.matches
-        )
-      );
+      setVisual(pickVisual(desktopVariant, mobileVariant, narrow.matches, reduced.matches));
     };
 
     sync();
@@ -95,16 +84,10 @@ export function Hero() {
       <div className="container-wide relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-10 items-center py-16 md:py-22 lg:py-14">
         <div className="max-w-xl text-white">
           <div className="mb-4 flex flex-wrap gap-2">
-            <Badge
-              variant="outline"
-              className="border-white/20 bg-white/5 text-white/85"
-            >
+            <Badge variant="outline" className="border-white/20 bg-white/5 text-white/85">
               Atelier · {siteConfig.city}
             </Badge>
-            <Badge
-              variant="info"
-              className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]"
-            >
+            <Badge variant="info" className="border-transparent bg-[#4ba3ff]/20 text-[#9ec9f5]">
               {siteConfig.intervention}
             </Badge>
           </div>
@@ -115,8 +98,8 @@ export function Hero() {
             {siteConfig.tagline}
           </p>
           <p className="mt-4 text-base md:text-lg text-white/60 leading-relaxed max-w-md">
-            Atelier à Yerres (91) pour dépanner, sécuriser et assembler votre
-            ordinateur — à domicile ou en dépôt atelier, avec méthode et résultats durables.
+            Atelier à Yerres (91) pour dépanner, sécuriser et assembler votre ordinateur — à
+            domicile ou en dépôt atelier, avec méthode et résultats durables.
           </p>
           <p className="mt-3 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white/45">
             <MapPin className="h-3.5 w-3.5 text-[#4ba3ff] shrink-0" aria-hidden />
@@ -162,9 +145,7 @@ export function Hero() {
               {siteConfig.guarantee}
             </span>
           </div>
-          <p className="mt-3 font-mono text-xs text-white/40">
-            Appel direct · {siteConfig.phone}
-          </p>
+          <p className="mt-3 font-mono text-xs text-white/40">Appel direct · {siteConfig.phone}</p>
           <a
             href={siteConfig.whatsappHref}
             target="_blank"
@@ -176,7 +157,10 @@ export function Hero() {
           </a>
         </div>
 
-        <div className="relative w-full flex justify-center lg:justify-end" aria-hidden={visual !== "static"}>
+        <div
+          className="relative w-full flex justify-center lg:justify-end"
+          aria-hidden={visual !== "static"}
+        >
           {visual === "three" ? (
             <HeroScene />
           ) : visual === "color-panels" ? (

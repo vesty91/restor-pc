@@ -20,10 +20,7 @@ export type HeroVariant = z.infer<typeof heroVariantSchema>;
 
 export const HERO_VARIANTS = heroVariantSchema.options;
 
-function readVariant(
-  raw: string | undefined,
-  fallback: HeroVariant
-): HeroVariant {
+function readVariant(raw: string | undefined, fallback: HeroVariant): HeroVariant {
   const parsed = heroVariantSchema.safeParse(raw?.trim());
   return parsed.success ? parsed.data : fallback;
 }
@@ -35,8 +32,5 @@ export function getHeroVariant(): HeroVariant {
 
 /** Variante mobile / fallback léger. */
 export function getHeroMobileVariant(): HeroVariant {
-  return readVariant(
-    process.env.NEXT_PUBLIC_HERO_MOBILE_VARIANT,
-    "color-panels"
-  );
+  return readVariant(process.env.NEXT_PUBLIC_HERO_MOBILE_VARIANT, "color-panels");
 }
